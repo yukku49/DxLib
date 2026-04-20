@@ -16,6 +16,7 @@ struct Item_count
 };
 class ItemManagiment;
 class BllentManagiment;
+class BackScreenManagiment;
 
 class PlayerManegiment
 {
@@ -45,10 +46,11 @@ private:
 public:
 	void Initialisation();
 	//StageManagerを仮引数として受け取り、壁判定を行う
-	void Update(const BackGrandManagiment::StageManeger& stage, BllentManagiment& bllent);
+	void Update(const BackScreenManagiment::StageManeger& stage, BllentManagiment& bllent);
 	//他クラスから座標を強いりたいとき陽のゲッター（読み取り専用）
 	int GetX()const { return m_mapX; }
 	int GetY()const { return m_mapY; }
 	//アイテムのカウンターを上げ下げする
 	void Player_BringItem(ItemManagiment& item);
+	//Drawヘッダーファイルのプレイヤーを描画する関数を持ってくる
 };

@@ -19,12 +19,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	}
 	//インスタンスの作成
 	PlayerManegiment player;
-	ItemManagiment item;
+	Item_Managiment item;
 	Enemy_Managiment enemy;
+	Bllent_Managiment bllent;
+
 	//ループ開始
 	while (ProcessMessage() == 0 && ClearDrawScreen() == 0)
 	{
-
+		
 	}
 	// DXライブラリ使用の終了処理
 	DxLib_End();

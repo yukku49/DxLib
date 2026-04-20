@@ -1,8 +1,8 @@
 #include "ItemManagiment.h"
-#include "BackGrandManagiment.h"
+#include "BackScreenManagiment.h"
 #include"PlayerManagiment.h"
 
-ItemManagiment::ItemManagiment()
+void ItemManagiment::ItemManagiment()
 {
 	for (int i = 0; i < MAX_SPAWN; i++)
 	{

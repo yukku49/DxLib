@@ -20,7 +20,7 @@ PlayerImage_Handle[3] = LoadGraph("Image/player_right.png");
 
 
 
-void Enemy_Update(Enemy_Managiment::Enemy_Update()
+void Enemy_Managiment::Enemy_Update()
 {
 
 	if (!this->a.isActive)

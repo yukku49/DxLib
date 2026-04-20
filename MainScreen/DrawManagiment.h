@@ -2,7 +2,7 @@
 #include "DxLib.h"
 #include "BackScreenManagiment.h"
 #include "PlayerManagiment.h"
-#include "bllentManagiment.h"
+#include "BllentManagiment.h"
 #include"EnemyManagiment.h"
 class DrawManager
 {
@@ -16,6 +16,6 @@ class DrawManager
 	void Bullets_Draw(const BllentManagiment::Bllent_Managiment& bullets);
 
 	//“G‚ğ•`‰æ‚ğˆ—‚·‚é
-	void Enemy_Draw(const EnemyManagiment::Enemy_Managiment& enemy);
+	void Enemy_Draw(const Enemy_Managiment::Enemy_Managiment& enemy);
 
 };

@@ -19,7 +19,7 @@ struct BulletData
 	bool isActive;//¶‘¶ƒtƒ‰ƒO
 };
 class PlayerManagiment;
-class BackbordManagiment;
+class BackScreenManagiment;
 class Bllent_Managiment
 {
 	//‰æ–Ê‚Éo‚¹‚éÅ‘å’e”
@@ -34,7 +34,7 @@ public:
 	//’e‚Ì‰æ‘œ‚ğ“Ç‚İ‚Ş
 	void Load();
 	//’e‚Ì‹O“¹
-	void Update(BackbordManagiment::StageManager& stage, PlayerManagiment::PlayerManagiment& player);
+	void Update(BackScreenManagiment::StageManager& stage, PlayerManagiment::PlayerManagiment& player);
 	//’e‚ğû”[
 	void Shot(float x, float y, PlayerManagiment& player);
 };

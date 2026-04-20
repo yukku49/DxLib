@@ -3,7 +3,7 @@
 
 #include"DxLib.h"
 
-void BllentManagiment::Load()
+void Bllent_Managiment::Load()
 {
 	bllet_Handle[GENOVESE] = LoadGraph("Image/Genovese.png");
 	bllet_Handle[MARGHERITA] = LoadGraph("Image/margherita.png");
@@ -12,7 +12,7 @@ void BllentManagiment::Load()
 	bllet_Handle[SEAGE] = LoadGraph("Image/sage.png");
 
 }
-void BllentManagiment::Update(BackbordManagiment::StageManager& stage, PlayerManagiment::PlayerManagiment& player)
+void Bllent_Managiment::Update(BackScreenManagiment::StageManager& stage, PlayerManagiment::PlayerManagiment& player)
 {
 	for (int i = 0; i < Max_Bullets; i++)
 	{
@@ -43,7 +43,7 @@ void BllentManagiment::Update(BackbordManagiment::StageManager& stage, PlayerMan
 
 }
 //素材を取得した時に現在取得している材料を組み合わせて作れるピザを見つける、ない場合はセージを入れる
-void BllentManagiment::Shot(float x, float y, PlayerManagiment& player)
+void Bllent_Managiment::Shot(float x, float y, PlayerManagiment& player)
 {
 	//マルゲリータ
 	if (player.Itembring.Tomato_Counter > 0 && player.Itembring.Cheese_Counter > 0 && player.Itembring.Basil_Counter > 0 && player.Itembring.Pizzadough_Counter > 0)

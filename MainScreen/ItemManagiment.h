@@ -32,7 +32,7 @@ private:
 	ItemData m_items[MAX_SPAWN];
 public:
 	//初期化
-	ItemManagiment();
+	void ItemManagiment();
 	//画像の読み込み
 	void Load();
 	//アイテムをランダムな位置に出現させる
