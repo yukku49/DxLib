@@ -1,0 +1,66 @@
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Linker files
+*.ilk
+
+# Debugger Files
+*.pdb
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# debug information files
+*.dwo
+
+#==============================
+#Added for Visual Studio & DxLib
+#==============================
+
+#DxLib body
+DxLib_VC/
+
+#Visual Studio Cache & Project Settings
+.vs/
+*.User
+*.db
+*.opendb
+
+#Build Output Directries
+[Dd]ebug/
+[Rr]elsease/
+x64/
+x86/
+
+#Build Logs & Temprary files
+*.log
+Log.txt
+*.tlog
+*.lastbuildstate
