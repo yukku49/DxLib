@@ -30,8 +30,6 @@ int statgeaPatern_1[23][40] =
 
 
 
-namespace BackbordManagiment 
-{
     void BackScreenManagiment::CopyPart(int startX, int startY, int partType)
     {
         if (partType == 1) {
@@ -74,6 +72,7 @@ namespace BackbordManagiment
         // 3. 通路が完成するロジックを呼び出す
        // GenerateRandomMap();
     }
+    
 
     
 
@@ -125,4 +124,4 @@ namespace BackbordManagiment
         return false;
     }
     */
-}
+

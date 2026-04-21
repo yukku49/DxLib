@@ -1,6 +1,4 @@
 #pragma once
-
-
     // ステージの種類を定義
     enum class StageType {
         stage1 = 0,
@@ -12,7 +10,6 @@
         Object_2,
         MAX
     };
-
     class BackScreenManagiment
     {
     private:
@@ -27,9 +24,6 @@
 
     public:
         void Initialize(); // LoadGraphと配列の初期化
-
-       
-
         //マスが０か１かをかえす
         int GetMapvalue(int x, int y) const;
         //画面外か画面内かを判定する
