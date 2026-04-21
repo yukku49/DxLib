@@ -1,6 +1,4 @@
 #pragma once
-namespace BackScreenManagiment
-{
 
 
     // ステージの種類を定義
@@ -15,7 +13,7 @@ namespace BackScreenManagiment
         MAX
     };
 
-    class StageManager
+    class BackScreenManagiment
     {
     private:
         static const int MAP_WIDTH = 40;  // 1280 / 32　x座標
@@ -43,4 +41,4 @@ namespace BackScreenManagiment
      //   bool IsWalkable(int x, int y);
     };
 
-};
+

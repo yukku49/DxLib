@@ -1,4 +1,5 @@
 #pragma one
+#include "DrawManagiment.h"
 enum Player_EyeContact
 {
 	PlayerEye_Up,
@@ -53,4 +54,5 @@ public:
 	//アイテムのカウンターを上げ下げする
 	void Player_BringItem(ItemManagiment& item);
 	//Drawヘッダーファイルのプレイヤーを描画する関数を持ってくる
+	void DrawManagiment::DrawManager();
 };

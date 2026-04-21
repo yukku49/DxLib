@@ -1,5 +1,6 @@
-#include "BackbordManagiment.h"
 #include "DxLib.h"
+#include "BackScreenManagiment.h"
+
 //ステージの通路と障害物の構成（1：床、0：障害物)
 int statgeaPatern_1[23][40] =
 { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -29,8 +30,9 @@ int statgeaPatern_1[23][40] =
 
 
 
-namespace BackGrand {
-    void StageManager::CopyPart(int startX, int startY, int partType)
+namespace BackbordManagiment 
+{
+    void BackScreenManagiment::CopyPart(int startX, int startY, int partType)
     {
         if (partType == 1) {
             for (int y = 0; y < 23; y++) {
@@ -44,7 +46,7 @@ namespace BackGrand {
         }
     }
 
-    void StageManager::Initialize()
+    void BackScreenManagiment::Initialize()
     {
         // 1. 画像の読み込み（LoadGraphScreenではなくLoadGraphを使う）
         // ハンドル（整数のID）を変数に保存しておく
@@ -78,7 +80,7 @@ namespace BackGrand {
 
 
 
-    int StageManager::GetMapvalue(int x, int y)
+    int BackScreenManagiment::GetMapvalue(int x, int y)
         const {
 
         if (x < 0 || x >= MAP_WIDTH || y < 0 || y >= MAP_HEIGHT)
@@ -87,7 +89,7 @@ namespace BackGrand {
     }
 
     //画面外か画面内かを判定する
-    bool StageManager::CheckCollision(double worldX, double worldY) const
+    bool BackScreenManagiment::CheckCollision(double worldX, double worldY) const
     {
         int Worldx = (int)worldX / 32;
         int Worldy = (int)worldY / 32;
@@ -101,7 +103,7 @@ namespace BackGrand {
         return false;
     }
 
-    void StageManager::Draw()
+    void BackScreenManagiment::Draw()
     {
         DrawExtendGraph(0, 0, 1280, 736, m_handles[0], FALSE);
 

@@ -16,6 +16,6 @@ class DrawManager
 	void Bullets_Draw(const BllentManagiment::Bllent_Managiment& bullets);
 
 	//“G‚ğ•`‰æ‚ğˆ—‚·‚é
-	void Enemy_Draw(const Enemy_Managiment::Enemy_Managiment& enemy);
+	void Enemy_Draw(const EnemyManagiment::EnemyManagiment& enemy, const BackGrandManagiment::StageManeger& stage)
 
 };
