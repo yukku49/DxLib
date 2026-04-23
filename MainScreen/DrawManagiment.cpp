@@ -1,39 +1,44 @@
 #include "DrawManagiment.h"
 #include"BackScreenManagiment.h"
+#include"EnemyManagiment.h"
+#include"BllentManagiment.h"
 
 //プレイヤー画像を描画
-void DrawManager::Player_Draw(const BackScreenManagiment::StageManager& stage, const PlayerManagiment& player)
+void DrawManager::Player_Draw(const BackScreen& stage, const Player_Managiment& player)
 {
-	LoadGraphScreen(stage.m_stageMap[player.PlayerMovePointX], stage.m_stageMap[player.PlayerMovePointY], player.Player_Handle, TRUE);
+	//LoadGraphScreen(int(stage.m_stageMap[player.GetX()]), int(stage.m_stageMap[player.GetY()]), player.Get_PlayerHanadle()), TRUE);
+	DrawGraph((int)player.GetX(), (int)player.GetY(), player.Get_PlayerHanadle(), TRUE);
 }
 
 //障害物を描画
-void DrawManager::Object_Draw(const BackScreenManagiment::StageManager& object)
+void DrawManager::Object_Draw(const BackScreen& object)
 {
-	for (int y = 0; y < object.MAP_HEIGHT; y++)
+	for (int y = 0; y < object.MAP_Get_SizeX(); y++)
 	{
-		for (int x = 0; x < object.MAP_WIDTH; x++)
+		for (int x = 0; x < object.MAP_Get_SizeY(); x++)
 		{
-			if (object.m_stageMap[y][x] == 0)
+			if (object.GetMapvalue(x,y) == 0)
 			{
-				LoadGraphScreen(y, x, object.m_handles[1], TRUE);
+				DrawGraph(y, x, object.Get_ObjectHanadle()), TRUE);
 			}
 		}
 	}
 }
 
-void DrawManager::Bullets_Draw(const BllentManagiment::Bllent_Managiment& bullets)
+void DrawManager::Bullets_Draw(const Bllent_Managiment& bullets)
 {
-	for (int i = 0; i < bullets.Max_Bullets; i++)
+	for (int i = 0; i < bullets.GetMaxBullets(); i++)
 	{
-		if (bullets.m_bullets[i].isActive)
+		//i番目の弾のデータを参照として受け取る（コピーしないのから高速）
+		const auto& b = bullets.Get_Bullethandle(i);
+		if (b.isActive)
 		{
-			DrawGraph(bullets.m_bullets[i].x, bullets.m_bullets[i].y, bullets.m_bullets[i].using_hnadle, TRUE);
+			DrawGraph((int)b.x, bullets.(int)b.y, bullets.m_bullets[i].using_hnadle, TRUE);
 		}
 	}
 }
 
-void DrawManager::Enemy_Draw(const EnemyManagiment::EnemyManagiment& enemy, const BackGrandManagiment::StageManeger& stage)
+void DrawManager::Enemy_Draw(const Enemy_Managiment& enemy, const BackScreen& stage)
 {
 	LoadGraphScreen(stage.m_stageMap[enemy.Enemy_PointX], stage.m_stageMap[enemy.PlayerMovePointY], enemy.Player_Handle, TRUE);
 }

@@ -27,6 +27,8 @@ class Enemy_Managiment
 public:
 	//enemyをスポーンさせる
 	void Enemy_Initialisation(float startX, float startY);
+	//enemy_X,Yを外部で使えるようにするGetter
+	const Enemy_date& Get_enemyX()const { return a.enemy_X; };
 
 	//nemyを動かす
 	void Enemy_Update();

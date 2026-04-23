@@ -2,7 +2,7 @@
 #include "ItemManagiment.h"
 #include "DxLib.h"
 
-Item_count PlayerManegiment::Player_BringItem(ItemManagiment& item)
+Item_count Player_Managiment::Player_BringItem(Item_Managiment& item)
 {
 	switch (item)
 	{
@@ -36,7 +36,7 @@ Item_count PlayerManegiment::Player_BringItem(ItemManagiment& item)
 	}
 }
 
-void PlayerManegiment::Initialisation()
+void Player_Managiment::Initialisation()
 {
 	//移動用変数に初期座標を代入
 	Player_MovePointX = Player_StanderdpointX;
@@ -49,7 +49,7 @@ void PlayerManegiment::Initialisation()
 	PlayerImage_Handle[3] = LoadGraph("Image/player_right.png");
 }
 
-void PlayerManegiment::Update(const BackGrand::StageManeger& stage, BllentManagiment& bllent)
+void Player_Managiment::Update(const BackScreen& stage, Bllent_Managiment& bllent)
 {
 	//現在の前期―の状態を取得
 	int nowUp = CheckHitKey(KEY_INPUT_W);
@@ -62,33 +62,43 @@ void PlayerManegiment::Update(const BackGrand::StageManeger& stage, BllentManagi
 	if ((nowUp == 1 && m_oldUp == 0))
 	{
 		//上移動
-		if (stage.GetMapValue(Player_MovePointX, Player_MovePointY - 1) == 1)
+		if (stage.GetMapvalue(Player_MovePointX, Player_MovePointY - 1) == 1)
+		{ 
 			Player_MovePointY--;
+			this->Player_Handle = this->PlayerImage_Handle[PlayerEye_Up];
 
 	}
 	//下移動
 	if (nowDown == 1 && m_oldDown == 0)
 	{
-		if (stage.GetMapValue(Player_MovePointX, Player_MovePointY + 1) == 1)
+		if (stage.GetMapvalue(Player_MovePointX, Player_MovePointY + 1) == 1)
+		{
 			Player_MovePointY++;
+			this->Player_Handle = this->PlayerImage_Handle[PlayerEye_Down];
+		}
 
 
 	}
 	if (nowLeft == 1 && m_oldLeft == 0)
 	{
 		if (stage.GetMapvalue(Player_MovePointX - 1, Player_MovePointY) == 1)
+		{
 			Player_MovePointX--;
+			this->Player_Handle = this->PlayerImage_Handle[PlayerEye_Left];
+		}
 
 	}
 	if (nowRight == 1 && m_oldRight == 0)
 	{
 		if (stage.GetMapvalue(Player_MovePointX + 1, Player_MovePointY) == 1)
+		{
 			Player_MovePointX++;
-
+			this->Player_Handle = this->Player_Handle[PlayerEye_Right];
+		}
 	}
 	if (CheckHitKey(KEY_INPUT_SPACE))
 	{
-		bllent.shot(Player_MovePointX, Player_MovePointY);
+		bllent.Shot(Player_MovePointX, Player_MovePointY);
 	}
 	//次のフレームのために「今の状態」を「前回の状態」にコピー
 	m_oldUp = nowUp;

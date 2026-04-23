@@ -19,7 +19,7 @@ class ItemManagiment;
 class BllentManagiment;
 class BackScreenManagiment;
 
-class PlayerManegiment
+class Player_Managiment
 {
 private:
 	//プレイヤーの初期位置変数
@@ -47,12 +47,13 @@ private:
 public:
 	void Initialisation();
 	//StageManagerを仮引数として受け取り、壁判定を行う
-	void Update(const BackScreenManagiment::StageManeger& stage, BllentManagiment& bllent);
+	void Update(const BackScreen& stage, Bllent_Managiment& bllent);
 	//他クラスから座標を強いりたいとき陽のゲッター（読み取り専用）
-	int GetX()const { return m_mapX; }
-	int GetY()const { return m_mapY; }
+	int GetX()const { return Player_MovePointX; }
+	int GetY()const { return Player_MovePointY; }
+	int Get_PlayerHanadle()const { return Player_Handle; }
 	//アイテムのカウンターを上げ下げする
-	void Player_BringItem(ItemManagiment& item);
+	Item_count Player_BringItem(Item_Managiment& item);
 	//Drawヘッダーファイルのプレイヤーを描画する関数を持ってくる
-	void DrawManagiment::DrawManager();
+	//void Draw_Managiment::DrawManager();
 };

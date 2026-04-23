@@ -30,7 +30,7 @@ int statgeaPatern_1[23][40] =
 
 
 
-    void BackScreenManagiment::CopyPart(int startX, int startY, int partType)
+    void BackScreen::CopyPart(int startX, int startY, int partType)
     {
         if (partType == 1) {
             for (int y = 0; y < 23; y++) {
@@ -44,7 +44,7 @@ int statgeaPatern_1[23][40] =
         }
     }
 
-    void BackScreenManagiment::Initialize()
+    void BackScreen::Initialize()
     {
         // 1. 画像の読み込み（LoadGraphScreenではなくLoadGraphを使う）
         // ハンドル（整数のID）を変数に保存しておく
@@ -79,8 +79,8 @@ int statgeaPatern_1[23][40] =
 
 
 
-    int BackScreenManagiment::GetMapvalue(int x, int y)
-        const {
+    int BackScreen::GetMapvalue(int x, int y)const
+    {
 
         if (x < 0 || x >= MAP_WIDTH || y < 0 || y >= MAP_HEIGHT)
             return 0;
@@ -88,7 +88,7 @@ int statgeaPatern_1[23][40] =
     }
 
     //画面外か画面内かを判定する
-    bool BackScreenManagiment::CheckCollision(double worldX, double worldY) const
+    bool BackScreen::CheckCollision(double worldX, double worldY) const
     {
         int Worldx = (int)worldX / 32;
         int Worldy = (int)worldY / 32;
@@ -102,7 +102,7 @@ int statgeaPatern_1[23][40] =
         return false;
     }
 
-    void BackScreenManagiment::Draw()
+    void BackScreen::Draw()
     {
         DrawExtendGraph(0, 0, 1280, 736, m_handles[0], FALSE);
 

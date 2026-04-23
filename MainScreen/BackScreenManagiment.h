@@ -10,7 +10,7 @@
         Object_2,
         MAX
     };
-    class BackScreenManagiment
+    class BackScreen
     {
     private:
         static const int MAP_WIDTH = 40;  // 1280 / 32　x座標
@@ -30,6 +30,11 @@
         bool CheckCollision(double worldX, double worldY) const;
 
         void Draw(); // 現在の背景と壁を描画
+        //マップサイズを返すMAP_Get_SizeXとY
+        int MAP_Get_SizeX()const { return MAP_WIDTH; };
+        int MAP_Get_SizeY()const { return MAP_HEIGHT; };
+        //外部で障害物を扱えるようにする
+        int Get_ObjectHanadle()const { return o_object[0]; };
 
         // アイテムが配置可能（床）かどうかを判定する関数
      //   bool IsWalkable(int x, int y);

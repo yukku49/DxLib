@@ -1,5 +1,6 @@
 #include "BllentManagiment.h"
 #include"PlayerManagiment.h"
+#include"BackScreenManagiment.h"
 
 #include"DxLib.h"
 
@@ -12,7 +13,7 @@ void Bllent_Managiment::Load()
 	bllet_Handle[SEAGE] = LoadGraph("Image/sage.png");
 
 }
-void Bllent_Managiment::Update(BackScreenManagiment::StageManager& stage, PlayerManagiment::PlayerManagiment& player)
+void Bllent_Managiment::Update(BackScreen& stage, Player_Managiment& player)
 {
 	for (int i = 0; i < Max_Bullets; i++)
 	{
@@ -43,10 +44,10 @@ void Bllent_Managiment::Update(BackScreenManagiment::StageManager& stage, Player
 
 }
 //素材を取得した時に現在取得している材料を組み合わせて作れるピザを見つける、ない場合はセージを入れる
-void Bllent_Managiment::Shot(float x, float y, PlayerManagiment& player)
+void Bllent_Managiment::Shot(float x, float y, Player_Managiment& player)
 {
 	//マルゲリータ
-	if (player.Itembring.Tomato_Counter > 0 && player.Itembring.Cheese_Counter > 0 && player.Itembring.Basil_Counter > 0 && player.Itembring.Pizzadough_Counter > 0)
+	if (player.Itembring.Tomato_Counter > 0 && player.Player_Itembring.Cheese_Counter > 0 && player.Itembring.Basil_Counter > 0 && player.Itembring.Pizzadough_Counter > 0)
 	{
 		now_bllet_Handle = bllet_Handle[MARGHERITA];
 	}

@@ -2,7 +2,7 @@
 #include "BackScreenManagiment.h"
 #include"PlayerManagiment.h"
 
-void ItemManagiment::ItemManagiment()
+void Item_Managiment::ItemManagiment()
 {
 	for (int i = 0; i < MAX_SPAWN; i++)
 	{
@@ -11,7 +11,7 @@ void ItemManagiment::ItemManagiment()
 	}
 }
 
-void ItemManagiment::Load()
+void Item_Managiment::Load()
 {
 	Item_Handle[TOMATO] = LoadGraph("Image/TOMATO.png");
 	Item_Handle[BASIL] = LoadGraph("Image/Basil.png");
@@ -21,7 +21,7 @@ void ItemManagiment::Load()
 
 }
 
-void ItemManagiment::Spawn(const BackGrandManagiment& stage, Item_number type)
+void Item_Managiment::Spawn(const BackScreen& stage, Item_number type)
 {
 	for (int i = 0; i < MAX_SPAWN; i++)
 	{
@@ -32,9 +32,9 @@ void ItemManagiment::Spawn(const BackGrandManagiment& stage, Item_number type)
 
 			while (!foundLocation)
 			{
-				gx = GetRand(stage.StageManeger.MAP_WIDTH - 1);
-				gy = GetRand(stage.StageManeger.MAP_HEIGHT - 1);
-				if (stage.GetMapValue(gx, gy) == 1)
+				gx = GetRand(stage.MAP_Get_SizeX() - 1);
+				gy = GetRand(stage.MAP_Get_SizeY() - 1);
+				if (stage.GetMapvalue(gx, gy) == 1)
 				{
 					foundLocation = true;
 				}
@@ -50,11 +50,11 @@ void ItemManagiment::Spawn(const BackGrandManagiment& stage, Item_number type)
 	}
 }
 
-Item_number ItemManagiment::CheckPickUp(PlayerManagiment& player)
+Item_number Item_Managiment::CheckPickUp(Player_Managiment& player)
 {
 	for (int i = 0; i < MAX_SPAWN; i++)
 	{
-		if (m_items[i].x == player.PlayerMovePointX && m_items->y == player.PlayerMovePointY)
+		if (m_items[i].x == player.GetX() && m_items[i].y == player.GetY())
 		{
 			return Item_number();
 		}
