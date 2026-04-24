@@ -42,7 +42,7 @@ void Item_Managiment::Spawn(const BackScreen& stage, Item_number type)
 			}
 			m_items[i].x = gx;
 			m_items[i].y = gy;
-			m_items[i].type = type;
+			m_items[i].type =type;
 			m_items[i].isActive = true;
 			m_items[i].aliveTimer = 600;
 			break;
@@ -54,10 +54,23 @@ Item_number Item_Managiment::CheckPickUp(Player_Managiment& player)
 {
 	for (int i = 0; i < MAX_SPAWN; i++)
 	{
+		//生きているアイテムだけを判定
+		if (!m_items[i].isActive)continue;
+
+		//座標チェック
 		if (m_items[i].x == player.GetX() && m_items[i].y == player.GetY())
 		{
-			return Item_number();
+			//アイテムを拾ったから非表示
+			m_items[i].isActive = false;
+
+			//アイテムtypeを返す
+			return m_items[i].type;
 		}
 	}
 
+	return ITEM_MAX;
 }
+
+
+
+

@@ -46,23 +46,28 @@ void Bllent_Managiment::Update(BackScreen& stage, Player_Managiment& player)
 //素材を取得した時に現在取得している材料を組み合わせて作れるピザを見つける、ない場合はセージを入れる
 void Bllent_Managiment::Shot(float x, float y, Player_Managiment& player)
 {
+
 	//マルゲリータ
-	if (player.Itembring.Tomato_Counter > 0 && player.Player_Itembring.Cheese_Counter > 0 && player.Itembring.Basil_Counter > 0 && player.Itembring.Pizzadough_Counter > 0)
+	if (const int tomato= player.Get_Player_Itembring().Tmato_Counter,const int Cheese= player.Get_Player_Itembring().Cheese_Counter,const int Basil= player.Get_Player_Itembring().Basil_Counter,const int dough= player.Get_Player_Itembring().Pizzadough_Counter;
+		player.Get_Player_Itembring().Tmato_Counter > 0 
+		&& player.Get_Player_Itembring().Cheese_Counter > 0 
+		&& player.Get_Player_Itembring().Basil_Counter > 0 
+		&& player.Get_Player_Itembring().Pizzadough_Counter > 0)
 	{
 		now_bllet_Handle = bllet_Handle[MARGHERITA];
 	}
 	//クワトロフォルマッジ
-	else if (player.Itembring.Cheese_Counter > 0 && player.Itembring.Gorgonzola_Counter > 0 && player.Itembring.Pizzadough_Counter > 0)
+	else if ( tomato> 0 && Cheese> 0 && dough > 0)
 	{
 		now_bllet_Handle = bllet_Handle[QUATTROFORMAGGI];
 	}
 	//ジェノベーゼ
-	else if (player.Itembring.Basil.Counter > 0 && player.Itembring.Pizzadough_Counter > 0 && player.Itembring.Cheese_Counter > 0 && player.Itembring.Tomato_Counter > 0)
+	else if (Basil > 0 && dough > 0 && Cheese > 0 && tomato > 0)
 	{
 		now_bllet_Handle = bllet_Handle[GENOVESE];
 	}
 	//マリナーラ
-	else if (player.Itembring.Tomato_Counter > 0 && player.Itembring.Pizzadough_Counter > 0 && player.Itembring.Basil_Counter > 0)
+	else if (tomato > 0 && dough > 0 && Basil > 0)
 	{
 		now_bllet_Handle = bllet_Handle[MARINARA];
 	}
@@ -78,8 +83,8 @@ void Bllent_Managiment::Shot(float x, float y, Player_Managiment& player)
 		if (!m_bullets[i].isActive)
 		{
 			m_bullets[i].isActive = true;
-			m_bullets[i].x = player.Player_PositionX;
-			m_bullets[i].y = player.Player_PositionY;
+			m_bullets[i].x = player.GetX();
+			m_bullets[i].y = player.GetY();
 			m_bullets[i].using_handle = now_bllet_Handle;
 			//向きに合わして速度をセット
 			m_bullets[i].vx = 0;

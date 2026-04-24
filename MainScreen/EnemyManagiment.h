@@ -28,7 +28,7 @@ public:
 	//enemyをスポーンさせる
 	void Enemy_Initialisation(float startX, float startY);
 	//enemy_X,Yを外部で使えるようにするGetter
-	const Enemy_date& Get_enemyX()const { return a.enemy_X; };
+	const Enemy_date& Get_enemyPoint()const { return a; };
 
 	//nemyを動かす
 	void Enemy_Update();

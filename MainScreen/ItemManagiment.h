@@ -34,13 +34,21 @@ private:
 public:
 	//初期化
 	void ItemManagiment();
+
 	//画像の読み込み
 	void Load();
+
 	//アイテムをランダムな位置に出現させる
 	void Spawn(const BackScreen& stage, Item_number type);
+
 	//タイマーの更新処理
 	void Updata();
+
 	//プレイヤーが拾ったかの判定（拾ったらItem_numberを返す)
 	Item_number CheckPickUp(Player_Managiment& player);
+
+	//アイテム番号を外部で使えるようにする
+	Item_number Get_Item_number()const{ return ITEM_MAX; };
+
 };
 

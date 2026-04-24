@@ -7,6 +7,7 @@ enum Player_EyeContact
 	PlayerEye_Left,
 	PlayerEye_Right
 };
+
 struct Item_count
 {
 	int Tmato_Counter;
@@ -15,7 +16,8 @@ struct Item_count
 	int Gorgonzola_Counter;
 	int Pizzadough_Counter;
 };
-class ItemManagiment;
+
+class Item_Managiment;
 class BllentManagiment;
 class BackScreenManagiment;
 
@@ -42,18 +44,33 @@ private:
 	//押しっぱなし秒使用のプラグ
 	int m_oldUp, m_oldDown, m_oldLeft, m_oldRight;
 
+	//現在プレイヤーが向いている方向
+	int m_dir;
+
 	//プレイヤーがもつ材料の構造体
 	Item_count Player_Itembring;
 public:
 	void Initialisation();
 	//StageManagerを仮引数として受け取り、壁判定を行う
 	void Update(const BackScreen& stage, Bllent_Managiment& bllent);
+
 	//他クラスから座標を強いりたいとき陽のゲッター（読み取り専用）
 	int GetX()const { return Player_MovePointX; }
 	int GetY()const { return Player_MovePointY; }
+
+	//プレイヤーの進行方向の画像を返す
 	int Get_PlayerHanadle()const { return Player_Handle; }
+
+	//持っている材料を外部から読み取れるようにする
+	Item_count Get_Player_Itembring()const { return Player_Itembring; };
+
 	//アイテムのカウンターを上げ下げする
 	Item_count Player_BringItem(Item_Managiment& item);
+
+	//プレイヤーの現在の向きを外部からアクセスできるGetter
+	int  GetDir()const { return m_dir; };
+
+
 	//Drawヘッダーファイルのプレイヤーを描画する関数を持ってくる
 	//void Draw_Managiment::DrawManager();
 };

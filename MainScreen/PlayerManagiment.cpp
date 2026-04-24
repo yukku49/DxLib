@@ -4,30 +4,30 @@
 
 Item_count Player_Managiment::Player_BringItem(Item_Managiment& item)
 {
-	switch (item)
+	switch (item.Get_Item_number())
 	{
-	case (item.TOMATO):
+	case (TOMATO):
 	{
 		Player_Itembring.Tmato_Counter++;
 		break;
 	}
 
-	case (item.BASIL):
+	case (BASIL):
 	{
 		Player_Itembring.Basil_Counter++;
 		break;
 	}
-	case (item.CHEESE):
+	case (CHEESE):
 	{
 		Player_Itembring.Cheese_Counter++;
 		break;
 	}
-	case (item.GORGONZOLA):
+	case (GORGONZOLA):
 	{
 		Player_Itembring.Gorgonzola_Counter++;
 		break;
 	}
-	case (item.PIZZADOUGH):
+	case (PIZZADOUGH):
 	{
 		Player_Itembring.Pizzadough_Counter++;
 		break;
@@ -63,47 +63,51 @@ void Player_Managiment::Update(const BackScreen& stage, Bllent_Managiment& bllen
 	{
 		//上移動
 		if (stage.GetMapvalue(Player_MovePointX, Player_MovePointY - 1) == 1)
-		{ 
+		{
 			Player_MovePointY--;
 			this->Player_Handle = this->PlayerImage_Handle[PlayerEye_Up];
-
-	}
-	//下移動
-	if (nowDown == 1 && m_oldDown == 0)
-	{
-		if (stage.GetMapvalue(Player_MovePointX, Player_MovePointY + 1) == 1)
-		{
-			Player_MovePointY++;
-			this->Player_Handle = this->PlayerImage_Handle[PlayerEye_Down];
+			this->m_dir =PlayerEye_Up;
 		}
-
-
-	}
-	if (nowLeft == 1 && m_oldLeft == 0)
-	{
-		if (stage.GetMapvalue(Player_MovePointX - 1, Player_MovePointY) == 1)
+		//下移動
+		if (nowDown == 1 && m_oldDown == 0)
 		{
-			Player_MovePointX--;
-			this->Player_Handle = this->PlayerImage_Handle[PlayerEye_Left];
-		}
+			if (stage.GetMapvalue(Player_MovePointX, Player_MovePointY + 1) == 1)
+			{
+				Player_MovePointY++;
+				this->Player_Handle = this->PlayerImage_Handle[PlayerEye_Down];
+				this->m_dir = PlayerEye_Down;
+			}
 
-	}
-	if (nowRight == 1 && m_oldRight == 0)
-	{
-		if (stage.GetMapvalue(Player_MovePointX + 1, Player_MovePointY) == 1)
-		{
-			Player_MovePointX++;
-			this->Player_Handle = this->Player_Handle[PlayerEye_Right];
+
 		}
+		if (nowLeft == 1 && m_oldLeft == 0)
+		{
+			if (stage.GetMapvalue(Player_MovePointX - 1, Player_MovePointY) == 1)
+			{
+				Player_MovePointX--;
+				this->Player_Handle = this->PlayerImage_Handle[PlayerEye_Left];
+				this->m_dir = PlayerEye_Left;
+			}
+
+		}
+		if (nowRight == 1 && m_oldRight == 0)
+		{
+			if (stage.GetMapvalue(Player_MovePointX + 1, Player_MovePointY) == 1)
+			{
+				Player_MovePointX++;
+				this->Player_Handle = this->PlayerImage_Handle[PlayerEye_Right];
+				this->m_dir = PlayerEye_Right;
+			}
+		}
+		if (CheckHitKey(KEY_INPUT_SPACE))
+		{
+			bllent.Shot(Player_MovePointX, Player_MovePointY, *this);
+		}
+		//次のフレームのために「今の状態」を「前回の状態」にコピー
+		m_oldUp = nowUp;
+		m_oldDown = nowDown;
+		m_oldLeft = nowLeft;
+		m_oldRight = nowRight;
 	}
-	if (CheckHitKey(KEY_INPUT_SPACE))
-	{
-		bllent.Shot(Player_MovePointX, Player_MovePointY);
-	}
-	//次のフレームのために「今の状態」を「前回の状態」にコピー
-	m_oldUp = nowUp;
-	m_oldDown = nowDown;
-	m_oldLeft = nowLeft;
-	m_oldRight = nowRight;
 
 }

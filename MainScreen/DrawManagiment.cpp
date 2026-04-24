@@ -19,7 +19,7 @@ void DrawManager::Object_Draw(const BackScreen& object)
 		{
 			if (object.GetMapvalue(x,y) == 0)
 			{
-				DrawGraph(y, x, object.Get_ObjectHanadle()), TRUE);
+				DrawGraph(y, x, object.Get_ObjectHanadle(), TRUE);
 			}
 		}
 	}
@@ -33,13 +33,14 @@ void DrawManager::Bullets_Draw(const Bllent_Managiment& bullets)
 		const auto& b = bullets.Get_Bullethandle(i);
 		if (b.isActive)
 		{
-			DrawGraph((int)b.x, bullets.(int)b.y, bullets.m_bullets[i].using_hnadle, TRUE);
+			DrawGraph((int)b.x,(int)b.y, bullets.Get_Bullethandle(i).using_handle, TRUE);
 		}
 	}
 }
 
 void DrawManager::Enemy_Draw(const Enemy_Managiment& enemy, const BackScreen& stage)
 {
-	LoadGraphScreen(stage.m_stageMap[enemy.Enemy_PointX], stage.m_stageMap[enemy.PlayerMovePointY], enemy.Player_Handle, TRUE);
+	//LoadGraphScreen(stage.m_stageMap[enemy.Enemy_PointX], stage.m_stageMap[enemy.PlayerMovePointY], enemy.Player_Handle, TRUE);
+	DrawGraph(enemy.Get_enemyPoint().enemy_X, enemy.Get_enemyPoint().enemy_Y, enemy.Get_enemyPoint().Enemy_Eye_handlbe[Enemy_Left], enemy.Get_enemyPoint().isActive);
 }
 
