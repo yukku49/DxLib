@@ -137,6 +137,7 @@
     <ClCompile Include="EnemyManagiment.cpp" />
     <ClCompile Include="ItemManagiment.cpp" />
     <ClCompile Include="PlayerManagiment.cpp" />
+    <ClCompile Include="void.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BackScreenManagiment.h" />
