@@ -1,11 +1,14 @@
-#pragma one
-#include "DrawManagiment.h"
+#pragma once
+// DrawManagiment.h をここで include しない（循環を避ける）
+#include <array>
+
 enum Player_EyeContact
 {
 	PlayerEye_Up,
 	PlayerEye_Down,
 	PlayerEye_Left,
-	PlayerEye_Right
+	PlayerEye_Right,
+	PlayerEye_Max
 };
 
 struct Item_count
@@ -18,8 +21,8 @@ struct Item_count
 };
 
 class Item_Managiment;
-class BllentManagiment;
-class BackScreenManagiment;
+class Bllent_Managiment;
+class BackScreen; // 前方宣言（BackScreenManagiment.h のクラス名に合わせる）
 
 class Player_Managiment
 {
@@ -34,7 +37,7 @@ private:
 
 	//プレイヤー画像を取得するハンドル
 
-	int PlayerImage_Handle[Player_EyeContact::PlayerEye_Right];
+	int PlayerImage_Handle[Player_EyeContact::PlayerEye_Max];
 
 	//プレイヤー画像を出力するための画像を受け取るハンドル
 	int Player_Handle;
@@ -55,8 +58,8 @@ public:
 	void Update(const BackScreen& stage, Bllent_Managiment& bllent);
 
 	//他クラスから座標を強いりたいとき陽のゲッター（読み取り専用）
-	int GetX()const { return Player_MovePointX; }
-	int GetY()const { return Player_MovePointY; }
+	int GetX()const { return (int)Player_MovePointX; }
+	int GetY()const { return (int)Player_MovePointY; }
 
 	//プレイヤーの進行方向の画像を返す
 	int Get_PlayerHanadle()const { return Player_Handle; }
@@ -65,7 +68,7 @@ public:
 	Item_count Get_Player_Itembring()const { return Player_Itembring; };
 
 	//アイテムのカウンターを上げ下げする
-	Item_count Player_BringItem(Item_Managiment& item);
+	void Player_BringItem(Item_Managiment& item);
 
 	//プレイヤーの現在の向きを外部からアクセスできるGetter
 	int  GetDir()const { return m_dir; };

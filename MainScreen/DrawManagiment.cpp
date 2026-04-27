@@ -1,46 +1,52 @@
 #include "DrawManagiment.h"
-#include"BackScreenManagiment.h"
-#include"EnemyManagiment.h"
-#include"BllentManagiment.h"
+#include "BackScreenManagiment.h"
+#include "EnemyManagiment.h"
+#include "BllentManagiment.h"
+#include"DxLib.h"
+
+// タイル/描画単位を一箇所で定義
+constexpr int TILE_SIZE = 32; // 必要なら 32 に変える（マップデータの単位に合わせる）
 
 //プレイヤー画像を描画
-void DrawManager::Player_Draw(const BackScreen& stage, const Player_Managiment& player)
+void DrawManager::Player_Draw(const BackScreen& stage, const Player_Managiment& player)const
 {
-	//LoadGraphScreen(int(stage.m_stageMap[player.GetX()]), int(stage.m_stageMap[player.GetY()]), player.Get_PlayerHanadle()), TRUE);
-	DrawGraph((int)player.GetX(), (int)player.GetY(), player.Get_PlayerHanadle(), TRUE);
+	DrawGraph((int)player.GetX(), (int)player.GetY(), player.Get_PlayerHanadle(), false);
 }
 
-//障害物を描画
-void DrawManager::Object_Draw(const BackScreen& object)
-{
-	for (int y = 0; y < object.MAP_Get_SizeX(); y++)
+//マップと障害物を表示
+void DrawManager::Map_Draw(const BackScreen& object)const
+{	
+	// 背景全体
+	DrawExtendGraph(0, 0, 1280, 736, object.Get_Maphandle(), false);
+
+	for (int y = 0; y < object.MAP_Get_SizeY(); y++)
 	{
-		for (int x = 0; x < object.MAP_Get_SizeY(); x++)
+		for (int x = 0; x < object.MAP_Get_SizeX(); x++)
 		{
-			if (object.GetMapvalue(x,y) == 0)
+			if (object.GetMapvalue(x, y) == 0)
 			{
-				DrawGraph(y, x, object.Get_ObjectHanadle(), TRUE);
+				DrawExtendGraph(x * TILE_SIZE, y * TILE_SIZE,
+                    x * TILE_SIZE + TILE_SIZE, y * TILE_SIZE + TILE_SIZE,
+                    object.Get_ObjectHanadle(), true);
 			}
 		}
 	}
 }
 
-void DrawManager::Bullets_Draw(const Bllent_Managiment& bullets)
+void DrawManager::Bullets_Draw(const Bllent_Managiment& bullets) const
 {
-	for (int i = 0; i < bullets.GetMaxBullets(); i++)
+	for (int i = 0; i < bullets.GetMaxBullets(); ++i)
 	{
-		//i番目の弾のデータを参照として受け取る（コピーしないのから高速）
 		const auto& b = bullets.Get_Bullethandle(i);
 		if (b.isActive)
 		{
-			DrawGraph((int)b.x,(int)b.y, bullets.Get_Bullethandle(i).using_handle, TRUE);
+			DrawGraph(static_cast<int>(b.x), static_cast<int>(b.y), b.using_handle, TRUE);
 		}
 	}
 }
 
-void DrawManager::Enemy_Draw(const Enemy_Managiment& enemy, const BackScreen& stage)
+void DrawManager::Enemy_Draw(const Enemy_Managiment& enemy, const BackScreen& stage) const
 {
-	//LoadGraphScreen(stage.m_stageMap[enemy.Enemy_PointX], stage.m_stageMap[enemy.PlayerMovePointY], enemy.Player_Handle, TRUE);
-	DrawGraph(enemy.Get_enemyPoint().enemy_X, enemy.Get_enemyPoint().enemy_Y, enemy.Get_enemyPoint().Enemy_Eye_handlbe[Enemy_Left], enemy.Get_enemyPoint().isActive);
+	DrawGraph(enemy.Get_enemyPoint().enemy_X, enemy.Get_enemyPoint().enemy_Y,
+           enemy.Get_enemyPoint().Enemy_Eye_handlbe[0], TRUE);
 }
-

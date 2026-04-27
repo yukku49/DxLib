@@ -9,10 +9,10 @@ void Enemy_Managiment::Enemy_Initialisation(float startX, float startY)
 	this->a.isActive = true;
 	//キャラクター画像を読み込む
 
-	this->a.Enemy_Eye_handlbe[0] = LoadGraph("Image/Enemy_Up.png");
-	this->a.Enemy_Eye_handlbe[1] = LoadGraph("Image/Enemy_Left.png");
-	this->a.Enemy_Eye_handlbe[2] = LoadGraph("Image/Enemy_Right.png");
-	this->a.Enemy_Eye_handlbe[3] = LoadGraph("Image/Enemy_Down.png");
+	this->a.Enemy_Eye_handlbe[0] = LoadGraph("Pizza_Image/Enemy_Up.png");
+	this->a.Enemy_Eye_handlbe[1] = LoadGraph("Pizza_Image/Enemy_Left.png");
+	this->a.Enemy_Eye_handlbe[2] = LoadGraph("Pizza_Image/Enemy_Right.png");
+	this->a.Enemy_Eye_handlbe[3] = LoadGraph("Pizza_Image/Enemy_Down.png");
 
 };
 

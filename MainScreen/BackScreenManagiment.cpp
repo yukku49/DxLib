@@ -48,11 +48,11 @@ int statgeaPatern_1[23][40] =
     {
         // 1. 画像の読み込み（LoadGraphScreenではなくLoadGraphを使う）
         // ハンドル（整数のID）を変数に保存しておく
-        m_handles[0] = LoadGraph("../Image/stage1.png");
-        m_handles[1] = LoadGraph("../Image/stage2.png");
+        m_handles[0] = LoadGraph("../Pizza_Image/stage1.png");
+        m_handles[1] = LoadGraph("../Pizza_Image/stage2.png");
         //障害物の画像を読み込む
-        o_object[0] = LoadGraph("../Image/pizza box.png");
-        o_object[1] = LoadGraph("../Image/renga.png");
+        o_object[0] = LoadGraph("../Pizza_Image/pizza box.png");
+        o_object[1] = LoadGraph("../Pizza_Image/renga.png");
 
         // 読み込み失敗のチェック（BNS品質のコード）
         /*
@@ -102,21 +102,7 @@ int statgeaPatern_1[23][40] =
         return false;
     }
 
-    void BackScreen::Draw()
-    {
-        DrawExtendGraph(0, 0, 1280, 736, m_handles[0], FALSE);
-
-        for (int y = 0; y < MAP_HEIGHT; y++)
-        {
-            for (int x = 0; x < MAP_WIDTH; x++)
-            {
-                if (m_stageMap[y][x] == 0)
-                {
-                    DrawExtendGraph(x * 32, y * 32, x * 32 + displaySize, y * 32 + displaySize, o_object[0], TRUE);
-                }
-            }
-        }
-    }
+   
     /*
     bool StageManager::IsWalkable(int x, int y)
     {

@@ -1,8 +1,11 @@
 #include "PlayerManagiment.h"
 #include "ItemManagiment.h"
+#include"BackScreenManagiment.h"
+#include"BllentManagiment.h"
+
 #include "DxLib.h"
 
-Item_count Player_Managiment::Player_BringItem(Item_Managiment& item)
+void Player_Managiment::Player_BringItem(Item_Managiment& item)
 {
 	switch (item.Get_Item_number())
 	{
@@ -43,10 +46,12 @@ void Player_Managiment::Initialisation()
 	Player_MovePointY = Player_StanderdpointY;
 
 	//プレイヤー画像をハンドルに入れる
-	PlayerImage_Handle[0] = LoadGraph("Image/player_up.png");
-	PlayerImage_Handle[1] = LoadGraph("Image/player_down.png");
-	PlayerImage_Handle[2] = LoadGraph("Image/player_left.png");
-	PlayerImage_Handle[3] = LoadGraph("Image/player_right.png");
+	PlayerImage_Handle[0] = LoadGraph("Pizza_Image/player_up.png");
+	PlayerImage_Handle[1] = LoadGraph("Pizza_Image/player_down.png");
+	PlayerImage_Handle[2] = LoadGraph("Pizza_Image/player_left.png");
+	PlayerImage_Handle[3] = LoadGraph("Pizza_Image/player_right.png");
+
+	DrawGraph(Player_StanderdpointX, Player_StanderdpointY, PlayerImage_Handle[PlayerEye_Left], TRUE);
 }
 
 void Player_Managiment::Update(const BackScreen& stage, Bllent_Managiment& bllent)
@@ -97,6 +102,7 @@ void Player_Managiment::Update(const BackScreen& stage, Bllent_Managiment& bllen
 				Player_MovePointX++;
 				this->Player_Handle = this->PlayerImage_Handle[PlayerEye_Right];
 				this->m_dir = PlayerEye_Right;
+
 			}
 		}
 		if (CheckHitKey(KEY_INPUT_SPACE))

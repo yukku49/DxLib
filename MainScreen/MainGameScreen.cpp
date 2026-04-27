@@ -6,8 +6,8 @@
 #include"PlayerManagiment.h"
 #include"EnemyManagiment.h"
 #include"ItemManagiment.h"
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
-{
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+	LPSTR lpCmdLine, int nCmdShow) {
 	// ウインドウモードで起動
 	ChangeWindowMode(true);
 	//ウインドウサイズを固定
@@ -18,15 +18,28 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		return -1;
 	}
 	//インスタンスの作成
-	PlayerManegiment player;
+	Player_Managiment player;
 	Item_Managiment item;
 	Enemy_Managiment enemy;
 	Bllent_Managiment bllent;
+	DrawManager draw;
+	BackScreen stage;
 
+	//ゲーム初期化
+	player.Initialisation();
+	item.ItemManagiment();
+	enemy.Enemy_Initialisation(4,2);
+	bllent.Load();
+	stage.Initialize();
+	
 	//ループ開始
 	while (ProcessMessage() == 0 && ClearDrawScreen() == 0)
 	{
-		
+		draw.Map_Draw(stage);
+		draw.Player_Draw(stage, player);
+		draw.Enemy_Draw(enemy, stage);
+
+		ScreenFlip();
 	}
 	// DXライブラリ使用の終了処理
 	DxLib_End();

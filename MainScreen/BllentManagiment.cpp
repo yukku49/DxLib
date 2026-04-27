@@ -1,17 +1,18 @@
 #include "BllentManagiment.h"
 #include"PlayerManagiment.h"
 #include"BackScreenManagiment.h"
-
+#include<iostream>
 #include"DxLib.h"
 
 void Bllent_Managiment::Load()
 {
-	bllet_Handle[GENOVESE] = LoadGraph("Image/Genovese.png");
-	bllet_Handle[MARGHERITA] = LoadGraph("Image/margherita.png");
-	bllet_Handle[MARINARA] = LoadGraph("Image/marinara.png");
-	bllet_Handle[QUATTROFORMAGGI] = LoadGraph("Image/quattro_formaggi.png");
-	bllet_Handle[SEAGE] = LoadGraph("Image/sage.png");
-
+	bllet_Handle[GENOVESE] = LoadGraph("Pizza_Image/Genovese.png");
+	bllet_Handle[MARGHERITA] = LoadGraph("Pizza_Image/margherita.png");
+	bllet_Handle[MARINARA] = LoadGraph("Pizza_Image/marinara.png");
+	bllet_Handle[QUATTROFORMAGGI] = LoadGraph("Pizza_Image/quattro_formaggi.png");
+	bllet_Handle[SEAGE] = LoadGraph("Pizza_Image/sage.png");
+	
+	
 }
 void Bllent_Managiment::Update(BackScreen& stage, Player_Managiment& player)
 {
@@ -35,7 +36,7 @@ void Bllent_Managiment::Update(BackScreen& stage, Player_Managiment& player)
 		//マップ x座標　MAP_WIDTH:40
 		//マップ y座標　MAP_HEIGHT:23
 		//壁判定
-		if (stage.CheckCollision(m_bullets[i].x, m_bullets[i].y) || stage.CheckCllision(m_bullets->x + 16, m_bullets[i].y + 16))
+		if (stage.CheckCollision(m_bullets[i].x, m_bullets[i].y) || stage.CheckCollision(m_bullets->x + 16, m_bullets[i].y + 16))
 		{
 			m_bullets[i].isActive = false;
 		}
@@ -43,17 +44,18 @@ void Bllent_Managiment::Update(BackScreen& stage, Player_Managiment& player)
 	}
 
 }
+
 //素材を取得した時に現在取得している材料を組み合わせて作れるピザを見つける、ない場合はセージを入れる
 void Bllent_Managiment::Shot(float x, float y, Player_Managiment& player)
 {
 
-	//マルゲリータ
-	if (const int tomato= player.Get_Player_Itembring().Tmato_Counter,const int Cheese= player.Get_Player_Itembring().Cheese_Counter,const int Basil= player.Get_Player_Itembring().Basil_Counter,const int dough= player.Get_Player_Itembring().Pizzadough_Counter;
-		player.Get_Player_Itembring().Tmato_Counter > 0 
-		&& player.Get_Player_Itembring().Cheese_Counter > 0 
-		&& player.Get_Player_Itembring().Basil_Counter > 0 
-		&& player.Get_Player_Itembring().Pizzadough_Counter > 0)
-	{
+	auto item = player.Get_Player_Itembring();
+	int tomato = item.Tmato_Counter;
+	int Cheese = item.Cheese_Counter;
+	int basil = item.Basil_Counter;
+	int dough = item.Pizzadough_Counter;
+
+	if (tomato > 0 && Cheese > 0 && basil > 0 && dough > 0) {
 		now_bllet_Handle = bllet_Handle[MARGHERITA];
 	}
 	//クワトロフォルマッジ
@@ -62,12 +64,12 @@ void Bllent_Managiment::Shot(float x, float y, Player_Managiment& player)
 		now_bllet_Handle = bllet_Handle[QUATTROFORMAGGI];
 	}
 	//ジェノベーゼ
-	else if (Basil > 0 && dough > 0 && Cheese > 0 && tomato > 0)
+	else if (basil > 0 && dough > 0 && Cheese > 0 && tomato > 0)
 	{
 		now_bllet_Handle = bllet_Handle[GENOVESE];
 	}
 	//マリナーラ
-	else if (tomato > 0 && dough > 0 && Basil > 0)
+	else if (tomato > 0 && dough > 0 && basil > 0)
 	{
 		now_bllet_Handle = bllet_Handle[MARINARA];
 	}
@@ -77,48 +79,48 @@ void Bllent_Managiment::Shot(float x, float y, Player_Managiment& player)
 		now_bllet_Handle = bllet_Handle[SEAGE];
 	}
 	//弾をセットする
-	for (int i = 0; i < Max_Bullets; i++)
+	for (int i=0;i<Max_Bullets; i++)
 	{
 		//開いて枠を検索
 		if (!m_bullets[i].isActive)
 		{
 			m_bullets[i].isActive = true;
-			m_bullets[i].x = player.GetX();
-			m_bullets[i].y = player.GetY();
+			m_bullets[i].x = player.GetX()*32;
+			m_bullets[i].y = player.GetY()*32;
 			m_bullets[i].using_handle = now_bllet_Handle;
 			//向きに合わして速度をセット
 			m_bullets[i].vx = 0;
 			m_bullets[i].vy = 0;
 			//上
-			if (player.oldUp == 1)
+			if (player.GetDir() == PlayerEye_Up)
 			{
 				m_bullets[i].vy = -5.0f;
 				m_bullets[i].vx = 0;
 				break;
 			}
 			//下
-			else if (player.oldDown == 1)
+			else if (player.GetDir() ==PlayerEye_Down)
 			{
 				m_bullets[i].vx = 0;
 				m_bullets[i].vy = 5.0f;
 				break;
 			}
 			//左
-			else if (player.oldLeft == 1)
+			else if (player.GetDir() == PlayerEye_Left)
 			{
 				m_bullets[i].vx = -5.0f;
 				m_bullets[i].vy = 0;
 				break;
 			}
 			//右
-			else if (player.oldRight == 1)
+			else if (player.GetDir() == PlayerEye_Right)
 			{
 				m_bullets[i].vx = 5.0f;
 				m_bullets[i].vy = 0;
 				break;
 			}
 		}
-		break;
+		
 
 	}
 }
