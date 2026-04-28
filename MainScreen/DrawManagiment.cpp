@@ -10,6 +10,7 @@ constexpr int TILE_SIZE = 32; // •K—v‚È‚ç 32 ‚É•Ï‚¦‚éiƒ}ƒbƒvƒf[ƒ^‚Ì’PˆÊ‚É‡‚í‚
 //ƒvƒŒƒCƒ„[‰æ‘œ‚ğ•`‰æ
 void DrawManager::Player_Draw(const BackScreen& stage, const Player_Managiment& player)const
 {
+
 	//¶ã‚ÌÀ•W
 	int x1 = (int)player.GetX() * TILE_SIZE;
 	int y1 = (int)player.GetY() * TILE_SIZE;
@@ -17,7 +18,7 @@ void DrawManager::Player_Draw(const BackScreen& stage, const Player_Managiment& 
 	int x2 = x1 + TILE_SIZE;
 	int y2 = y1 + TILE_SIZE;
 
-	DrawExtendGraph(x1,y1 ,x2,y2, player.Get_PlayerHanadle(), true);
+	DrawGraph(, player.Get_PlayerHanadle(), true);
 }
 
 //ƒ}ƒbƒv‚ÆáŠQ•¨‚ğ•\¦
