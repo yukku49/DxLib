@@ -10,7 +10,14 @@ constexpr int TILE_SIZE = 32; // •K—v‚È‚ç 32 ‚É•Ï‚¦‚éiƒ}ƒbƒvƒf[ƒ^‚Ì’PˆÊ‚É‡‚í‚
 //ƒvƒŒƒCƒ„[‰æ‘œ‚ğ•`‰æ
 void DrawManager::Player_Draw(const BackScreen& stage, const Player_Managiment& player)const
 {
-	DrawGraph((int)player.GetX(), (int)player.GetY(), player.Get_PlayerHanadle(), false);
+	//¶ã‚ÌÀ•W
+	int x1 = (int)player.GetX() * TILE_SIZE;
+	int y1 = (int)player.GetY() * TILE_SIZE;
+	//‰E‰º‚ÌÀ•W
+	int x2 = x1 + TILE_SIZE;
+	int y2 = y1 + TILE_SIZE;
+
+	DrawExtendGraph(x1,y1 ,x2,y2, player.Get_PlayerHanadle(), true);
 }
 
 //ƒ}ƒbƒv‚ÆáŠQ•¨‚ğ•\¦
@@ -40,7 +47,7 @@ void DrawManager::Bullets_Draw(const Bllent_Managiment& bullets) const
 		const auto& b = bullets.Get_Bullethandle(i);
 		if (b.isActive)
 		{
-			DrawGraph(static_cast<int>(b.x), static_cast<int>(b.y), b.using_handle, TRUE);
+			DrawExtendGraph(static_cast<int>(b.x), static_cast<int>(b.y),static_cast<int>(b.x)+32,static_cast<int>(b.y)+32, b.using_handle, false);
 		}
 	}
 }

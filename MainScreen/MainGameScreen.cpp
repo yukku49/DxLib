@@ -33,11 +33,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	stage.Initialize();
 	
 	//ループ開始
-	while (ProcessMessage() == 0 && ClearDrawScreen() == 0)
+	//while (ProcessMessage() == 0 && ClearDrawScreen() == 0)
+	while(1)
 	{
 		draw.Map_Draw(stage);
 		draw.Player_Draw(stage, player);
-		draw.Enemy_Draw(enemy, stage);
+		
+		player.Update(stage, bllent);
+
+		
 
 		ScreenFlip();
 	}

@@ -46,12 +46,12 @@ void Player_Managiment::Initialisation()
 	Player_MovePointY = Player_StanderdpointY;
 
 	//プレイヤー画像をハンドルに入れる
-	PlayerImage_Handle[0] = LoadGraph("Pizza_Image/player_up.png");
-	PlayerImage_Handle[1] = LoadGraph("Pizza_Image/player_down.png");
-	PlayerImage_Handle[2] = LoadGraph("Pizza_Image/player_left.png");
-	PlayerImage_Handle[3] = LoadGraph("Pizza_Image/player_right.png");
+	PlayerImage_Handle[0] = LoadGraph("../Pizza_Image/player_up.png");
+	PlayerImage_Handle[1] = LoadGraph("../Pizza_Image/player_down.png");
+	PlayerImage_Handle[2] = LoadGraph("../Pizza_Image/player_left.png");
+	PlayerImage_Handle[3] = LoadGraph("../Pizza_Image/player_right.png");
 
-	DrawGraph(Player_StanderdpointX, Player_StanderdpointY, PlayerImage_Handle[PlayerEye_Left], TRUE);
+	Player_Handle = PlayerImage_Handle[3];
 }
 
 void Player_Managiment::Update(const BackScreen& stage, Bllent_Managiment& bllent)
@@ -85,6 +85,7 @@ void Player_Managiment::Update(const BackScreen& stage, Bllent_Managiment& bllen
 
 
 		}
+		//左移動
 		if (nowLeft == 1 && m_oldLeft == 0)
 		{
 			if (stage.GetMapvalue(Player_MovePointX - 1, Player_MovePointY) == 1)
@@ -95,6 +96,7 @@ void Player_Managiment::Update(const BackScreen& stage, Bllent_Managiment& bllen
 			}
 
 		}
+		//右移動
 		if (nowRight == 1 && m_oldRight == 0)
 		{
 			if (stage.GetMapvalue(Player_MovePointX + 1, Player_MovePointY) == 1)

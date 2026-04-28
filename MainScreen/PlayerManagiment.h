@@ -4,7 +4,7 @@
 
 enum Player_EyeContact
 {
-	PlayerEye_Up,
+	PlayerEye_Up = 0,
 	PlayerEye_Down,
 	PlayerEye_Left,
 	PlayerEye_Right,
@@ -28,12 +28,12 @@ class Player_Managiment
 {
 private:
 	//プレイヤーの初期位置変数
-	const float Player_StanderdpointX = 1;
-	const float Player_StanderdpointY = 1;
+	const float Player_StanderdpointX = 1.0f;
+	const float Player_StanderdpointY = 1.0f;
 
 	//プレイヤーを動かす際に変化させる変数
-	float Player_MovePointX = 1.0f;
-	float Player_MovePointY = 1.0f;
+	float Player_MovePointX = 0;
+	float Player_MovePointY = 0;
 
 	//プレイヤー画像を取得するハンドル
 
