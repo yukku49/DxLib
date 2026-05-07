@@ -54,16 +54,16 @@ Item_number Item_Managiment::CheckPickUp(Player_Managiment& player)
 {
 	for (int i = 0; i < MAX_SPAWN; i++)
 	{
-		//生きているアイテムだけを判定
+		//ﾂ青ｶﾂつｫﾂづ�ﾂつ｢ﾂづｩﾂアﾂイﾂテﾂδﾂつｾﾂつｯﾂづｰﾂ板ｻﾂ津ｨ
 		if (!m_items[i].isActive)continue;
 
-		//座標チェック
+		//ﾂ催ﾂ標ﾂチﾂェﾂッﾂク
 		if (m_items[i].x == player.GetX() && m_items[i].y == player.GetY())
 		{
-			//アイテムを拾ったから非表示
+			//ﾂアﾂイﾂテﾂδﾂづｰﾂ拾ﾂづ�ﾂつｽﾂつｩﾂづｧﾂ氾ｱﾂ表ﾂ篠ｦ
 			m_items[i].isActive = false;
 
-			//アイテムtypeを返す
+			//ﾂアﾂイﾂテﾂδtypeﾂづｰﾂ陛板つｷ
 			return m_items[i].type;
 		}
 	}

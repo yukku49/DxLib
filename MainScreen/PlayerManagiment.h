@@ -1,5 +1,5 @@
 #pragma once
-// DrawManagiment.h をここで include しない（循環を避ける）
+// Avoid including DrawManagiment.h here (JP: koko de include shinai)
 #include <array>
 
 enum Player_EyeContact
@@ -22,58 +22,58 @@ struct Item_count
 
 class Item_Managiment;
 class Bllent_Managiment;
-class BackScreen; // 前方宣言（BackScreenManagiment.h のクラス名に合わせる）
+class BackScreen; // Forward declaration (JP: zenpo sengen)
 
 class Player_Managiment
 {
 private:
-	//プレイヤーの初期位置変数
+	// Player initial position constants (JP: shoki ichi teisu)
 	const float Player_StanderdpointX = 1.0f;
 	const float Player_StanderdpointY = 1.0f;
 
-	//プレイヤーを動かす際に変化させる変数
+	// Player movement position values (JP: ido ichi hensu)
 	float Player_MovePointX = 0;
 	float Player_MovePointY = 0;
 
-	//プレイヤー画像を取得するハンドル
+	// Player image handles by direction (JP: houkou betsu handle)
 
 	int PlayerImage_Handle[Player_EyeContact::PlayerEye_Max];
 
-	//プレイヤー画像を出力するための画像を受け取るハンドル
+	// Current player draw handle (JP: genzai hyoji handle)
 	int Player_Handle;
 
-	const int m_displaySize = 28;//描画サイズ
+	const int m_displaySize = 28;// Draw size (JP: hyouji saizu)
 
-	//押しっぱなし秒使用のプラグ
+	// Previous key state for single-step input (JP: tanoshi nyuryoku mae frame)
 	int m_oldUp, m_oldDown, m_oldLeft, m_oldRight;
 
-	//現在プレイヤーが向いている方向
+	// Current facing direction (JP: muki joho)
 	int m_dir;
 
-	//プレイヤーがもつ材料の構造体
+	// Structure for held ingredients (JP: shoji sozai kozo)
 	Item_count Player_Itembring;
 public:
 	void Initialisation();
-	//StageManagerを仮引数として受け取り、壁判定を行う
+	// Update with stage collision and bullet actions (JP: shoutotsu to dan update)
 	void Update(const BackScreen& stage, Bllent_Managiment& bllent);
 
-	//他クラスから座標を強いりたいとき陽のゲッター（読み取り専用）
+	// Read-only position getters (JP: yomitori senyo getter)
 	int GetX()const { return (int)Player_MovePointX; }
 	int GetY()const { return (int)Player_MovePointY; }
 
-	//プレイヤーの進行方向の画像を返す
+	// Return current player sprite handle (JP: genzai sprite handle)
 	int Get_PlayerHanadle()const { return Player_Handle; }
 
-	//持っている材料を外部から読み取れるようにする
+	// Return held ingredient data (JP: shoji data kaesu)
 	Item_count Get_Player_Itembring()const { return Player_Itembring; };
 
-	//アイテムのカウンターを上げ下げする
+	// Increase held item counters (JP: count zoka)
 	void Player_BringItem(Item_Managiment& item);
 
-	//プレイヤーの現在の向きを外部からアクセスできるGetter
+	// Getter for current facing direction (JP: muki getter)
 	int  GetDir()const { return m_dir; };
 
 
-	//Drawヘッダーファイルのプレイヤーを描画する関数を持ってくる
+	// Player draw function is declared in Draw header (JP: draw sengen wa hoka)
 	//void Draw_Managiment::DrawManager();
 };

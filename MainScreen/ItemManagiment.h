@@ -1,7 +1,7 @@
 #pragma once
 #include "DxLib.h"
 #include"PlayerManagiment.h"
-//アイテムの管理する列挙体
+// Enum for item types (JP: item shurui)
 enum Item_number
 {
 	TOMATO,
@@ -13,9 +13,9 @@ enum Item_number
 };
 struct ItemData
 {
-	int x, y;//ステージ上のマス目座標
+	int x, y;// Grid position on stage (JP: stage masu zahyo)
 	Item_number type;
-	int aliveTimer;//消滅タイマー
+	int aliveTimer;// Despawn timer (JP: shometsu timer)
 	bool isActive;
 };
 
@@ -25,29 +25,29 @@ class Item_Managiment
 {
 
 private:
-	//アイテムを収納するItem_Handle
+	// Item image handle array (JP: image handle hairetsu)
 	int Item_Handle[ITEM_MAX];
-	//同時画面に出せるアイテムの最大数
+	// Maximum simultaneous spawned items (JP: douji saidai)
 	static const int MAX_SPAWN = 5;
-	//画面上に存在するアイテムの実体
+	// Active item instances (JP: jittai data)
 	ItemData m_items[MAX_SPAWN];
 public:
-	//初期化
+	// Initialize item states (JP: state shokika)
 	void ItemManagiment();
 
-	//画像の読み込み
+	// Load item images (JP: image load)
 	void Load();
 
-	//アイテムをランダムな位置に出現させる
+	// Spawn item at random valid tile (JP: random haichi)
 	void Spawn(const BackScreen& stage, Item_number type);
 
-	//タイマーの更新処理
+	// Update item timers (JP: timer update)
 	void Updata();
 
-	//プレイヤーが拾ったかの判定（拾ったらItem_numberを返す)
+	// Check player pickup and return item type (JP: shutoku hantei)
 	Item_number CheckPickUp(Player_Managiment& player);
 
-	//アイテム番号を外部で使えるようにする
+	// Getter for item enum max (JP: enum max getter)
 	Item_number Get_Item_number()const{ return ITEM_MAX; };
 
 };

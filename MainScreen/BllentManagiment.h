@@ -13,36 +13,36 @@ enum bllet_number
 struct BulletData
 {
 	
-	float x, y;//プレイヤー座標
-	float vx, vy;//速度
-	int using_handle;//使う画像を収納
-	int timer;//生存時間
-	bool isActive;//生存フラグ
+	float x, y;// Position (JP: ichi)
+	float vx, vy;// Velocity (JP: sokudo)
+	int using_handle;// Sprite handle in use (JP: shiyo handle)
+	int timer;// Lifetime timer (JP: seizon timer)
+	bool isActive;// Active flag (JP: yuko flag)
 };
 
 class Bllent_Managiment
 {
-	//画面に出せる最大弾数
+	// Maximum bullets on screen (JP: saidai dango su)
 	static const int Max_Bullets = 25;
-	//武器の画像を保持する配列
+	// Bullet sprite handle array (JP: dan image handle hairetsu)
 	int bllet_Handle[bllet_number::BLLET_MAX];
-	//現在の打つものを入れるハンドル
+	// Currently selected bullet handle (JP: sentaku chu handle)
 	int now_bllet_Handle;
-	//発射できる弾の数を入れるBlletData型の配列
+	// Bullet data array (JP: dan data hairetsu)
 	BulletData m_bullets[Max_Bullets];
 public:
-	//画面に出せる球数を外部で使えるようにする
+	// Getter for max bullets (JP: saidai su getter)
 	int GetMaxBullets()const { return Max_Bullets; };
-	//弾のハンドルを外部で使えようにする
+	// Getter for bullet data by index (JP: index shitei getter)
 	const BulletData& Get_Bullethandle(int index)const { return m_bullets[index]; };
-	//弾の画像を外部で使えるようにする
+	// Getter for current bullet image handle (JP: genzai image getter)
 	const int Get_Bullet_Image()const { return now_bllet_Handle; };
 	
-	//弾の画像を読み込む
+	// Load bullet images (JP: dan image load)
 	void Load();
-	//弾の軌道
+	// Update bullet movement and collisions (JP: ido to collision)
 	void Update(BackScreen& stage, Player_Managiment& player);
-	//弾を収納
+	// Fire a bullet (JP: dan hasha)
 	void Shot(float x, float y, Player_Managiment& player);
 };
 

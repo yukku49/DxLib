@@ -21,11 +21,11 @@ void Bllent_Managiment::Update(BackScreen& stage, Player_Managiment& player)
 		if (!m_bullets[i].isActive)
 			continue;
 
-		//ベクトル加算
+		// Apply velocity (JP: sokudo han'ei)
 		m_bullets[i].x += m_bullets[i].vx;
 		m_bullets[i].y += m_bullets[i].vy;
 
-		//画面外消滅
+		// Remove if out of screen (JP: gamengai de mukou)
 		if (m_bullets[i].x < -32 || m_bullets[i].x > 1312 ||
 			m_bullets[i].y < -32 || m_bullets[i].y > 768)
 		{
@@ -33,19 +33,18 @@ void Bllent_Managiment::Update(BackScreen& stage, Player_Managiment& player)
 			continue;
 		}
 
-		//マップ x座標　MAP_WIDTH:40
-		//マップ y座標　MAP_HEIGHT:23
-		//壁判定
+		// Map size note X:40 Y:23 (JP: map saizu memo)
+		// Check collision with map walls (JP: kabe collision)
 		if (stage.CheckCollision(m_bullets[i].x, m_bullets[i].y) || stage.CheckCollision(m_bullets->x + 16, m_bullets[i].y + 16))
 		{
 			m_bullets[i].isActive = false;
 		}
-		//敵にあった時に弾を消滅させる判定
+		// TODO: Add enemy hit detection (JP: teki hit hantei tsuika)
 	}
 
 }
 
-//素材を取得した時に現在取得している材料を組み合わせて作れるピザを見つける、ない場合はセージを入れる
+// Select bullet type from held ingredients, fallback to sage (JP: sozai de dan shubetsu sentaku)
 void Bllent_Managiment::Shot(float x, float y, Player_Managiment& player)
 {
 
@@ -58,61 +57,61 @@ void Bllent_Managiment::Shot(float x, float y, Player_Managiment& player)
 	if (tomato > 0 && Cheese > 0 && basil > 0 && dough > 0) {
 		now_bllet_Handle = bllet_Handle[MARGHERITA];
 	}
-	//クワトロフォルマッジ
+	// Quattro formaggi (JP: kuattoro forumaggi)
 	else if ( tomato> 0 && Cheese> 0 && dough > 0)
 	{
 		now_bllet_Handle = bllet_Handle[QUATTROFORMAGGI];
 	}
-	//ジェノベーゼ
+	// Genovese (JP: jenobeze)
 	else if (basil > 0 && dough > 0 && Cheese > 0 && tomato > 0)
 	{
 		now_bllet_Handle = bllet_Handle[GENOVESE];
 	}
-	//マリナーラ
+	// Marinara (JP: marinara)
 	else if (tomato > 0 && dough > 0 && basil > 0)
 	{
 		now_bllet_Handle = bllet_Handle[MARINARA];
 	}
-	//どの条件に合わないならセージ
+	// Default to sage shot (JP: default sage)
 	else
 	{
 		now_bllet_Handle = bllet_Handle[SEAGE];
 	}
-	//弾をセットする
+	// Find inactive bullet slot (JP: mishi yo slot)
 	for (int i=0;i<Max_Bullets; i++)
 	{
-		//開いて枠を検索
+		// Use first available slot (JP: saisho no aki slot)
 		if (!m_bullets[i].isActive)
 		{
 			m_bullets[i].isActive = true;
 			m_bullets[i].x = player.GetX()*32;
 			m_bullets[i].y = player.GetY()*32;
 			m_bullets[i].using_handle = now_bllet_Handle;
-			//向きに合わして速度をセット
+			// Set velocity by player direction (JP: muki de sokudo set)
 			m_bullets[i].vx = 0;
 			m_bullets[i].vy = 0;
-			//上
+			// Up (JP: ue)
 			if (player.GetDir() == PlayerEye_Up)
 			{
 				m_bullets[i].vy = -5.0f;
 				m_bullets[i].vx = 0;
 				break;
 			}
-			//下
+			// Down (JP: shita)
 			else if (player.GetDir() ==PlayerEye_Down)
 			{
 				m_bullets[i].vx = 0;
 				m_bullets[i].vy = 5.0f;
 				break;
 			}
-			//左
+			// Left (JP: hidari)
 			else if (player.GetDir() == PlayerEye_Left)
 			{
 				m_bullets[i].vx = -5.0f;
 				m_bullets[i].vy = 0;
 				break;
 			}
-			//右
+			// Right (JP: migi)
 			else if (player.GetDir() == PlayerEye_Right)
 			{
 				m_bullets[i].vx = 5.0f;

@@ -1,5 +1,5 @@
 #pragma once
-//Enemyの視点を収納する配列の要素数を決める列挙体
+// Enum for enemy facing sprite indices (JP: teki muki index)
 enum enemy_Eye
 {
 	Enemy_Up,
@@ -11,13 +11,13 @@ enum enemy_Eye
 
 struct Enemy_date
 {
-	int enemy_X = 0;//敵のX座標
-	int enemy_Y = 0;//敵のY座標
-	float vx = 0;//移動用X座標
-	float vy = 0;//移動用Y座標
-	int fullness_gauge = 0;//満腹ゲージ
-	bool isActive = false;//被弾しているかの判定
-	//敵の向き画像を収納するハンドル
+	int enemy_X = 0;// Enemy X position (JP: teki X zahyo)
+	int enemy_Y = 0;// Enemy Y position (JP: teki Y zahyo)
+	float vx = 0;// X velocity (JP: X sokudo)
+	float vy = 0;// Y velocity (JP: Y sokudo)
+	int fullness_gauge = 0;// Fullness gauge (JP: manpuku gauge)
+	bool isActive = false;// Active state flag (JP: yuko hantei)
+	// Enemy direction sprite handles (JP: muki image handle)
 	int Enemy_Eye_handlbe[enemy_Eye::Enemy_Max];
 };
 class Enemy_Managiment
@@ -25,12 +25,12 @@ class Enemy_Managiment
 
 	Enemy_date a;
 public:
-	//enemyをスポーンさせる
+	// Spawn and initialize enemy (JP: teki shokika)
 	void Enemy_Initialisation(float startX, float startY);
-	//enemy_X,Yを外部で使えるようにするGetter
+	// Getter for enemy state (JP: teki joho getter)
 	const Enemy_date& Get_enemyPoint()const { return a; };
 
-	//nemyを動かす
+	// Update enemy movement (JP: teki ido update)
 	void Enemy_Update();
 
 

@@ -8,16 +8,16 @@
 #include"ItemManagiment.h"
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	LPSTR lpCmdLine, int nCmdShow) {
-	// ウインドウモードで起動
+	// Enable windowed mode (JP: window mode on)
 	ChangeWindowMode(true);
-	//ウインドウサイズを固定
+	// Set window size (JP: mado size settei)
 	SetGraphMode(1280, 736, 32);
-	// DXライブラリの初期化
+	// Initialize DxLib (JP: DxLib shokika)
 	if (DxLib_Init() < 0)
 	{
 		return -1;
 	}
-	//インスタンスの作成
+	// Create manager instances (JP: manager instance sakusei)
 	Player_Managiment player;
 	Item_Managiment item;
 	Enemy_Managiment enemy;
@@ -25,15 +25,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	DrawManager draw;
 	BackScreen stage;
 
-	//ゲーム初期化
+	// Initialize game objects (JP: game object shokika)
 	player.Initialisation();
 	item.ItemManagiment();
 	enemy.Enemy_Initialisation(4,2);
 	bllent.Load();
 	stage.Initialize();
 	
-	//ループ開始
-	//while (ProcessMessage() == 0 && ClearDrawScreen() == 0)
+	// Start main loop (JP: main loop kaishi)
+	// Replace with proper loop condition as needed (JP: shuryo joken wa ato de)
 	while(1)
 	{
 		draw.Map_Draw(stage);
@@ -45,9 +45,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 		ScreenFlip();
 	}
-	// DXライブラリ使用の終了処理
+	// Finalize DxLib (JP: DxLib shuryo)
 	DxLib_End();
 
-	// ソフトの終了
+	// End application (JP: app shuryo)
 	return 0;
 }
