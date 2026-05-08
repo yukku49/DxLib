@@ -5,28 +5,30 @@
 #include"DxLib.h"
 
 // Tile drawing unit（タイル描画単位）
-constexpr int TILE_SIZE = 32; // Match map grid size if needed（必要ならマップのグリッド単位に合わせる）
+const int TILE_SIZE = 32; // Match map grid size if needed（必要ならマップのグリッド単位に合わせる）
 
 // Draw player sprite（プレイヤー画像を描画）
 void DrawManager::Player_Draw(const BackScreen& stage, const Player_Managiment& player)const
 {
-int w,h;
-GetGraphSize(player.Get_PlayerHanadle(),&w,&h);
-//画面の比率を維持するための倍率を計算
-//縦と横、どちらが「よりはみ出しているか」を基準にする
-float scale=(w>h)?static_cast<float>(TILE_SIZE)/w:static_cast<float>(TILE_SIZE)/h;
-//実際に描画する幅と高さを算出
-int drawW=static_cast<int>(w*scale);
-int drawH=static_cast<int>(h*scale);
-//中央ぞろえにするためのオフセット（ズレ）を計算
-int offsetX=(TILE_SIZE-drawW)/2;
-int offsetY=(TILE_SIZE-drawH)/2;
-	// Top-left position（左上の座標）
-	int x1 = (int)player.GetX() * TILE_SIZE+offsetX;
-	int y1 = (int)player.GetY() * TILE_SIZE+offsetY;
-	// Bottom-right position（右下の座標）
-	int x2 = x1 + drawW;
-	int y2 = y1 + drawH;
+// 1. 画像の実際のサイズ(w, h)を取得する
+int w, h;
+GetGraphSize(player.Get_PlayerHanadle(), &w, &h);
+
+// 2. 基準となる「幅」を決める
+const int CHARA_WIDTH = 48;
+
+// 3. 画像の比率(w:h)を維持したまま、描画時の「高さ」を計算する
+// 計算式：drawH = CHARA_WIDTH * (元の高さ / 元の幅)
+int drawH = static_cast<int>(CHARA_WIDTH * (static_cast<float>(h) / w));
+
+// 4. 描画座標の計算
+// 横：タイルの中心にキャラの幅(48px)を合わせる
+int x1 = static_cast<int>(player.GetX() * TILE_SIZE) + (TILE_SIZE - CHARA_WIDTH) / 2;
+// 縦：キャラの「足元」がタイルの底に付くように配置する
+int y1 = static_cast<int>(player.GetY() * TILE_SIZE) + (TILE_SIZE - drawH);
+
+int x2 = x1 + CHARA_WIDTH;
+int y2 = y1 + drawH;
 
 	DrawExtendGraph(x1,y1,x2,y2, player.Get_PlayerHanadle(), true);
 }

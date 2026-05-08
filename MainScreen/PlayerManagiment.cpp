@@ -54,6 +54,7 @@ void Player_Managiment::Initialisation()
 	Player_Handle = PlayerImage_Handle[3];
 }
 
+
 void Player_Managiment::Update(const BackScreen& stage, Bllent_Managiment& bllent)
 {
 	// Read current key input states (JP: key input shutoku)

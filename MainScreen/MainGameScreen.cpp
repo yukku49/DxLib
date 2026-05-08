@@ -36,13 +36,24 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	// Replace with proper loop condition as needed (JP: shuryo joken wa ato de)
 	while(1)
 	{
+		// Display the map（マップを表示）
 		draw.Map_Draw(stage);
 		draw.Player_Draw(stage, player);
 		
+		//player movement
 		player.Update(stage, bllent);
 
-		
-
+		//shot bllet
+		if(CheckHitKey(KEY_INPUT_SPACE))
+		{
+			bllent.Shot(player.GetX(), player.GetY(), player);
+			draw.Bullets_Draw(bllent);
+		}
+		//bullet update
+		bllent.Update(stage, player);
+		//bullet draw
+		draw.Bullets_Draw(bllent);
+		//screen flip
 		ScreenFlip();
 	}
 	// Finalize DxLib (JP: DxLib shuryo)
