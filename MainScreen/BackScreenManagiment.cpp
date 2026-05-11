@@ -1,17 +1,16 @@
 #include "DxLib.h"
 #include "BackScreenManagiment.h"
 
-// Stage passable/obstacle layout (1: passable, 0: obstacle) (JP: tsuro to shogai)
+// Stage passable/obstacle layout (1: passable, 0: obstacle) (JP: 通行可否と障害物のレイアウト)
 int statgeaPatern_1[23][40] =
 { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,
   0,1,0,1,0,0,0,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,0,0,1,0,0,0,0,0,0,0,1,0,
-  0,1,0,1,0,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,0,0,1,0,0,0,0,0,0,0,1,0,
+  0,1,0,1,0,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,0,0,1,0,0,0,0,0,0,0,1,0,  
   0,1,0,1,0,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,0,0,1,0,0,0,0,0,0,0,1,0,
   0,1,0,1,0,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,0,0,1,1,1,1,1,1,1,1,1,0,
   0,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,0,0,0,0,0,1,0,1,0,
   0,1,0,1,0,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,0,0,1,0,0,0,0,0,1,0,1,0,
-  0,1,0,1,0,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,0,0,1,1,1,0,0,0,1,0,1,0,
   0,1,0,1,0,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,0,0,1,0,1,1,1,1,1,0,1,0,
   0,1,0,1,0,0,0,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,1,0,
   0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,0,0,1,0,0,0,0,0,0,0,1,0,
@@ -35,7 +34,7 @@ int statgeaPatern_1[23][40] =
         if (partType == 1) {
             for (int y = 0; y < 23; y++) {
                 for (int x = 0; x < 40; x++) {
-                    // Bounds check for safety (JP: hani check)
+                    // Bounds check for safety (JP: 安全のための範囲チェック)
                     if (startY + y < MAP_HEIGHT && startX + x < MAP_WIDTH) {
                         m_stageMap[startY + y][startX + x] = statgeaPatern_1[y][x];
                     }
@@ -46,18 +45,18 @@ int statgeaPatern_1[23][40] =
 
     void BackScreen::Initialize()
     {
-        // 1. Load images with LoadGraph (JP: LoadGraph de image load)
-        // Store returned handles (integer IDs) (JP: handle hozon)
+        // 1. Load images with LoadGraph (JP: LoadGraphで画像を読み込む)
+        // Store returned handles (integer IDs) (JP: 返却されたハンドルを保存)
         m_handles[0] = LoadGraph("../Pizza_Image/stage1.png");
         m_handles[1] = LoadGraph("../Pizza_Image/stage2.png");
-        // Load obstacle images (JP: shogai image load)
+        // Load obstacle images (JP: 障害物画像を読み込む)
         o_object[0] = LoadGraph("../Pizza_Image/pizza box.png");
         o_object[1] = LoadGraph("../Pizza_Image/renga.png");
 
-        // Optional load failure checks (JP: load shippai check)
+        // Optional load failure checks (JP: 読み込み失敗チェック（任意）)
         /*
         if (m_handles[0] == -1 || m_handles[1] == -1) {
-            // Error handling (JP: error shori)
+            // Error handling (JP: エラー処理)
             exit(1);
         }
         else if (o_object[0] == -1 || o_object[1] == -1)
@@ -69,7 +68,7 @@ int statgeaPatern_1[23][40] =
 
 
 
-        // 3. Call map generation logic if needed (JP: hitsuyo nara map seisei)
+        // 3. Call map generation logic if needed (JP: 必要ならマップ生成処理を呼ぶ)
        // GenerateRandomMap();
     }
     
@@ -87,19 +86,15 @@ int statgeaPatern_1[23][40] =
         return m_stageMap[y][x];
     }
 
-    // Determine passable or blocked tile (JP: tsuko kanou hantei)
+    // Determine passable or blocked tile (JP: 通行可能かブロックかを判定)
     bool BackScreen::CheckCollision(double worldX, double worldY) const
     {
-        int Worldx = (int)worldX / 32;
-        int Worldy = (int)worldY / 32;
-        // Read tile type via GetMapvalue (JP: tile atai shutoku)
+        int Worldx = static_cast<int>(worldX) / 32;
+        int Worldy = static_cast<int>(worldY) / 32;
         int chipType = this->GetMapvalue(Worldx, Worldy);
-        // Check if tile is blocked (JP: kabe hantei)
-        if (chipType == 1)
-        {
-            return true;
-        }
-        return false;
+
+        // 0 = 障害物（衝突）、1 = 通路（非衝突）
+        return (chipType == 0);
     }
 
    

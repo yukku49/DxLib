@@ -8,16 +8,16 @@
 #include"ItemManagiment.h"
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	LPSTR lpCmdLine, int nCmdShow) {
-	// Enable windowed mode (JP: window mode on)
+	// Enable windowed mode (JP: ????????????)
 	ChangeWindowMode(true);
-	// Set window size (JP: mado size settei)
+	// Set window size (JP: ???????????)
 	SetGraphMode(1280, 736, 32);
-	// Initialize DxLib (JP: DxLib shokika)
+	// Initialize DxLib (JP: DxLib????)
 	if (DxLib_Init() < 0)
 	{
 		return -1;
 	}
-	// Create manager instances (JP: manager instance sakusei)
+	// Create manager instances (JP: マネジャーインスタンスの作成)
 	Player_Managiment player;
 	Item_Managiment item;
 	Enemy_Managiment enemy;
@@ -25,40 +25,43 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	DrawManager draw;
 	BackScreen stage;
 
-	// Initialize game objects (JP: game object shokika)
+	// Initialize game objects (JP: ゲームオブジェクトの初期化)
 	player.Initialisation();
 	item.ItemManagiment();
 	enemy.Enemy_Initialisation(4,2);
-	bllent.Load();
+	bllent.Load  ();
 	stage.Initialize();
 	
-	// Start main loop (JP: main loop kaishi)
-	// Replace with proper loop condition as needed (JP: shuryo joken wa ato de)
+	// Start main loop (JP: メインループ)
+	// Replace with proper loop condition as needed (JP: )
 	while(1)
 	{
-		// Display the map�i�}�b�v��\���j
+		if (ProcessMessage() != 0)break;
+		ClearDrawScreen();
+		//更新
+		player.Update(stage, bllent);
+		bllent.Update(stage, player);
+
+		// Display the map (JP: マップを表示)
 		draw.Map_Draw(stage);
 		draw.Player_Draw(stage, player);
 		
-		//player movement
+		//player movement（プレイヤーを動く）
 		player.Update(stage, bllent);
 
-		//shot bllet
-		if(CheckHitKey(KEY_INPUT_SPACE))
+		//shot bllet（スペースキーが押されたら弾を打つ）
+		if(CheckHitKey(KEY_INPUT_SPACE)==1)
 		{
 			bllent.Shot(player.GetX(), player.GetY(), player);
-			draw.Bullets_Draw(bllent);
 		}
-		//bullet update
-		bllent.Update(stage, player);
-		//bullet draw
+		//bullet draw（弾を表示）
 		draw.Bullets_Draw(bllent);
 		//screen flip
 		ScreenFlip();
 	}
-	// Finalize DxLib (JP: DxLib shuryo)
+	// Finalize DxLib (JP: )
 	DxLib_End();
 
-	// End application (JP: app shuryo)
+	// End application (JP: ??????????)
 	return 0;
 }

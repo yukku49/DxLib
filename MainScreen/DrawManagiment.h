@@ -1,6 +1,6 @@
 #pragma once
 
-// Use forward declarations to avoid circular includes (JP: junkan include kaihi)
+// Use forward declarations to avoid circular includes (JP: 循環インクルードを避けるため前方宣言)
 class BackScreen;
 class Player_Managiment;
 class Bllent_Managiment;
