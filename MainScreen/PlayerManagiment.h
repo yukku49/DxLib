@@ -73,6 +73,8 @@ public:
 	// Getter for current facing direction (JP: 向きの取得)
 	int  GetDir()const { return m_dir; };
 
+	// Getter for display size (描画用サイズを外部から取得できるように追加)
+	int Get_PlayerDisplaySize() const { return m_displaySize; }
 
 	// Player draw function is declared in Draw header (JP: 描画関数はDraw系ヘッダで宣言)
 	//void Draw_Managiment::DrawManager();

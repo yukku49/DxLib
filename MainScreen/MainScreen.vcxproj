@@ -133,7 +133,7 @@
     <ClCompile Include="BackScreenManagiment.cpp" />
     <ClCompile Include="BllentManagiment.cpp" />
     <ClCompile Include="DrawManagiment.cpp" />
-    <ClCompile Include="MainGameScreen.cpp" />
+    <ClCompile Include="0MainGameScreen.cpp" />
     <ClCompile Include="EnemyManagiment.cpp" />
     <ClCompile Include="ItemManagiment.cpp" />
     <ClCompile Include="PlayerManagiment.cpp" />

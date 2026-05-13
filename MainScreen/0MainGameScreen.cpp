@@ -21,7 +21,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	Player_Managiment player;
 	Item_Managiment item;
 	Enemy_Managiment enemy;
-	Bllent_Managiment bllent;
+	Bllent_Managiment bllet;
 	DrawManager draw;
 	BackScreen stage;
 
@@ -29,7 +29,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	player.Initialisation();
 	item.ItemManagiment();
 	enemy.Enemy_Initialisation(4,2);
-	bllent.Load  ();
+	bllet.Load  ();
 	stage.Initialize();
 	
 	// Start main loop (JP: メインループ)
@@ -39,23 +39,23 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		if (ProcessMessage() != 0)break;
 		ClearDrawScreen();
 		//更新
-		player.Update(stage, bllent);
-		bllent.Update(stage, player);
+		player.Update(stage, bllet);
+		bllet.Update(stage, player);
 
 		// Display the map (JP: マップを表示)
 		draw.Map_Draw(stage);
 		draw.Player_Draw(stage, player);
 		
 		//player movement（プレイヤーを動く）
-		player.Update(stage, bllent);
+		player.Update(stage, bllet);
 
 		//shot bllet（スペースキーが押されたら弾を打つ）
 		if(CheckHitKey(KEY_INPUT_SPACE)==1)
 		{
-			bllent.Shot(player.GetX(), player.GetY(), player);
+			bllet.Shot(player.GetX(), player.GetY(), player);
 		}
 		//bullet draw（弾を表示）
-		draw.Bullets_Draw(bllent);
+		draw.Bullets_Draw(bllet);
 		//screen flip
 		ScreenFlip();
 	}
