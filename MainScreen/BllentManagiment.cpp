@@ -107,8 +107,8 @@ void Bllent_Managiment::Shot(float x, float y, Player_Managiment& player)
 		if (!m_bullets[i].isActive)
 		{
 			m_bullets[i].isActive = true;
-			m_bullets[i].x = player.GetX()*32;
-			m_bullets[i].y = player.GetY()*32;
+			m_bullets[i].x = player.GetX()*32.0;
+			m_bullets[i].y = player.GetY()*32.0;
 			m_bullets[i].using_handle = now_bllet_Handle;
 			// Set velocity by player direction (JP: プレイヤーの向きで速度を設定)
 			m_bullets[i].vx = 0;

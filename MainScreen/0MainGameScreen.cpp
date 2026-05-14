@@ -41,19 +41,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		//更新
 		player.Update(stage, bllet);
 		bllet.Update(stage, player);
-
+		enemy.Enemy_Update();
 		// Display the map (JP: マップを表示)
 		draw.Map_Draw(stage);
 		draw.Player_Draw(stage, player);
+		draw.Enemy_Draw(enemy,stage);
 		
 		//player movement（プレイヤーを動く）
 		player.Update(stage, bllet);
+		
 
-		//shot bllet（スペースキーが押されたら弾を打つ）
-		if(CheckHitKey(KEY_INPUT_SPACE)==1)
-		{
-			bllet.Shot(player.GetX(), player.GetY(), player);
-		}
 		//bullet draw（弾を表示）
 		draw.Bullets_Draw(bllet);
 		//screen flip

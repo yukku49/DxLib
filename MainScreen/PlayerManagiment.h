@@ -49,6 +49,9 @@ private:
 
 	// Current facing direction (JP: 現在の向き)
 	int m_dir;
+	//Added a 'fornt frame' state for ther space bar(one press per shot)
+	//(JP:スペースの前フレーム状態を追加（一回押しで一発)
+	int m_oldSpace = 0;
 
 	// Structure for held ingredients (JP: 所持材料の構造体)
 	Item_count Player_Itembring;
@@ -58,8 +61,8 @@ public:
 	void Update(const BackScreen& stage, Bllent_Managiment& bllent);
 
 	// Read-only position getters (JP: 読み取り専用の位置取得)
-	int GetX()const { return (int)Player_MovePointX; }
-	int GetY()const { return (int)Player_MovePointY; }
+	float GetX()const { return (float)Player_MovePointX; }
+	float GetY()const { return (float)Player_MovePointY; }
 
 	// Return current player sprite handle (JP: 現在のスプライトハンドルを返す)
 	int Get_PlayerHanadle()const { return Player_Handle; }

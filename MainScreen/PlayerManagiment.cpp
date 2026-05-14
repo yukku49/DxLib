@@ -51,7 +51,12 @@ void Player_Managiment::Initialisation()
 	PlayerImage_Handle[2] = LoadGraph("../Pizza_Image/player_left.png");
 	PlayerImage_Handle[3] = LoadGraph("../Pizza_Image/player_right.png");
 
+	//initlaize player direction(プレイヤー向きを右向きで初期化)
 	Player_Handle = PlayerImage_Handle[3];
+	//initlaize player m_dir(プレイヤーの向きを外部に送るgetterのm_dirも右向きで初期化)
+	m_dir = Player_EyeContact::PlayerEye_Right;
+	// initlaize space bar state(スペースの前フレームの状態を初期化)
+	m_oldSpace = 0;
 }
 
 
@@ -62,6 +67,7 @@ void Player_Managiment::Update(const BackScreen& stage, Bllent_Managiment& bllen
 	int nowDown = CheckHitKey(KEY_INPUT_S);
 	int nowLeft = CheckHitKey(KEY_INPUT_A);
 	int nowRight = CheckHitKey(KEY_INPUT_D);
+	int nowSpace = CheckHitKey(KEY_INPUT_SPACE);
 
 
 	// Move only on new key press (one-tile step) (JP: 新規押下時のみ1マス移動)
@@ -109,7 +115,7 @@ void Player_Managiment::Update(const BackScreen& stage, Bllent_Managiment& bllen
 
 			}
 		}
-		if (CheckHitKey(KEY_INPUT_SPACE))
+		if (nowSpace==1&&m_oldSpace==0)
 		{
 			bllent.Shot(Player_MovePointX, Player_MovePointY, *this);
 		}
@@ -118,6 +124,7 @@ void Player_Managiment::Update(const BackScreen& stage, Bllent_Managiment& bllen
 		m_oldDown = nowDown;
 		m_oldLeft = nowLeft;
 		m_oldRight = nowRight;
+		m_oldSpace = nowSpace;
 	
 
 }
