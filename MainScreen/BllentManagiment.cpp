@@ -36,7 +36,7 @@ void Bllent_Managiment::Load()
 	now_bllet_Handle = bllet_Handle[SEAGE];
 	
 }
-void Bllent_Managiment::Update(BackScreen& stage, Player_Managiment& player)
+void Bllent_Managiment::Update (BackScreen& stage, Player_Managiment& player)
 {
 	for (int i = 0; i < Max_Bullets; i++)
 	{

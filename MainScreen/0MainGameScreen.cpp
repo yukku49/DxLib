@@ -8,7 +8,7 @@
 #include"ItemManagiment.h"
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	LPSTR lpCmdLine, int nCmdShow) {
-	// Enable windowed mode (JP: ????????????)
+	// Enable windowed mode (JP: )
 	ChangeWindowMode(true);
 	// Set window size (JP: ???????????)
 	SetGraphMode(1280, 736, 32);
