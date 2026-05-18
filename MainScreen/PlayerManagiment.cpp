@@ -1,68 +1,54 @@
 #include "PlayerManagiment.h"
 #include "ItemManagiment.h"
-#include"BackScreenManagiment.h"
-#include"BllentManagiment.h"
+#include "BackScreenManagiment.h"
+#include "BllentManagiment.h"
 
 #include "DxLib.h"
+#include <cmath>
+
+static constexpr int TILE_SIZE = 32;
 
 void Player_Managiment::Player_BringItem(Item_Managiment& item)
 {
 	switch (item.Get_Item_number())
 	{
-	case (TOMATO):
-	{
-		Player_Itembring.Tmato_Counter++;
-		break;
-	}
-
-	case (BASIL):
-	{
-		Player_Itembring.Basil_Counter++;
-		break;
-	}
-	case (CHEESE):
-	{
-		Player_Itembring.Cheese_Counter++;
-		break;
-	}
-	case (GORGONZOLA):
-	{
-		Player_Itembring.Gorgonzola_Counter++;
-		break;
-	}
-	case (PIZZADOUGH):
-	{
-		Player_Itembring.Pizzadough_Counter++;
-		break;
-	}
-
+	case (TOMATO): Player_Itembring.Tmato_Counter++; break;
+	case (BASIL): Player_Itembring.Basil_Counter++; break;
+	case (CHEESE): Player_Itembring.Cheese_Counter++; break;
+	case (GORGONZOLA): Player_Itembring.Gorgonzola_Counter++; break;
+	case (PIZZADOUGH): Player_Itembring.Pizzadough_Counter++; break;
 	}
 }
 
 void Player_Managiment::Initialisation()
 {
-	// Set initial move position (JP: 初期移動位置を設定)
-	Player_MovePointX = Player_StanderdpointX;
-	Player_MovePointY = Player_StanderdpointY;
+	// 初期位置をタイル->ピクセルに変換して設定
+	Player_MovePointX = Player_StanderdpointX * TILE_SIZE;
+	Player_MovePointY = Player_StanderdpointY * TILE_SIZE;
 
-	// Load player images into handles (JP: プレイヤー画像をハンドルに読み込む)
+	// 画像ロード
 	PlayerImage_Handle[0] = LoadGraph("../Pizza_Image/player_up.png");
 	PlayerImage_Handle[1] = LoadGraph("../Pizza_Image/player_down.png");
 	PlayerImage_Handle[2] = LoadGraph("../Pizza_Image/player_left.png");
 	PlayerImage_Handle[3] = LoadGraph("../Pizza_Image/player_right.png");
 
-	//initlaize player direction(プレイヤー向きを右向きで初期化)
 	Player_Handle = PlayerImage_Handle[3];
-	//initlaize player m_dir(プレイヤーの向きを外部に送るgetterのm_dirも右向きで初期化)
 	m_dir = Player_EyeContact::PlayerEye_Right;
-	// initlaize space bar state(スペースの前フレームの状態を初期化)
 	m_oldSpace = 0;
-}
 
+	// 時間初期化
+	m_lastTime = GetNowCount();
+}
 
 void Player_Managiment::Update(const BackScreen& stage, Bllent_Managiment& bllent)
 {
-	// Read current key input states (JP: 現在のキー入力状態を取得)
+	// delta time (秒)
+	unsigned int now = GetNowCount();
+	float dt = (now - m_lastTime) / 1000.0f;
+	if (dt > 0.1f) dt = 0.1f;
+	m_lastTime = now;
+
+	// 入力取得（ホールドで滑らか移動）
 	int nowUp = CheckHitKey(KEY_INPUT_W);
 	int nowDown = CheckHitKey(KEY_INPUT_S);
 	int nowLeft = CheckHitKey(KEY_INPUT_A);
@@ -70,61 +56,64 @@ void Player_Managiment::Update(const BackScreen& stage, Bllent_Managiment& bllen
 	int nowSpace = CheckHitKey(KEY_INPUT_SPACE);
 
 
-	// Move only on new key press (one-tile step) (JP: 新規押下時のみ1マス移動)
-	if ((nowUp == 1 && m_oldUp == 0))
+
+	// 移動ベロシティ(px)
+	float vx = 0.0f, vy = 0.0f;
+	if (nowLeft) vx -= 1.0f;
+	if (nowRight) vx += 1.0f;
+	if (nowUp) vy -= 1.0f;
+	if (nowDown) vy += 1.0f;
+
+	// 正規化（斜め移動で速くならないように）
+	if (vx != 0.0f || vy != 0.0f)
 	{
-		// Move up (JP: 上へ移動)
-		if (stage.GetMapvalue(Player_MovePointX, Player_MovePointY - 1) == 1)
-		{
-			Player_MovePointY--;
-			this->Player_Handle = this->PlayerImage_Handle[PlayerEye_Up];
-			this->m_dir =PlayerEye_Up;
-		}
+		float len = std::sqrt(vx * vx + vy * vy);
+		vx = vx / len * m_moveSpeed;
+		vy = vy / len * m_moveSpeed;
 	}
-		// Move down (JP: 下へ移動)
-		if (nowDown == 1 && m_oldDown == 0)
-		{
-			if (stage.GetMapvalue(Player_MovePointX, Player_MovePointY + 1) == 1)
-			{
-				Player_MovePointY++;
-				this->Player_Handle = this->PlayerImage_Handle[PlayerEye_Down];
-				this->m_dir = PlayerEye_Down;
-			}
+	// 予測移動（コライダーは四隅をチェック）
+	float newX = Player_MovePointX + vx * dt;
+	float newY = Player_MovePointY + vy * dt;
 
+	// プレイヤー矩形（top-left = newX, newY）。表示サイズを当たり判定サイズとして使用
+	int w = m_displaySize;
+	int h = m_displaySize;
 
-		}
-		// Move left (JP: 左へ移動)
-		if (nowLeft == 1 && m_oldLeft == 0)
-		{
-			if (stage.GetMapvalue(Player_MovePointX - 1, Player_MovePointY) == 1)
-			{
-				Player_MovePointX--;
-				this->Player_Handle = this->PlayerImage_Handle[PlayerEye_Left];
-				this->m_dir = PlayerEye_Left;
-			}
+	auto collidesAt = [&](float wx, float wy) -> bool {
+		return stage.CheckCollision(wx, wy);
+	};
 
-		}
-		// Move right (JP: 右へ移動)
-		if (nowRight == 1 && m_oldRight == 0)
-		{
-			if (stage.GetMapvalue(Player_MovePointX + 1, Player_MovePointY) == 1)
-			{
-				Player_MovePointX++;
-				this->Player_Handle = this->PlayerImage_Handle[PlayerEye_Right];
-				this->m_dir = PlayerEye_Right;
+	// 四隅チェック（ワールド座標）
+	bool collision = false;
+	if (collidesAt(newX, newY)) collision = true;
+	if (collidesAt(newX + w - 1, newY)) collision = true;
+	if (collidesAt(newX, newY + h - 1)) collision = true;
+	if (collidesAt(newX + w - 1, newY + h - 1)) collision = true;
 
-			}
-		}
-		if (nowSpace==1&&m_oldSpace==0)
-		{
-			bllent.Shot(Player_MovePointX, Player_MovePointY, *this);
-		}
-		// Save current state for next frame (JP: 次フレーム用に状態を保存)
-		m_oldUp = nowUp;
-		m_oldDown = nowDown;
-		m_oldLeft = nowLeft;
-		m_oldRight = nowRight;
-		m_oldSpace = nowSpace;
-	
+	if (!collision)
+	{
+		// 移動適用
+		Player_MovePointX = newX;
+		Player_MovePointY = newY;
 
+		// 向き更新（入力があるとき）
+		if (vx < 0) { Player_Handle = PlayerImage_Handle[PlayerEye_Left]; m_dir = PlayerEye_Left; }
+		else if (vx > 0) { Player_Handle = PlayerImage_Handle[PlayerEye_Right]; m_dir = PlayerEye_Right; }
+		else if (vy < 0) { Player_Handle = PlayerImage_Handle[PlayerEye_Up]; m_dir = PlayerEye_Up; }
+		else if (vy > 0) { Player_Handle = PlayerImage_Handle[PlayerEye_Down]; m_dir = PlayerEye_Down; }
+	}
+
+	// 発射（立ち上がりで1発）
+	if (nowSpace == 1 && m_oldSpace == 0)
+	{
+		// 既存 Shot() はタイル単位を期待しているのでタイルに変換して渡す
+		bllent.Shot(static_cast<float>(GetX()), static_cast<float>(GetY()), *this);
+	}
+
+	// 前フレーム保存
+	m_oldUp = nowUp;
+	m_oldDown = nowDown;
+	m_oldLeft = nowLeft;
+	m_oldRight = nowRight;
+	m_oldSpace = nowSpace;
 }

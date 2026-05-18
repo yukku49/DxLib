@@ -2,35 +2,29 @@
 #include "BackScreenManagiment.h"
 #include "EnemyManagiment.h"
 #include "BllentManagiment.h"
-#include"DxLib.h"
+#include "DxLib.h"
 
-// Tile drawing unit（タイル描画単位）
-const int TILE_SIZE = 32; // Match map grid size if needed（必要ならマップのグリッド単位に合わせる）
+const int TILE_SIZE = 32;
 
-// Draw player sprite（プレイヤー画像を描画）
-void DrawManager::Player_Draw(const BackScreen& stage, const Player_Managiment& player)const
+// Player 描画をピクセル単位に対応させる（player.GetXf()/GetYf() を使用）
+void DrawManager::Player_Draw(const BackScreen& stage, const Player_Managiment& player) const
 {
-	// 1. 画像の実際のサイズ(w, h)を取得する
-	int w, h;
-	GetGraphSize(player.Get_PlayerHanadle(), &w, &h);
+	// 画像実サイズ取得
+	int w = 1, h = 1;
+	GetGraphSize(player.Get_PlayerHandle(), &w, &h);
 
-	// 2. 基準となる「幅」をプレイヤー設定から取得
 	const int CHARA_WIDTH = player.Get_PlayerDisplaySize();
-
-	// 3. 画像の比率(w:h)を維持したまま、描画時の「高さ」を計算する
-	// 計算式：drawH = CHARA_WIDTH * (元の高さ / 元の幅)
+	// 比率維持で高さ計算
 	int drawH = static_cast<int>(CHARA_WIDTH * (static_cast<float>(h) / w));
 
-	// 4. 描画座標の計算
-	// 横：タイルの中心にキャラの幅(CHARA_WIDTH)を合わせる
-	int x1 = static_cast<int>(player.GetX() * TILE_SIZE) + (TILE_SIZE - CHARA_WIDTH) / 2;
-	// 縦：キャラの「足元」がタイルの底に付くように配置する
-	int y1 = static_cast<int>(player.GetY() * TILE_SIZE) + (TILE_SIZE - drawH);
+	// 描画座標：ピクセル座標を直接使用
+	int x1 = static_cast<int>(player.GetXf()) + (TILE_SIZE - CHARA_WIDTH) / 2;
+	int y1 = static_cast<int>(player.GetYf()) + (TILE_SIZE - drawH);
 
 	int x2 = x1 + CHARA_WIDTH;
 	int y2 = y1 + drawH;
 
-	DrawExtendGraph(x1,y1,x2,y2, player.Get_PlayerHanadle(), true);
+	DrawExtendGraph(x1, y1, x2, y2, player.Get_PlayerHandle(), TRUE);
 }
 
 // Draw map and obstacles（マップと障害物を表示）
@@ -67,6 +61,25 @@ void DrawManager::Bullets_Draw(const Bllent_Managiment& bullets) const
 
 void DrawManager::Enemy_Draw(const Enemy_Managiment& enemy, const BackScreen& stage) const
 {
-	DrawGraph(enemy.Get_enemyPoint().enemy_X, enemy.Get_enemyPoint().enemy_Y,
-           enemy.Get_enemyPoint().Enemy_Eye_handlbe[0], TRUE);
+	// 1. 画像の実際のサイズ(w, h)を取得する
+	int w, h;
+	GetGraphSize(enemy.Get_Ehandle(), &w, &h);
+
+	// 2. 基準となる「幅」をプレイヤー設定から取得
+	const int CHARA_WIDTH = enemy.Get_EDisplaySize();
+
+	// 3. 画像の比率(w:h)を維持したまま、描画時の「高さ」を計算する
+	// 計算式：drawH = CHARA_WIDTH * (元の高さ / 元の幅)
+	int drawH = static_cast<int>(CHARA_WIDTH * (static_cast<float>(h) / w));
+
+	// 4. 描画座標の計算
+	// 横：タイルの中心にキャラの幅(CHARA_WIDTH)を合わせる
+	int x1 = static_cast<int>(enemy.Get_EX() * TILE_SIZE) + (TILE_SIZE - CHARA_WIDTH) / 2;
+	// 縦：キャラの「足元」がタイルの底に付くように配置する
+	int y1 = static_cast<int>(enemy.Get_EY() * TILE_SIZE) + (TILE_SIZE - drawH);
+
+	int x2 = x1 + CHARA_WIDTH;
+	int y2 = y1 + drawH;
+
+	DrawExtendGraph(x1, y1, x2, y2, enemy.Get_Ehandle(), true);
 }

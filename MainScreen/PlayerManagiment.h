@@ -27,58 +27,63 @@ class BackScreen; // Forward declaration (JP: 前方宣言)
 class Player_Managiment
 {
 private:
-	// Player initial position constants (JP: プレイヤー初期位置の定数)
+	// タイル基準の初期値（マス単位）
 	const float Player_StanderdpointX = 1.0f;
 	const float Player_StanderdpointY = 1.0f;
 
-	// Player movement position values (JP: 移動位置の値)
-	float Player_MovePointX = 0;
-	float Player_MovePointY = 0;
+	// 内部座標はピクセル単位で保持する（float）
+	float Player_MovePointX = 0.0f; // px
+	float Player_MovePointY = 0.0f; // px
 
 	// Player image handles by direction (JP: 向き別プレイヤー画像ハンドル)
-
 	int PlayerImage_Handle[Player_EyeContact::PlayerEye_Max];
 
 	// Current player draw handle (JP: 現在の描画用ハンドル)
-	int Player_Handle=0;
+	int Player_Handle = 0;
 
-	const int m_displaySize = 28;// Draw size (JP: 描画サイズ)
+	const int m_displaySize = 28; // 描画サイズ(px/概ね)
 
-	// Previous key state for single-step input (JP: 1マスずつ入力用の前フレームのキー状態)
+	// 前回キー状態（立ち上がり検出用）
 	int m_oldUp = 0, m_oldDown = 0, m_oldLeft = 0, m_oldRight = 0;
-
-	// Current facing direction (JP: 現在の向き)
-	int m_dir;
-	//Added a 'fornt frame' state for ther space bar(one press per shot)
-	//(JP:スペースの前フレーム状態を追加（一回押しで一発)
 	int m_oldSpace = 0;
 
-	// Structure for held ingredients (JP: 所持材料の構造体)
+	// 向き
+	int m_dir;
+
+	// 所持材料構造体
 	Item_count Player_Itembring;
+
+	// 移動パラメータ（ピクセル単位）
+	float m_moveSpeed = 128.0f; // px/s（調整可）
+
+	// 時間管理
+	unsigned int m_lastTime = 0;
+
 public:
 	void Initialisation();
-	// Update with stage collision and bullet actions (JP: ステージ衝突と弾の処理で更新)
 	void Update(const BackScreen& stage, Bllent_Managiment& bllent);
 
-	// Read-only position getters (JP: 読み取り専用の位置取得)
-	float GetX()const { return (float)Player_MovePointX; }
-	float GetY()const { return (float)Player_MovePointY; }
+	// 互換性維持：既存コード向けにタイル単位 getter（戻り値はタイル index）
+	int GetX() const { return static_cast<int>(Player_MovePointX) / 32; }
+	int GetY() const { return static_cast<int>(Player_MovePointY) / 32; }
 
-	// Return current player sprite handle (JP: 現在のスプライトハンドルを返す)
-	int Get_PlayerHanadle()const { return Player_Handle; }
+	// 新：ピクセル単位の float getter（描画や弾の発射などに使う）
+	float GetXf() const { return Player_MovePointX; } // px
+	float GetYf() const { return Player_MovePointY; } // px
 
-	// Return held ingredient data (JP: 所持材料データを返す)
-	Item_count Get_Player_Itembring()const { return Player_Itembring; };
+	// スプライトハンドル getter（綴り差異に備え2つ用意）
+	int Get_PlayerHanadle() const { return Player_Handle; }
+	int Get_PlayerHandle() const { return Player_Handle; }
 
-	// Increase held item counters (JP: 所持アイテムのカウンタを増やす)
+	// 所持アイテム取得
+	Item_count Get_Player_Itembring() const { return Player_Itembring; };
+
+	// カウンタを増やす（JP: 所持アイテムのカウンタを増やす）
 	void Player_BringItem(Item_Managiment& item);
 
-	// Getter for current facing direction (JP: 向きの取得)
-	int  GetDir()const { return m_dir; };
+	// 向きの取得（JP: Getter for current facing direction）
+	int GetDir() const { return m_dir; };
 
-	// Getter for display size (描画用サイズを外部から取得できるように追加)
+	// 描画用サイズ（JP: Getter for display size)
 	int Get_PlayerDisplaySize() const { return m_displaySize; }
-
-	// Player draw function is declared in Draw header (JP: 描画関数はDraw系ヘッダで宣言)
-	//void Draw_Managiment::DrawManager();
 };

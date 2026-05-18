@@ -23,17 +23,28 @@ struct Enemy_date
 class Enemy_Managiment
 {
 
-	Enemy_date a;
+	Enemy_date Enemy;
+	int Enemy_DisplaySize = 28;// Enemy draw size (JP: 敵の描画サイズ)
+	int Enemy_Handle = 0;// Current enemy draw handle (JP: 現在の敵描画ハンドル)
 public:
+	//Setter
 	// Spawn and initialize enemy (JP: 敵の生成と初期化)
-	void Enemy_Initialisation(float startX, float startY);
-	// Getter for enemy state (JP: 敵状態の取得)
-	const Enemy_date& Get_enemyPoint()const { return a; };
-
+	void Enemy_Initialisation();
 	// Update enemy movement (JP: 敵の移動更新)
 	void Enemy_Update();
 
+	//Getter
 
+	// Getter for enemy state (JP: 敵状態の取得)
+	const Enemy_date& Get_enemyPoint()const { return Enemy; };
 
+	//Get enemy position(JP:敵の位置を取得)
+	float Get_EX()const { return Enemy.enemy_X; }
+	float Get_EY()const { return Enemy.enemy_Y; }
+
+	//Get enemy imate handle by direction(JP:現在の向きハンドルを取得)
+	int Get_Ehandle()const { return Enemy_Handle; };
+
+	//Get enemy dorw size(JP:敵の描画サイズを取得)
+	int Get_EDisplaySize()const { return Enemy_DisplaySize; }
 };
-
