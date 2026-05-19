@@ -1,39 +1,54 @@
-#include"DxLib.h"
+#include "DxLib.h"
 #include "EnemyManagiment.h"
 
-void Enemy_Managiment::Enemy_Initialisation()
+// 画面サイズやスプライトサイズが必要なら共通化してください
+static const int SCREEN_W = 1280;
+static const int SCREEN_H = 736;
+static const float DEFAULT_SPEED = -2.0f;
+
+void Enemy_Managiment::Enemy_Initialisation(float startX, float startY)
 {
-	this->Enemy.enemy_X = 22;
-	this->Enemy.enemy_Y = 22;
-	this->Enemy.vx = -2.0f;
-	this->Enemy.vy = -2.0f;
-	this->Enemy.isActive = true;
-	// Load enemy direction sprites (JP: 敵の向き別スプライトを読み込む)
+	// startX/startY はピクセル単位で受け取る想定
+	a.enemy_X = startX;
+	a.enemy_Y = startY;
+	a.vx = DEFAULT_SPEED; // px/frame あるいは px/更新単位
+	a.vy = 0.0f;
+	a.isActive = true;
 
-	this->Enemy.Enemy_Eye_handlbe[0] = LoadGraph("../Pizza_Image/Enemy_Up.png");
-	this->Enemy.Enemy_Eye_handlbe[1] = LoadGraph("../Pizza_Image/Enemy_Left.png");
-	this->Enemy.Enemy_Eye_handlbe[2] = LoadGraph("../Pizza_Image/Enemy_Right.png");
-	this->Enemy.Enemy_Eye_handlbe[3] = LoadGraph("../Pizza_Image/Enemy_Down.png");
+	// 画像は初期化時一度だけロードする
+	a.Enemy_Eye_handlbe[Enemy_Up] = LoadGraph("../Pizza_Image/Enemy_Up.png");
+	a.Enemy_Eye_handlbe[Enemy_Left] = LoadGraph("../Pizza_Image/Enemy_Left.png");
+	a.Enemy_Eye_handlbe[Enemy_Right] = LoadGraph("../Pizza_Image/Enemy_Right.png");
+	a.Enemy_Eye_handlbe[Enemy_Down] = LoadGraph("../Pizza_Image/Enemy_Down.png");
+}
 
-	//Load Intilisation enemy direction(初期の敵の向きを入れる)
-	this->Enemy_Handle = enemy_Eye::Enemy_Left;
-};
-
-
+int Enemy_Managiment::Get_EnemyHandle() const
+{
+	// 簡易：vx/vy によって向きを推定してハンドルを返す
+	if (!a.isActive) return -1;
+	if (a.vx < 0.0f) return a.Enemy_Eye_handlbe[Enemy_Left];
+	if (a.vx > 0.0f) return a.Enemy_Eye_handlbe[Enemy_Right];
+	if (a.vy < 0.0f) return a.Enemy_Eye_handlbe[Enemy_Up];
+	return a.Enemy_Eye_handlbe[Enemy_Down];
+}
 
 void Enemy_Managiment::Enemy_Update()
 {
+	if (!a.isActive) return;
 
-	if (!this->Enemy.isActive)
-		return;
-	// Move enemy (JP: 敵を移動)
-	this->Enemy.enemy_X += this->Enemy.vx;
-	this->Enemy.enemy_Y += this->Enemy.vy;
-	// Bounce back at screen edges (JP: 画面端で跳ね返る)
-	if (this->Enemy.enemy_X < 0 || this->Enemy.enemy_X>1280 - 32)
+	// 単純な移動。vx/vy はピクセル単位で扱う（必要なら dt を掛ける）
+	a.enemy_X += a.vx;
+	a.enemy_Y += a.vy;
+
+	// 端で反転（スクリーン端を想定）
+	if (a.enemy_X < 0.0f || a.enemy_X > SCREEN_W - 32.0f)
 	{
-		this->Enemy.vx *= -1;
+		a.vx *= -1.0f;
 	}
-};
+	if (a.enemy_Y < 0.0f || a.enemy_Y > SCREEN_H - 32.0f)
+	{
+		a.vy *= -1.0f;
+	}
+}
 
 

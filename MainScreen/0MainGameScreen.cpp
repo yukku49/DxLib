@@ -28,7 +28,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	// Initialize game objects (JP: ゲームオブジェクトの初期化)
 	player.Initialisation();
 	item.ItemManagiment();
-	enemy.Enemy_Initialisation();
+	enemy.Enemy_Initialisation(22,42);
 	bllet.Load  ();
 	stage.Initialize();
 	

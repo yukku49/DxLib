@@ -4,7 +4,8 @@
 #include "BllentManagiment.h"
 #include "DxLib.h"
 
-const int TILE_SIZE = 32;
+// Tile drawing unit（タイル描画単位）
+const int TILE_SIZE = 32; // Map タイルサイズ（描画で使う場合のみ）
 
 // Player 描画をピクセル単位に対応させる（player.GetXf()/GetYf() を使用）
 void DrawManager::Player_Draw(const BackScreen& stage, const Player_Managiment& player) const
@@ -61,25 +62,35 @@ void DrawManager::Bullets_Draw(const Bllent_Managiment& bullets) const
 
 void DrawManager::Enemy_Draw(const Enemy_Managiment& enemy, const BackScreen& stage) const
 {
-	// 1. 画像の実際のサイズ(w, h)を取得する
-	int w, h;
-	GetGraphSize(enemy.Get_Ehandle(), &w, &h);
+	// 敵情報を取得
+	const auto& e = enemy.Get_enemyPoint();
 
-	// 2. 基準となる「幅」をプレイヤー設定から取得
-	const int CHARA_WIDTH = enemy.Get_EDisplaySize();
+	// 有効でなければ描画しない
+	if (!e.isActive) return;
 
-	// 3. 画像の比率(w:h)を維持したまま、描画時の「高さ」を計算する
-	// 計算式：drawH = CHARA_WIDTH * (元の高さ / 元の幅)
-	int drawH = static_cast<int>(CHARA_WIDTH * (static_cast<float>(h) / w));
+	// ハンドル取得（Enemy クラスの getter を使用）
+	int handle = enemy.Get_EnemyHandle();
+	if (handle < 0)
+	{
+		// 画像未ロードやエラー時はスキップ
+		return;
+	}
 
-	// 4. 描画座標の計算
-	// 横：タイルの中心にキャラの幅(CHARA_WIDTH)を合わせる
-	int x1 = static_cast<int>(enemy.Get_EX() * TILE_SIZE) + (TILE_SIZE - CHARA_WIDTH) / 2;
-	// 縦：キャラの「足元」がタイルの底に付くように配置する
-	int y1 = static_cast<int>(enemy.Get_EY() * TILE_SIZE) + (TILE_SIZE - drawH);
+	// 画像の実際サイズを取得（安全のため）
+	int ew = 1, eh = 1;
+	GetGraphSize(handle, &ew, &eh);
+	if (ew <= 0) ew = 1;
+
+	// 描画幅は敵クラスから取得（プレイヤーと同じサイズ）
+	const int CHARA_WIDTH = enemy.Get_ENemyDisplaySize();
+	int drawH = static_cast<int>(CHARA_WIDTH * (static_cast<float>(eh) / ew));
+
+	// ここで enemy.Get_enemyX()/Get_enemyY() はピクセル座標なのでそのまま使う
+	int x1 = static_cast<int>(enemy.Get_enemyX()) + (TILE_SIZE - CHARA_WIDTH) / 2;
+	int y1 = static_cast<int>(enemy.Get_enemyY()) + (TILE_SIZE - drawH);
 
 	int x2 = x1 + CHARA_WIDTH;
 	int y2 = y1 + drawH;
 
-	DrawExtendGraph(x1, y1, x2, y2, enemy.Get_Ehandle(), true);
+	DrawExtendGraph(x1, y1, x2, y2, handle, TRUE);
 }
