@@ -76,21 +76,20 @@ void DrawManager::Enemy_Draw(const Enemy_Managiment& enemy, const BackScreen& st
 		return;
 	}
 
-	// 画像の実際サイズを取得（安全のため）
-	int ew = 1, eh = 1;
-	GetGraphSize(handle, &ew, &eh);
-	if (ew <= 0) ew = 1;
+	// 画像実サイズ取得
+	int w = 1, h = 1;
+	GetGraphSize(enemy.Get_EnemyHandle(), &w, &h);
 
-	// 描画幅は敵クラスから取得（プレイヤーと同じサイズ）
-	const int CHARA_WIDTH = enemy.Get_ENemyDisplaySize();
-	int drawH = static_cast<int>(CHARA_WIDTH * (static_cast<float>(eh) / ew));
+	const int CHARA_WIDTH = enemy.Get_EnemyDisplaySize();
+	// 比率維持で高さ計算
+	int drawH = static_cast<int>(CHARA_WIDTH * (static_cast<float>(h) / w));
 
-	// ここで enemy.Get_enemyX()/Get_enemyY() はピクセル座標なのでそのまま使う
+	// 描画座標：ピクセル座標を直接使用
 	int x1 = static_cast<int>(enemy.Get_enemyX()) + (TILE_SIZE - CHARA_WIDTH) / 2;
 	int y1 = static_cast<int>(enemy.Get_enemyY()) + (TILE_SIZE - drawH);
 
 	int x2 = x1 + CHARA_WIDTH;
 	int y2 = y1 + drawH;
 
-	DrawExtendGraph(x1, y1, x2, y2, handle, TRUE);
+	DrawExtendGraph(x1, y1, x2, y2, enemy.Get_EnemyHandle(), TRUE);
 }

@@ -41,5 +41,5 @@ public:
 	float Get_enemyX() const { return a.enemy_X; }
 	float Get_enemyY() const { return a.enemy_Y; }
 	int Get_EnemyHandle() const;
-	int Get_ENemyDisplaySize() const { return m_displaySize; }
+	int Get_EnemyDisplaySize() const { return m_displaySize; }
 };
