@@ -95,6 +95,12 @@ void DrawManager::Enemy_Draw(const Enemy_Managiment& enemy, const BackScreen& st
 
 	DrawExtendGraph(x1, y1, x2, y2, enemy.Get_EnemyHandle(), TRUE);
 }
+
+//start画面の文字と背景を描画するだけ
+void DrawManager::Start_Draw() const
+{
+
+}
 /*
 void DrawManager::Item_Draw(const Item_Managiment& item, const BackScreen& stage) const
 {

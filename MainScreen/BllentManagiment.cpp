@@ -4,6 +4,7 @@
 #include<iostream>
 #include"DxLib.h"
 #include<Windows.h>
+#include"EnemyManagiment.h"
 
 void Bllent_Managiment::Load()
 {
@@ -36,7 +37,7 @@ void Bllent_Managiment::Load()
 	now_bllet_Handle = bllet_Handle[SEAGE];
 	
 }
-void Bllent_Managiment::Update (BackScreen& stage, Player_Managiment& player)
+void Bllent_Managiment::Update (BackScreen& stage, Player_Managiment& player, Enemy_Managiment& enemy)
 {
 	for (int i = 0; i < Max_Bullets; i++)
 	{
@@ -61,8 +62,30 @@ void Bllent_Managiment::Update (BackScreen& stage, Player_Managiment& player)
 			stage.CheckCollision(m_bullets[i].x + 16, m_bullets[i].y + 16))
 		{
 			m_bullets[i].isActive = false;
+			continue;
 		}
-		// TODO: Add enemy hit detection (JP: TODO: 敵へのヒット判定を追加)
+
+		// --- 敵との当たり判定（AABB 簡易判定） ---
+		if (enemy.Get_EnemyActive())
+		{
+			float ex = enemy.Get_enemyX();
+			float ey = enemy.Get_enemyY();
+			int esz = enemy.Get_EnemyDisplaySize(); // 敵の描画サイズ（当たり判定に利用）
+			const int BULLET_SIZE = 16; // 弾の当たり大きさ（必要に応じ調整）
+
+			bool hit = !(m_bullets[i].x + BULLET_SIZE < ex ||
+						 m_bullets[i].x > ex + esz ||
+						 m_bullets[i].y + BULLET_SIZE < ey ||
+						 m_bullets[i].y > ey + esz);
+
+			if (hit)
+			{
+				// 弾と敵を無効化（もしくは enemy.OnHit() でHP減少など）
+				m_bullets[i].isActive = false;
+				enemy.OnHit();
+				continue;
+			}
+		}
 	}
 
 }

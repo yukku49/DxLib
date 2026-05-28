@@ -1,6 +1,7 @@
 #pragma once
 #include"PlayerManagiment.h"
 #include"BackScreenManagiment.h"
+#include"EnemyManagiment.h"
 enum bllet_number
 {
 	GENOVESE,
@@ -41,8 +42,9 @@ public:
 	// Load bullet images (JP: 弾画像を読み込む)
 	void Load();
 	// Update bullet movement and collisions (JP: 弾の移動と衝突を更新)
-	void Update(BackScreen& stage, Player_Managiment& player);
+	void Update(BackScreen& stage, Player_Managiment& player, Enemy_Managiment& enemy);
 	// Fire a bullet (JP: 弾を発射)
 	void Shot(float x, float y, Player_Managiment& player);
+	 
 };
 

@@ -43,8 +43,16 @@ public:
 	void Enemy_Update(const BackScreen& stage);
 
 	// DrawManager 用 getter
+
 	float Get_enemyX() const { return a.enemy_X; }
+
 	float Get_enemyY() const { return a.enemy_Y; }
+
 	int Get_EnemyHandle() const;
+
 	int Get_EnemyDisplaySize() const { return m_displaySize; }
+
+	void OnHit() { a.isActive = false; }
+
+	bool Get_EnemyActive()const { return a.isActive; };
 };

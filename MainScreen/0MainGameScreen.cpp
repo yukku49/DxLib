@@ -18,7 +18,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     {
         return -1;
     }
-
+    int start_isActive = false;
     // Tile size used for conversions
     const int TILE_SIZE = 32;
 
@@ -41,12 +41,21 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     // Start main loop (JP: メインループ)
     while (1)
     {
+        //スタート画面
+        if (start_isActive==false)
+        {
+            while(1)
+            { }
+            DrawBox(1, 1, 1279, 735, GetColor(255, 255, 255), false);
+            continue;
+        }
+
         if (ProcessMessage() != 0) break;
         ClearDrawScreen();
 
         // 更新
         player.Update(stage, bllet);
-        bllet.Update(stage, player);
+        bllet.Update(stage, player,enemy);
         // 当たり判定を行う更新を呼ぶ（BackScreen を渡す）
         enemy.Enemy_Update(stage);
 		
