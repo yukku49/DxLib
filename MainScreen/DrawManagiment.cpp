@@ -101,7 +101,7 @@ void DrawManager::Start_Draw() const
 {
 
 }
-/*
+
 void DrawManager::Item_Draw(const Item_Managiment& item, const BackScreen& stage) const
 {
 	for (int i = 0; i < item.Get_Item_number(); i++)
@@ -115,5 +115,5 @@ void DrawManager::Item_Draw(const Item_Managiment& item, const BackScreen& stage
 		DrawExtendGraph(x1, y1, x2, y2, item.Get_ItemHandle(it->type), TRUE);
 	}
 }
-*/
+
 

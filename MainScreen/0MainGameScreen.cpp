@@ -32,7 +32,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
     // Initialize game objects (JP: ゲームオブジェクトの初期化)
     player.Initialisation();
-   // item.ItemManagiment();
+    item.ItemManagiment();
     // Enemy_Initialisation expects pixel coordinates now -> convert from tile coords
     enemy.Enemy_Initialisation(38 * TILE_SIZE, 21 * TILE_SIZE);
     bllet.Load();
@@ -41,14 +41,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     // Start main loop (JP: メインループ)
     while (1)
     {
-        //スタート画面
-        if (start_isActive==false)
-        {
-            while(1)
-            { }
-            DrawBox(1, 1, 1279, 735, GetColor(255, 255, 255), false);
-            continue;
-        }
+        
 
         if (ProcessMessage() != 0) break;
         ClearDrawScreen();
@@ -66,6 +59,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         draw.Player_Draw(stage, player);
         draw.Enemy_Draw(enemy, stage);
         draw.Bullets_Draw(bllet);
+        draw.Item_Draw(item, stage);
 
         // screen flip
         ScreenFlip();
