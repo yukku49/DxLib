@@ -1,11 +1,13 @@
 #include <iostream>
 #include"DxLib.h"
+#include"sqlite_DB/sqlite-amalgamation-3530100/sqlite3.h"
 #include"BackScreenManagiment.h"
 #include"BllentManagiment.h"
 #include"DrawManagiment.h"
 #include"PlayerManagiment.h"
 #include"EnemyManagiment.h"
 #include"ItemManagiment.h"
+#include"StartScreen.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     LPSTR lpCmdLine, int nCmdShow) {
@@ -18,7 +20,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     {
         return -1;
     }
-    int start_isActive = false;
+    
     // Tile size used for conversions
     const int TILE_SIZE = 32;
 
@@ -29,6 +31,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     Bllent_Managiment bllet;
     DrawManager draw;
     BackScreen stage;
+    StartScreen start;
 
     // Initialize game objects (JP: ゲームオブジェクトの初期化)
     player.Initialisation();
@@ -45,7 +48,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     // Start main loop (JP: メインループ)
     while (1)
     {
+        //スタート画面
+        
+        if (start.Get_Start_Flog())
+        {
+            draw.Start_Draw(start);
+            start.SelectGames();
+            start.MoveCursor();
+            continue;
 
+        }
+        
 
         if (ProcessMessage() != 0) break;
         ClearDrawScreen();

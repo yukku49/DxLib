@@ -1,15 +1,66 @@
 #include "StartScreen.h"
 #include"DxLib.h"
 
+void StartScreen::SelectGames()
+{
+	while (string_select != 0)
+	{
+		++selectNumber;
+	}
+	
+
+	//モードに応じた処理をする
+    // メンバ関数ポインタの配列に修正
+    void (StartScreen::*P_func[])() =
+    {
+        &StartScreen::Play_the_game,
+        &StartScreen::Option,
+		& StartScreen::Exit
+    };
+}
+
 void StartScreen::MoveCursor()
 {
 	//キーを取得
 	int cursorUp = CheckHitKey(KEY_INPUT_UP);
 	int cursorDown = CheckHitKey(KEY_INPUT_DOWN);
+	int cursorEnter = CheckHitKey(KEY_INPUT_RETURN);
+	//カーソルを動かす
+	if(cursorUp==1)
+	{
+		cursorY -= 1;
+
+	}
+	if (cursorDown == 1)
+	{
+		cursorY += 1;
+	}
+	//カーソルの位置を制限する
+	if (cursorY < 0)
+	{
+		cursorY = 0;
+	}
+	if (cursorY > selectNumber)
+	{
+		cursorY = selectNumber;
+	}
+	DrawBox(0, cursorY * 32,640,(cursorY + 1) * 32, GetColor(255, 255, 255), true);
 }
 
-void StartScreen::PlaytheGame()
+void StartScreen::Play_the_game()
 {
-	//playerthegame文字が押されたらゲームを開始する
+	
+	isStartScreenActiveflag = false;
+}
 
+void StartScreen::Option()
+{
+	
+}
+
+void StartScreen::Exit()
+{
+	modeNumber = 3;
+	PostQuitMessage(0);
+	DxLib_End();
 }

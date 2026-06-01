@@ -132,6 +132,7 @@
   <ItemGroup>
     <ClCompile Include="BackScreenManagiment.cpp" />
     <ClCompile Include="BllentManagiment.cpp" />
+    <ClCompile Include="DatabaseManagiment.cpp" />
     <ClCompile Include="DrawManagiment.cpp" />
     <ClCompile Include="0MainGameScreen.cpp" />
     <ClCompile Include="EnemyManagiment.cpp" />
@@ -142,6 +143,7 @@
   <ItemGroup>
     <ClInclude Include="BackScreenManagiment.h" />
     <ClInclude Include="BllentManagiment.h" />
+    <ClInclude Include="DatabaseManagiment.h" />
     <ClInclude Include="DrawManagiment.h" />
     <ClInclude Include="EnemyManagiment.h" />
     <ClInclude Include="ItemManagiment.h" />

@@ -4,6 +4,7 @@
 #include "BllentManagiment.h"
 #include "PlayerManagiment.h"
 #include "ItemManagiment.h"
+#include"StartScreen.h"
 #include "DxLib.h"
 
 // Tile drawing unit（タイル描画単位）
@@ -97,8 +98,12 @@ void DrawManager::Enemy_Draw(const Enemy_Managiment& enemy, const BackScreen& st
 }
 
 //start画面の文字と背景を描画するだけ
-void DrawManager::Start_Draw() const
+void DrawManager::Start_Draw(const StartScreen& start) const
 {
+	//枠を描画
+	DrawBox(1, 1, 1280, 736, GetColor(255, 255, 255), true);
+
+	
 
 }
 

@@ -6,6 +6,7 @@
 #include "DxLib.h"
 #include <cmath>
 
+
 static constexpr int TILE_SIZE = 32;
 
 void Player_Managiment::Player_BringItem(Item_Managiment& item)
