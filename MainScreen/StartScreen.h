@@ -1,12 +1,9 @@
 #pragma once
 #include<string>
+
 //セレクト項目
-const char* string_select[] =
-{ "play the game",
-	"option",
-	"exit",
-	NULL
-};
+const char* string_select[];
+
 
 class StartScreen
 {
@@ -20,6 +17,8 @@ class StartScreen
 	//項目に応じた変数を受け取る
 	int modeNumber= 0;
 
+	
+
 public:
 	//Setter
 	
@@ -32,6 +31,9 @@ public:
 	void Play_the_game();
 	void Option();
 	void Exit();
+
+	//文字配列の宣言
+	
 
 	//Getter
 

@@ -22,7 +22,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     }
     
     // Tile size used for conversions
-    const int TILE_SIZE = 32;
+    static constexpr int TILE_SIZE = 32;
 
     // Create manager instances (JP: マネジャーインスタンスの作成)
     Player_Managiment player;

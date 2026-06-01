@@ -1,6 +1,13 @@
 #include "StartScreen.h"
 #include"DxLib.h"
 
+const char* string_select[] =
+{ "play the game",
+	"option",
+	"exit",
+	NULL
+};
+
 void StartScreen::SelectGames()
 {
 	while (string_select != 0)

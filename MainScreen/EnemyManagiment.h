@@ -52,7 +52,8 @@ public:
 
 	int Get_EnemyDisplaySize() const { return m_displaySize; }
 
+	// 被弾処理：単純に無効化（HP 等あれば拡張する）
 	void OnHit() { a.isActive = false; }
-
-	bool Get_EnemyActive()const { return a.isActive; };
+	// 有効判定（Bllent から参照されるため）
+	bool Get_EnemyActive() const { return a.isActive; }
 };

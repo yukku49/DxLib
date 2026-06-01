@@ -8,7 +8,7 @@
 #include "DxLib.h"
 
 // Tile drawing unit（タイル描画単位）
-const int TILE_SIZE = 32; // Map タイルサイズ（描画で使う場合のみ）
+static constexpr int TILE_SIZE = 32; // Map タイルサイズ（描画で使う場合のみ）
 
 // Player 描画をピクセル単位に対応させる（player.GetXf()/GetYf() を使用）
 void DrawManager::Player_Draw(const BackScreen& stage, const Player_Managiment& player) const
