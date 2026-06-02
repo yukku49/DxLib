@@ -51,7 +51,7 @@ void StartScreen::MoveCursor()
 	{
 		cursorY = selectNumber;
 	}
-	DrawBox(0, cursorY * 32,640,(cursorY + 1) * 32, GetColor(255, 255, 255), true);
+	DrawBox(cursorX,cursorY,(cursorX+1)*32,(cursorY+1) * 32, GetColor(255, 255, 255), true);
 }
 
 void StartScreen::Play_the_game()

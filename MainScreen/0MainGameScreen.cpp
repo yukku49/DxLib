@@ -48,17 +48,23 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     // Start main loop (JP: メインループ)
     while (1)
     {
-    
+
         if (ProcessMessage() != 0) break;
         ClearDrawScreen();
-
-        if (start.Get_Start_Flog()!=0)
+        if (start.Get_Start_Flog() == true)
         {
-            draw.Start_Draw(start);
+
+            // デバッグ出力：Start_Draw が呼ばれているか確認
             //start.SelectGames();
-            //start.MoveCursor();
+            start.MoveCursor();
+            draw.Start_Draw(start); // ★ これが実行されているか確認
+            continue;
 
         }
+        // ここで他の描画（Map_Draw, Player_Draw など）を呼んでいれば、
+        // Start_Draw が上書きされます。必要なら順番を変える。
+
+        
 
         // 更新
         player.Update(stage, bllet);
