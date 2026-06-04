@@ -99,4 +99,5 @@ public:
 	int Get_PlayerDisplaySize() const { return m_displaySize; }
 
 	PizzaType TryMakePizza();
+	void Debug_SetItems(int dough, int tomato, int cheese, int gorgonzola, int basil);
 };

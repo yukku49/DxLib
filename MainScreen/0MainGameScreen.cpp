@@ -98,21 +98,21 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         //pizzaデバック用
         if (CheckHitKey(KEY_INPUT_1))
         {
-            Item_count playerItems = {1,2,3,2,0};
+            player.Debug_SetItems(1, 2, 3, 2, 0);
             
         }
         else if(CheckHitKey(KEY_INPUT_2))
         {
-            Item_count playerItems = { 1,0,3,3,0 };
+            player.Debug_SetItems(1, 0, 3, 3, 0)    ;
             
 		}
         else if (CheckHitKey(KEY_INPUT_3))
         {
-            Item_count playerItems = { 1,2,3,0,3 };
+            player.Debug_SetItems(1, 2, 3, 0, 3);
         }
         else if(CheckHitKey(KEY_INPUT_4))
         {
-            Item_count playerItems = { 1,3,0,0,0 };
+            player.Debug_SetItems(1, 3, 0, 0, 0);
 		}
        
         // screen flip

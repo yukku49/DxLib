@@ -65,6 +65,15 @@ PizzaType Player_Managiment::TryMakePizza()
 	return PizzaType::None;
 }
 
+void Player_Managiment::Debug_SetItems(int dough, int tomato, int cheese, int gorgonzola, int basil)
+{
+	Player_Itembring.Pizzadough_Counter = dough;
+	Player_Itembring.Tmato_Counter = tomato;
+	Player_Itembring.Cheese_Counter = cheese;
+	Player_Itembring.Gorgonzola_Counter = gorgonzola;
+	Player_Itembring.Basil_Counter = basil;
+}
+
 void Player_Managiment::Initialisation()
 {
 	// 初期位置をタイル->ピクセルに変換して設定
@@ -169,3 +178,5 @@ void Player_Managiment::Update(const BackScreen& stage, Bllent_Managiment& bllen
 	m_oldRight = nowRight;
 	m_oldSpace = nowSpace;
 }
+// デバッグ用：素材を直接セット
+
