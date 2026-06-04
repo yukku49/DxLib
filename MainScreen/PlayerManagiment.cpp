@@ -26,18 +26,17 @@ PizzaType Player_Managiment::TryMakePizza()
 	auto& it = Player_Itembring;
 
 	// マルゲリータ（最優先）
-	if (it.Tmato_Counter==2  && it.Cheese_Counter == 3 &&
-		it.Basil_Counter ==2 && it.Pizzadough_Counter==1&&it.Gorgonzola_Counter==0)
+	if (it.Tmato_Counter >= 2  && it.Cheese_Counter >= 3 &&
+		it.Basil_Counter >= 2 && it.Pizzadough_Counter>=1)
 	{
-		it.Tmato_Counter=0;
-		it.Cheese_Counter=0;
-		it.Basil_Counter=0;
-		it.Pizzadough_Counter=0;
+		it.Tmato_Counter-=2;
+		it.Cheese_Counter-=3;
+		it.Basil_Counter-=2;
+		it.Pizzadough_Counter-=1;
 		return PizzaType::Margherita;
 	}
 	// クアトロフォルマッジ
-	if (it.Tmato_Counter==0 && it.Cheese_Counter ==3 &&
-		it.Pizzadough_Counter ==1&&it.Gorgonzola_Counter==3&&it.Basil_Counter==0)
+	if (it.Cheese_Counter >= 3 &&it.Pizzadough_Counter >= 1&&it.Gorgonzola_Counter >= 3)
 	{
 		it.Tmato_Counter=0;
 		it.Cheese_Counter=0;
@@ -45,8 +44,8 @@ PizzaType Player_Managiment::TryMakePizza()
 		return PizzaType::QuattroFormaggi;
 	}
 	// マリナーラ
-	if (it.Tmato_Counter==3 && it.Basil_Counter ==0 &&
-		it.Pizzadough_Counter == 0&&it.Cheese_Counter==0&&it.Gorgonzola_Counter==0)
+	if (it.Tmato_Counter >= 3 && 
+		it.Pizzadough_Counter >= 1)
 	{
 		it.Tmato_Counter=0;
 		it.Basil_Counter=0;
@@ -54,13 +53,13 @@ PizzaType Player_Managiment::TryMakePizza()
 		return PizzaType::Marinara;
 	}
 	//ジェノベーゼ
-	if(it.Pizzadough_Counter==1&&it.Tmato_Counter==2&&
-		it.Basil_Counter==3&&it.Cheese_Counter==0&&it.Gorgonzola_Counter==0)
+	if(it.Pizzadough_Counter >= 1&&it.Tmato_Counter >= 2&&
+		it.Basil_Counter >= 3&&it.Cheese_Counter >= 2)
 	{
 		it.Tmato_Counter = 0;
 		it.Basil_Counter = 0;
 		it.Pizzadough_Counter = 0;
-		return PizzaType::Marinara;
+		return PizzaType::Genovese;
 	}
 	return PizzaType::None;
 }
