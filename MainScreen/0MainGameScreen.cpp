@@ -98,7 +98,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         //pizzaデバック用
         if (CheckHitKey(KEY_INPUT_1))
         {
-            player.Debug_SetItems(1, 3, 3, 3, 0);
+            player.Debug_SetItems(1, 2, 3, 0,3);
             
         }
         else if(CheckHitKey(KEY_INPUT_2))
@@ -108,7 +108,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		}
         else if (CheckHitKey(KEY_INPUT_3))
         {
-            player.Debug_SetItems(1, 2, 3, 0, 3);
+            player.Debug_SetItems(1, 2, 3, 0, 2);
         }
         else if(CheckHitKey(KEY_INPUT_4))
         {

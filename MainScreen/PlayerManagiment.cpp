@@ -27,7 +27,7 @@ PizzaType Player_Managiment::TryMakePizza()
 
 	// マルゲリータ（最優先）
 	if (it.Tmato_Counter >= 2  && it.Cheese_Counter >= 3 &&
-		it.Basil_Counter >= 2 && it.Pizzadough_Counter>=1)
+		it.Basil_Counter >= 3 && it.Pizzadough_Counter>=1)
 	{
 		it.Tmato_Counter-=2;
 		it.Cheese_Counter-=3;
@@ -54,7 +54,7 @@ PizzaType Player_Managiment::TryMakePizza()
 	}
 	//ジェノベーゼ
 	if(it.Pizzadough_Counter >= 1&&it.Tmato_Counter >= 2&&
-		it.Basil_Counter >= 3&&it.Cheese_Counter >= 2)
+		it.Basil_Counter >= 2&&it.Cheese_Counter >= 2)
 	{
 		it.Tmato_Counter = 0;
 		it.Basil_Counter = 0;
