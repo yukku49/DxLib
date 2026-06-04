@@ -1,16 +1,7 @@
 #pragma once
 #include "DxLib.h"
 #include"PlayerManagiment.h"
-// Enum for item types (JP: アイテム種別の列挙)
-enum Item_number
-{
-	TOMATO,
-	BASIL,
-	CHEESE,
-	GORGONZOLA,
-	PIZZADOUGH,
-	ITEM_MAX
-};
+#include"ItemTypes.h"
 struct ItemData
 {
 	int x, y;// Grid position on stage (JP: ステージ上のマス座標)
@@ -28,7 +19,7 @@ private:
 	// Item image handle array (JP: アイテム画像ハンドル配列)
 	int Item_Handle[ITEM_MAX];
 	// Maximum simultaneous spawned items (JP: 同時に存在できる最大数)
-	static const int MAX_SPAWN = 5;
+	static const int MAX_SPAWN = 9;
 	// Active item instances (JP: 有効なアイテム実体)
 	ItemData m_items[MAX_SPAWN];
 public:

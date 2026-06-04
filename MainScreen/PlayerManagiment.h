@@ -1,4 +1,5 @@
 #pragma once
+#include"ItemTypes.h"
 // Avoid including DrawManagiment.h here (JP: ここではDrawManagiment.hをインクルードしない)
 #include <array>
 
@@ -23,11 +24,11 @@ enum Player_EyeContact
 
 struct Item_count
 {
+	int Pizzadough_Counter;
 	int Tmato_Counter;
-	int Basil_Counter;
 	int Cheese_Counter;
 	int Gorgonzola_Counter;
-	int Pizzadough_Counter;
+	int Basil_Counter;
 };
 
 class Item_Managiment;

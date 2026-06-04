@@ -38,8 +38,7 @@
         // Expose map background handle (JP: マップ背景ハンドルを公開)
         int Get_Maphandle()const { return m_handles[(int)StageType::stage1]; };
 
-        // Check whether item can be placed (JP: アイテムを置けるか判定)
-     //   bool IsWalkable(int x, int y);
+        
     };
 
 

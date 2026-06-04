@@ -41,6 +41,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     bllet.Load();
     stage.Initialize();
     item.Load();
+    Item_count playerItems;//デバック用
     for (int i = 0; i < (int)ITEM_MAX; i++)
     {
         item.Spawn(stage, static_cast<Item_number>(i));
@@ -78,11 +79,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         Item_number picked = item.CheckPickUp(player);
         if (picked != ITEM_MAX)
         {
-            player.Player_BringItem(item);
+            player.Player_BringItem(picked);
         }
         static int spawnTimer = 0;
         spawnTimer++;
-        if (spawnTimer >= 120)
+        if (spawnTimer >= 180)
         {
             spawnTimer = 0;
             item.Spawn(stage, static_cast<Item_number>(GetRand(ITEM_MAX - 1)));
@@ -94,6 +95,25 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         draw.Bullets_Draw(bllet);
         draw.Item_Draw(item, stage);
     
+        //pizzaデバック用
+        if (CheckHitKey(KEY_INPUT_1))
+        {
+            Item_count playerItems = {1,2,3,2,0};
+            
+        }
+        else if(CheckHitKey(KEY_INPUT_2))
+        {
+            Item_count playerItems = { 1,0,3,3,0 };
+            
+		}
+        else if (CheckHitKey(KEY_INPUT_3))
+        {
+            Item_count playerItems = { 1,2,3,0,3 };
+        }
+        else if(CheckHitKey(KEY_INPUT_4))
+        {
+            Item_count playerItems = { 1,3,0,0,0 };
+		}
        
         // screen flip
         ScreenFlip();

@@ -147,6 +147,7 @@
     <ClInclude Include="DrawManagiment.h" />
     <ClInclude Include="EnemyManagiment.h" />
     <ClInclude Include="ItemManagiment.h" />
+    <ClInclude Include="ItemTypes.h" />
     <ClInclude Include="PlayerManagiment.h" />
     <ClInclude Include="StartScreen.h" />
   </ItemGroup>

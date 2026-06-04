@@ -73,16 +73,16 @@ Item_number Item_Managiment::CheckPickUp(Player_Managiment& player)
 {
 	for (int i = 0; i < MAX_SPAWN; i++)
 	{
-		//¶«Ä¢éACe¾¯ð»è
+		//アイテムが有効でない場合はスキップ
 		if (!m_items[i].isActive)continue;
 
-		//ÀW`FbN
-		if (m_items[i].x-player.GetX()<=1 && m_items[i].y -player.GetY()<=1)
+		//プレイヤーとアイテムの距離が1マス以内かを判定（タイル単位で比較）
+		if (abs(m_items[i].x-player.GetX())<=1 && abs(m_items[i].y -player.GetY())<=1)
 		{
-			//ACeðEÁ½©çñ\¦
+			//アイテムを無効化
 			m_items[i].isActive = false;
 
-			//ACetypeðÔ·
+			//アイテムtypeを返す
 			return m_items[i].type;
 		}
 	}
