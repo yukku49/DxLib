@@ -8,12 +8,16 @@ const char* string_select[];
 class StartScreen
 {
 	bool isStartScreenActiveflag = true;//start Scrren active flag(JP:スタート画面を表示するのフラグ）
+	bool isOptionActiveFlag = false;//option active flag(JP:オプションを表示するのフラグ）
 	//カーソル位置
 	int cursorX = 0;
 	int cursorY = 0;
+	int optioncursorY = 0;
 	//前フレームの状態を保存
 	int m_oldUp = 0;
 	int m_oldDown = 0;
+	int o_oldUp = 0;
+	int o_oldDown = 0;
 	//セレクト項目数
 	int selectNumber = 0;
 	int selectopitionNumber = 0;

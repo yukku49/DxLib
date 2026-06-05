@@ -112,21 +112,27 @@ void StartScreen::Play_the_game()
 
 void StartScreen::Option()
 {
-	if (modeNumber == 1)
+	if (!isOptionActiveFlag)return;
 	{
-		
+		int optionUp = CheckHitKey(KEY_INPUT_UP);
+		int optionDown = CheckHitKey(KEY_INPUT_DOWN);
+		if (optionUp == 1 && o_oldUp == 0)optioncursorY--;
+		if (optionDown == 1 && o_oldDown == 0)optioncursorY++;
+		if (optioncursorY < 0)optioncursorY = 0;
+		if (optioncursorY > selectopitionNumber - 1)optioncursorY = selectopitionNumber - 1;
 		int OptionX = 200;
 		int OptionY = 300;
 		for (int i = 0; i < selectopitionNumber; i++)
 		{
 			int drawY = OptionY + i * 32;
-			if (i == cursorY)
+			if (i == optioncursorY)
 			{
 				DrawBox(OptionX, drawY, OptionX + 32, drawY + 32, GetColor(255, 255, 255), true);
 			}
 
 			DrawString(OptionX + 40, drawY + 8, string_select_option[i], GetColor(255, 255, 255));
 		}
+
 	}
 
 }
