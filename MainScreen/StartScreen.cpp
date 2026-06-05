@@ -33,14 +33,14 @@ void StartScreen::MoveCursor()
 	int cursorDown = CheckHitKey(KEY_INPUT_DOWN);
 	int cursorEnter = CheckHitKey(KEY_INPUT_RETURN);
 	//カーソルを動かす
-	if(cursorUp==1)
+	if(cursorUp==1&&m_oldUp==0)
 	{
-		cursorY -= 32;
+		cursorY -= 1;
 
 	}
-	if (cursorDown == 1)
+	if (cursorDown == 1&&m_oldDown==0)
 	{
-		cursorY += 32;
+		cursorY += 1;
 	}
 	//EnterKeyが押されたらモードに応じた処理
 	if (cursorEnter == 1)
@@ -49,6 +49,10 @@ void StartScreen::MoveCursor()
 		else if (cursorY == 1)Option();
 		else if (cursorY == 2)Exit();
 	}
+	//前フレームの状態を保存
+	m_oldUp = cursorUp;
+	m_oldDown = cursorDown;
+
 	//カーソルの位置を制限する
 	if (cursorY < 0)
 	{
@@ -58,7 +62,19 @@ void StartScreen::MoveCursor()
 	{
 		cursorY = selectNumber;
 	}
-	DrawBox(cursorX+32,cursorY+32,(cursorX+1)+32,(cursorY+1) + 32, GetColor(255, 255, 255), true);
+	//描画（32px間隔）
+	int startX = 100;
+	int startY = 200;
+	for (int i = 0; i < selectNumber; i++)
+	{
+		int drawY = startY + i * 32;
+		if (i == cursorY)
+		{
+			DrawBox(startX, drawY, startX + 32, drawY + 32, GetColor(255, 255, 255), true);
+		}
+		DrawString(startX + 40, drawY + 8, string_select[i], GetColor(255, 255, 255));
+	}
+	
 }
 
 void StartScreen::Play_the_game()
