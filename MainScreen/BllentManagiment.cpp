@@ -103,22 +103,38 @@ void Bllent_Managiment::Shot(float x, float y, Player_Managiment& player)
 
 	PizzaType pizza = player.TryMakePizza();
 	const auto& timer = player.GetPizzaTimer();
-	switch (pizza)
+	
+	// タイマーが残っている種類の中で最優先のものを選ぶ
+	if (timer.Marigherita > 0.0f)
 	{
-	case PizzaType::Margherita:     
-		if (timer.Marigherita <= 0.0f)return;
-		now_bllet_Handle = bllet_Handle[MARGHERITA];      break;
-	case PizzaType::QuattroFormaggi:
-		if (timer.QuattroFormaggi <= 0.0f)return;
-		now_bllet_Handle = bllet_Handle[QUATTROFORMAGGI]; break;
-	case PizzaType::Marinara: 
-		if (timer.Marinara <= 0.0f)return;
-		now_bllet_Handle = bllet_Handle[MARINARA];        break;
-	case PizzaType::Genovese:       
-		if (timer.Genovese <= 0.0f)return;
-		now_bllet_Handle = bllet_Handle[GENOVESE];        break;
-	default:                         now_bllet_Handle = bllet_Handle[SEAGE];           break;
-	};
+		now_bllet_Handle = bllet_Handle[MARGHERITA];
+	}
+	else if (timer.QuattroFormaggi > 0.0f)
+	{
+		now_bllet_Handle = bllet_Handle[QUATTROFORMAGGI];
+	}
+	else if (timer.Marinara > 0.0f)
+	{
+		now_bllet_Handle = bllet_Handle[MARINARA];
+	}
+	else if (timer.Genovese > 0.0f)
+	{
+		now_bllet_Handle = bllet_Handle[GENOVESE];
+	}
+	else
+	{
+		// タイマーが何もなければ材料でピザ作成を試みる
+		PizzaType pizza = player.TryMakePizza();
+		switch (pizza)
+		{
+		case PizzaType::Margherita:      now_bllet_Handle = bllet_Handle[MARGHERITA];      break;
+		case PizzaType::QuattroFormaggi: now_bllet_Handle = bllet_Handle[QUATTROFORMAGGI]; break;
+		case PizzaType::Marinara:        now_bllet_Handle = bllet_Handle[MARINARA];        break;
+		case PizzaType::Genovese:        now_bllet_Handle = bllet_Handle[GENOVESE];        break;
+		default:                         now_bllet_Handle = bllet_Handle[SEAGE];           break;
+		}
+	}
+
 
 	// Find inactive bullet slot (JP: 未使用の弾スロットを探す)
 	for (int i=0;i<Max_Bullets; i++)

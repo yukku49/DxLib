@@ -34,7 +34,7 @@ PizzaType Player_Managiment::TryMakePizza()
 		it.Cheese_Counter-=3;
 		it.Basil_Counter-=2;
 		it.Pizzadough_Counter-=1;
-		m_pizzaTimers.Marigherita = 60.0f * 60.f;
+		m_pizzaTimers.Marigherita = 30.0f * 60.f;
 		return PizzaType::Margherita;
 	}
 	// クアトロフォルマッジ
@@ -43,7 +43,7 @@ PizzaType Player_Managiment::TryMakePizza()
 		it.Cheese_Counter-=3;
 		it.Gorgonzola_Counter-=3;
 		it.Pizzadough_Counter-=1;
-		m_pizzaTimers.QuattroFormaggi = 80.0f * 60.f;
+		m_pizzaTimers.QuattroFormaggi = 40.0f * 60.f;
 		return PizzaType::QuattroFormaggi;
 	}
 	// マリナーラ
@@ -53,7 +53,7 @@ PizzaType Player_Managiment::TryMakePizza()
 		it.Tmato_Counter-=3;
 		it.Basil_Counter-=2;
 		it.Pizzadough_Counter-=1;
-		m_pizzaTimers.Marinara = 30.0f * 60.f;
+		m_pizzaTimers.Marinara = 10.0f * 60.f;
 		return PizzaType::Marinara;
 	}
 	//ジェノベーゼ
@@ -64,7 +64,7 @@ PizzaType Player_Managiment::TryMakePizza()
 		it.Basil_Counter -=2;
 		it.Cheese_Counter -=2;
 		it.Pizzadough_Counter -=1;
-		m_pizzaTimers.Genovese = 60.0f * 60.f;
+		m_pizzaTimers.Genovese = 30.0f * 60.f;
 		return PizzaType::Genovese;
 	}
 	return PizzaType::None;
