@@ -16,6 +16,7 @@ class StartScreen
 	int m_oldDown = 0;
 	//セレクト項目数
 	int selectNumber = 0;
+	int selectopitionNumber = 0;
 	
 	//項目に応じた変数を受け取る
 	int modeNumber= 0;
@@ -24,8 +25,12 @@ class StartScreen
 
 public:
 	//Setter
-	
+	//itilize the start screen(JP : スタート画面の初期化)
+
+	void startInitialize();
+
 	//セレクト
+
 	void SelectGames();
 
 	//十字キーでカーソルを動かす
@@ -35,6 +40,13 @@ public:
 	void Option();
 	void Exit();
 
+	//オプションの中身
+	
+	void Option1();
+	void Option2();
+	void Option3();
+	int returnOption() {return modeNumber = 0; };
+	
 	//文字配列の宣言
 	
 
@@ -42,6 +54,7 @@ public:
 
 	//フラグを返す
 	bool Get_Start_Flog()const { return isStartScreenActiveflag; };
+	int Get_ModeNumber()const { return modeNumber; };
 
 	
 	

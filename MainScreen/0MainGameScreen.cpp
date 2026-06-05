@@ -34,13 +34,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     StartScreen start;
 
     // Initialize game objects (JP: ゲームオブジェクトの初期化)
-	start.SelectGames();
+	
     player.Initialisation();
     item.ItemManagiment();
     // Enemy_Initialisation expects pixel coordinates now -> convert from tile coords
     enemy.Enemy_Initialisation(38 * TILE_SIZE, 21 * TILE_SIZE);
     bllet.Load();
     stage.Initialize();
+    start.startInitialize();
     item.Load();
     Item_count playerItems;//デバック用
     for (int i = 0; i < (int)ITEM_MAX; i++)
@@ -58,8 +59,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         {
 
             // デバッグ出力：Start_Draw が呼ばれているか確認
-            //start.SelectGames();
             start.MoveCursor();
+            start.SelectGames();
+            if (start.Get_ModeNumber() == 1)
+            {
+                do {
+                    start.Option();
+
+                } while (start.returnOption() == 0);
+            }
             draw.Start_Draw(start); // ★ これが実行されているか確認
             ScreenFlip();
             continue;

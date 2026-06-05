@@ -7,23 +7,61 @@ const char* string_select[] =
 	"exit",
 	NULL
 };
+const char*string_select_option[]=
+{
+	"option1",
+	"option2",
+	"option3",
+	"return",
+	NULL
+};
 
-void StartScreen::SelectGames()
+void StartScreen::startInitialize()
 {
 	while (string_select[selectNumber] != nullptr)
 	{
 		++selectNumber;
 	}
-	
+
+	while (string_select_option[selectopitionNumber] != nullptr)
+	{
+		++selectopitionNumber;
+	}
+
 
 	//モードに応じた処理をする
-    // メンバ関数ポインタの配列に修正
-    void (StartScreen::*P_func[])() =
-    {
-        &StartScreen::Play_the_game,
-        &StartScreen::Option,
-		& StartScreen::Exit
-    };
+	// メンバ関数ポインタの配列に修正
+	void (StartScreen:: * P_func[])() =
+	{
+		&StartScreen::Play_the_game,
+		&StartScreen::Option,
+		&StartScreen::Exit
+	};
+	
+	void (StartScreen:: * PfucA[])() =
+	{
+		&StartScreen::Option1,
+		&StartScreen::Option2,
+		&StartScreen::Option3
+	};
+	
+}
+
+void StartScreen::SelectGames()
+{
+	//StartScreen::MoveCursor();
+	//描画（32px間隔）
+	int startX = 100;
+	int startY = 200;
+	for (int i = 0; i < selectNumber; i++)
+	{
+		int drawY = startY + i * 32;
+		if (i == cursorY)
+		{
+			DrawBox(startX, drawY, startX + 32, drawY + 32, GetColor(255, 255, 255), true);
+		}
+		DrawString(startX + 40, drawY + 8, string_select[i], GetColor(255, 255, 255));
+	}
 }
 
 void StartScreen::MoveCursor()
@@ -62,18 +100,7 @@ void StartScreen::MoveCursor()
 	{
 		cursorY = selectNumber;
 	}
-	//描画（32px間隔）
-	int startX = 100;
-	int startY = 200;
-	for (int i = 0; i < selectNumber; i++)
-	{
-		int drawY = startY + i * 32;
-		if (i == cursorY)
-		{
-			DrawBox(startX, drawY, startX + 32, drawY + 32, GetColor(255, 255, 255), true);
-		}
-		DrawString(startX + 40, drawY + 8, string_select[i], GetColor(255, 255, 255));
-	}
+	
 	
 }
 
@@ -85,12 +112,38 @@ void StartScreen::Play_the_game()
 
 void StartScreen::Option()
 {
-	
+	//StartScreen::MoveCursor();
+	int OptionX = 200;
+	int OptionY = 300;
+	for(int i=0; i < selectopitionNumber; i++)
+	{
+		int drawY = OptionY + i * 32;
+		if (i == cursorY)
+		{
+			DrawBox(OptionX, drawY, OptionX + 32, drawY + 32, GetColor(255, 255, 255), true);
+		}
+		DrawString(OptionX + 40, drawY + 8, string_select_option[i], GetColor(255, 255, 255));
+	}
+
 }
+
+
 
 void StartScreen::Exit()
 {
 	modeNumber = 3;
 	PostQuitMessage(0);
 	DxLib_End();
+}
+
+void StartScreen::Option1()
+{
+}
+
+void StartScreen::Option2()
+{
+}
+
+void StartScreen::Option3()
+{
 }
