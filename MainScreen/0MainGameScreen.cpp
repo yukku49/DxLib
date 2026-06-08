@@ -61,7 +61,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
             // デバッグ出力：Start_Draw が呼ばれているか確認
             start.MoveCursor();
             start.SelectGames();
-            start.Option();
+            start.OptionIn();
             draw.Start_Draw(start); // ★ これが実行されているか確認
             ScreenFlip();
             continue;

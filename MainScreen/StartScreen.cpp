@@ -112,6 +112,12 @@ void StartScreen::Play_the_game()
 
 void StartScreen::Option()
 {
+	isOptionActiveFlag = true;
+	ClearDrawScreen();
+
+}
+void StartScreen::OptionIn()
+{
 	if (!isOptionActiveFlag)return;
 	{
 		int optionUp = CheckHitKey(KEY_INPUT_UP);
@@ -134,7 +140,6 @@ void StartScreen::Option()
 		}
 
 	}
-
 }
 
 
@@ -157,3 +162,4 @@ void StartScreen::Option2()
 void StartScreen::Option3()
 {
 }
+

@@ -51,6 +51,9 @@ public:
 	void Option3();
 	int returnOption() {return modeNumber = 0; };
 	
+	//オプションの中身を描画
+	void OptionIn();
+	
 	//文字配列の宣言
 	
 
