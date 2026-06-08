@@ -35,7 +35,7 @@ void DrawManager::Player_Draw(const BackScreen& stage, const Player_Managiment& 
 void DrawManager::Map_Draw(const BackScreen& object)const
 {	
 	// Full background（背景全体）
-	DrawExtendGraph(0, 0, 1280, 736, object.Get_Maphandle(), false);
+	DrawExtendGraph(0, TILE_SIZE, 1280, TILE_SIZE+736, object.Get_Maphandle(), false);
 
 	for (int y = 0; y < object.MAP_Get_SizeY(); y++)
 	{
@@ -100,9 +100,33 @@ void DrawManager::Enemy_Draw(const Enemy_Managiment& enemy, const BackScreen& st
 //start画面の文字と背景を描画するだけ
 void DrawManager::Start_Draw(const StartScreen& start) const
 {
-	//枠を描画
-	DrawBox(0, 0, 736-1, 1280-1, GetColor(255, 255, 255), false);
+	
+	
+		//枠を描画
+		DrawBox(0, 0, 736 - 1, 1280 - 1, GetColor(255, 255, 255), false);
+	
 }
+void DrawManager::HUD_Draw(const Player_Managiment& player, const Enemy_Managiment& enemy) const
+{
+	//UIバー背景（黒）
+	DrawBox(0, 0, 1280, TILE_SIZE, GetColor(30, 30, 30), TRUE);
+	//区切り線
+	DrawBox(0, TILE_SIZE - 1, 1280, TILE_SIZE, GetColor(80, 80, 80), TRUE);
+	//プレイヤー満腹ゲージ（左）
+	const int BAR_W = 200, BAR_H = 14;
+	const int P_BAR_X = 10, BAR_Y = (TILE_SIZE - BAR_H) / 2;
+	//ゲージ枠
+	DrawBox(P_BAR_X, BAR_Y, P_BAR_X + BAR_W, BAR_Y + BAR_H, GetColor(80, 80, 80), TRUE);
+
+	//TODO:実際の満腹値をplayerから取得
+	//float ratio=player.GetFullness()/player.GetMaxFullness();
+	float ratio = 0.5;
+	int fillw = static_cast<int>(BAR_W * ratio);
+	DrawBox(P_BAR_X, BAR_Y, P_BAR_X + fillw, BAR_Y + BAR_H, GetColor(255, 180, 0), TRUE);//オレンジ
+
+	DrawFormatString(P_BAR_X, BAR_W + 6, BAR_Y, GetColor(255, 255, 255), "P1");
+
+};
 
 void DrawManager::Item_Draw(const Item_Managiment& item, const BackScreen& stage) const
 {

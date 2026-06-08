@@ -14,7 +14,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     // Enable windowed mode (JP: )
     ChangeWindowMode(true);
     // Set window size (JP: ???????????)
-    SetGraphMode(1280, 736, 32);
+    SetGraphMode(1280, 768, 32);
     // Initialize DxLib (JP: DxLib????)
     if (DxLib_Init() < 0)
     {

@@ -17,4 +17,5 @@ public:
     void Enemy_Draw(const Enemy_Managiment& enemy, const BackScreen& stage) const;
     void Item_Draw(const Item_Managiment& item, const BackScreen& stage)const;
     void Start_Draw(const StartScreen& start)const;
+    void HUD_Draw(const Player_Managiment& player, const Enemy_Managiment& enemy)const;
 };

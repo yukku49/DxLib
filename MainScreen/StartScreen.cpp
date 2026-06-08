@@ -42,7 +42,8 @@ void StartScreen::startInitialize()
 	{
 		&StartScreen::Option1,
 		&StartScreen::Option2,
-		&StartScreen::Option3
+		&StartScreen::Option3,
+		
 	};
 	
 }
@@ -51,8 +52,8 @@ void StartScreen::SelectGames()
 {
 	//StartScreen::MoveCursor();
 	//ï`âÊÅi32pxä‘äuÅj
-	int startX = 100;
-	int startY = 200;
+	startX = 100;
+	startY = 200;
 	for (int i = 0; i < selectNumber; i++)
 	{
 		int drawY = startY + i * 32;
@@ -60,7 +61,7 @@ void StartScreen::SelectGames()
 		{
 			DrawBox(startX, drawY, startX + 32, drawY + 32, GetColor(255, 255, 255), true);
 		}
-		DrawString(startX + 40, drawY + 8, string_select[i], GetColor(255, 255, 255));
+		DrawString(startX+40, drawY+8, string_select[i], GetColor(255, 255, 255));
 	}
 }
 
@@ -104,30 +105,33 @@ void StartScreen::MoveCursor()
 	
 }
 
-void StartScreen::Play_the_game()
-{
+
 	
-	isStartScreenActiveflag = false;
-}
+	
 
-void StartScreen::Option()
-{
-	isOptionActiveFlag = true;
-	ClearDrawScreen();
 
-}
+
+//StartScreenÇ…èÛë‘ïœêîÇí«â¡
+
 void StartScreen::OptionIn()
 {
+
+
 	if (!isOptionActiveFlag)return;
 	{
+		ClearDrawScreen();
 		int optionUp = CheckHitKey(KEY_INPUT_UP);
 		int optionDown = CheckHitKey(KEY_INPUT_DOWN);
-		if (optionUp == 1 && o_oldUp == 0)optioncursorY--;
-		if (optionDown == 1 && o_oldDown == 0)optioncursorY++;
+		int optionEnter = CheckHitKey(KEY_INPUT_RETURN);
+		if (optionUp == 1 && o_oldUp == 0)--optioncursorY;
+		if (optionDown == 1 && o_oldDown == 0)++optioncursorY;
+
+		o_oldUp = optionUp;
+		o_oldDown = optionDown;
 		if (optioncursorY < 0)optioncursorY = 0;
 		if (optioncursorY > selectopitionNumber - 1)optioncursorY = selectopitionNumber - 1;
-		int OptionX = 200;
-		int OptionY = 300;
+		OptionX = 200;
+		OptionY = 300;
 		for (int i = 0; i < selectopitionNumber; i++)
 		{
 			int drawY = OptionY + i * 32;
@@ -135,10 +139,10 @@ void StartScreen::OptionIn()
 			{
 				DrawBox(OptionX, drawY, OptionX + 32, drawY + 32, GetColor(255, 255, 255), true);
 			}
-
-			DrawString(OptionX + 40, drawY + 8, string_select_option[i], GetColor(255, 255, 255));
+			DrawString(OptionX+40, drawY+8, string_select_option[i], GetColor(255, 255, 255));
+			
 		}
-
+		
 	}
 }
 
