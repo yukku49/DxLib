@@ -78,10 +78,17 @@ private:
 	// 時間管理
 	unsigned int m_lastTime = 0;
 
+	//満腹
+	float m_fullness = 0.0f;
+	
+
+
 	// ピザ発射のクールダウン管理
 	PizzaTimer m_pizzaTimers;
 
 public:
+	static constexpr float MAX_FULLNES = 100.0f;
+
 	void Initialisation();
 	void Update(const BackScreen& stage, Bllent_Managiment& bllent);
 
@@ -111,6 +118,8 @@ public:
 	// ピザを作れるか試す（JP: Check if a pizza can be made and return its type）
 	PizzaType TryMakePizza();
 
+	//
+	float GetFullness()const { return m_fullness; };
 	
 	const PizzaTimer& GetPizzaTimer()const { return m_pizzaTimers; };
 

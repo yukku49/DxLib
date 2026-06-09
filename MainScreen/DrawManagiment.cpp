@@ -120,7 +120,7 @@ void DrawManager::HUD_Draw(const Player_Managiment& player, const Enemy_Managime
 
 	//TODO:実際の満腹値をplayerから取得
 	//float ratio=player.GetFullness()/player.GetMaxFullness();
-	float ratio = 0.5;
+	float ratio = player.GetFullness()/Player_Managiment::MAX_FULLNES;
 	int fillw = static_cast<int>(BAR_W * ratio);
 	DrawBox(P_BAR_X, BAR_Y, P_BAR_X + fillw, BAR_Y + BAR_H, GetColor(255, 180, 0), TRUE);//オレンジ
 
