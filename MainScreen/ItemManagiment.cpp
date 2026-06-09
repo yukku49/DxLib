@@ -28,19 +28,48 @@ void Item_Managiment::Spawn(const BackScreen& stage, Item_number type)
 	{
 		if (!m_items[i].isActive)
 		{
-			int gx, gy;
+			int gx = 0, gy = 0;
 			bool foundLocation = false;
 
-			while (!foundLocation)
+			// 防止無限ループのため試行回数上限を設ける
+			const int MAX_ATTEMPTS = 1000;
+			int attempts = 0;
+
+			// タイル -> ワールド変換に使うタイルサイズ（BackScreen の displaySize は 32 固定なのでここでも 32 を使用）
+			const int TILE_SIZE = 32;
+			while (!foundLocation && attempts < MAX_ATTEMPTS)
 			{
+				attempts++;
 				gx = GetRand(stage.MAP_Get_SizeX() - 1);
 				gy = GetRand(stage.MAP_Get_SizeY() - 1);
-				if (stage.GetMapvalue(gx, gy) == 1)
-				{
-					foundLocation = true;
-				}
 
+				// タイルが通行可能か（既存の判定）
+				if (stage.GetMapvalue(gx, gy) != 1) continue;
+
+				// ワールド座標の中心点で障害物と衝突しないことを確認
+				double worldX = gx * TILE_SIZE + TILE_SIZE / 2.0;
+				double worldY = gy * TILE_SIZE + TILE_SIZE / 2.0;
+				if (stage.CheckCollision(worldX, worldY)) continue;
+
+				// 既にほかのアイテムが同じマスにないことを確認
+				bool overlapWithItem = false;
+				for (int j = 0; j < MAX_SPAWN; j++)
+				{
+					if (m_items[j].isActive && m_items[j].x == gx && m_items[j].y == gy)
+					{
+						overlapWithItem = true;
+						break;
+					}
+				}
+				if (overlapWithItem) continue;
+
+				// すべてのチェックを通過したら確定
+				foundLocation = true;
 			}
+
+			// 見つからなければスキップ（試行回数オーバーなど）
+			if (!foundLocation) return;
+
 			m_items[i].x = gx;
 			m_items[i].y = gy;
 			m_items[i].type =type;
@@ -89,7 +118,3 @@ Item_number Item_Managiment::CheckPickUp(Player_Managiment& player)
 
 	return ITEM_MAX;
 }
-
-
-
-

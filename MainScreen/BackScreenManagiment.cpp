@@ -54,23 +54,11 @@ int statgeaPatern_1[23][40] =
         o_object[0] = LoadGraph("../Pizza_Image/pizza box.png");
         o_object[1] = LoadGraph("../Pizza_Image/renga.png");
 
-        // Optional load failure checks (JP: 読み込み失敗チェック（任意）)
-        /*
-        if (m_handles[0] == -1 || m_handles[1] == -1) {
-            // Error handling (JP: エラー処理)
-            exit(1);
-        }
-        else if (o_object[0] == -1 || o_object[1] == -1)
-        {
-            exit(1);
-        }
-        */
         CopyPart(0, 0, 1);
 
 
 
-        // 3. Call map generation logic if needed (JP: 必要ならマップ生成処理を呼ぶ)
-       // GenerateRandomMap();
+       
     }
     
 
@@ -99,11 +87,4 @@ int statgeaPatern_1[23][40] =
     }
 
    
-    /*
-    bool StageManager::IsWalkable(int x, int y)
-    {
-
-        return false;
-    }
-    */
-
+   
