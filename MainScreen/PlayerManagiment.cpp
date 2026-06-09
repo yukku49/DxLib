@@ -177,7 +177,7 @@ void Player_Managiment::Update(const BackScreen& stage, Bllent_Managiment& bllen
 	if (nowSpace == 1 && m_oldSpace == 0)
 	{
 		// 既存 Shot() はタイル単位を期待しているのでタイルに変換して渡す
-		bllent.Shot(static_cast<float>(GetX()), static_cast<float>(GetY()), *this);
+		bllent.Shot((GetX()),(GetY()), *this);
 	}
 
 	// 前フレーム保存

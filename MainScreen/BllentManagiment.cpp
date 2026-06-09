@@ -101,7 +101,7 @@ void Bllent_Managiment::Shot(float x, float y, Player_Managiment& player)
 	int basil = item.Basil_Counter;
 	int dough = item.Pizzadough_Counter;
 
-	PizzaType pizza = player.TryMakePizza();
+	
 	const auto& timer = player.GetPizzaTimer();
 	
 	// タイマーが残っている種類の中で最優先のものを選ぶ
@@ -178,7 +178,7 @@ void Bllent_Managiment::Shot(float x, float y, Player_Managiment& player)
 				break;
 			}
 		}
-		printf("Shot: slot=%d x=%f y=%f handle=%d\n", i, m_bullets[i].x, m_bullets[i].y, m_bullets[i].using_handle);
+		//printf("Shot: slot=%d x=%f y=%f handle=%d\n", i, m_bullets[i].x, m_bullets[i].y, m_bullets[i].using_handle);
 	}
 }
 

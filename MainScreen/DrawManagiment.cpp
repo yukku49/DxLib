@@ -124,7 +124,7 @@ void DrawManager::HUD_Draw(const Player_Managiment& player, const Enemy_Managime
 	int fillw = static_cast<int>(BAR_W * ratio);
 	DrawBox(P_BAR_X, BAR_Y, P_BAR_X + fillw, BAR_Y + BAR_H, GetColor(255, 180, 0), TRUE);//オレンジ
 
-	DrawFormatString(P_BAR_X * BAR_W + 6, BAR_Y, GetColor(255, 255, 255), "P1");
+	DrawFormatString(P_BAR_X + BAR_W + 6, BAR_Y, GetColor(255, 255, 255), "P1");
 
 	//敵の満腹ゲージ
 	const int E_BAR_X = 1280 - BAR_W - 10;
