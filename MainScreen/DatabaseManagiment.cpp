@@ -1,22 +1,78 @@
 #include "DatabaseManagiment.h"
-#include "sqlite3.h"
 #include <cstring>
-#include <Windows.h>   // OutputDebugStringA
+#include <Windows.h>
+
+namespace
+{
+	int GetItemCount(const Item_count& items, int itemID)
+	{
+		switch (static_cast<Item_number>(itemID))
+		{
+		case TOMATO:      return items.Tmato_Counter;
+		case BASIL:       return items.Basil_Counter;
+		case CHEESE:      return items.Cheese_Counter;
+		case GORGONZOLA:  return items.Gorgonzola_Counter;
+		case PIZZADOUGH:  return items.Pizzadough_Counter;
+		default:          return 0;
+		}
+	}
+
+	void AddItemCount(Item_count& items, int itemID, int delta)
+	{
+		switch (static_cast<Item_number>(itemID))
+		{
+		case TOMATO:      items.Tmato_Counter += delta; break;
+		case BASIL:       items.Basil_Counter += delta; break;
+		case CHEESE:      items.Cheese_Counter += delta; break;
+		case GORGONZOLA:  items.Gorgonzola_Counter += delta; break;
+		case PIZZADOUGH:  items.Pizzadough_Counter += delta; break;
+		default:          break;
+		}
+	}
+
+	void SetPizzaTimer(PizzaTimer& timers, PizzaType type, float frames)
+	{
+		switch (type)
+		{
+		case PizzaType::Margherita:      timers.Marigherita = frames; break;
+		case PizzaType::QuattroFormaggi: timers.QuattroFormaggi = frames; break;
+		case PizzaType::Marinara:        timers.Marinara = frames; break;
+		case PizzaType::Genovese:        timers.Genovese = frames; break;
+		default: break;
+		}
+	}
+
+	bool CanMakeRecipe(const Item_count& items, const RecipeRow* rows, int rowCount)
+	{
+		for (int i = 0; i < rowCount; ++i)
+		{
+			if (GetItemCount(items, rows[i].item_ID) < rows[i].item_count)
+				return false;
+		}
+		return true;
+	}
+
+	void ConsumeRecipe(Item_count& items, const RecipeRow* rows, int rowCount)
+	{
+		for (int i = 0; i < rowCount; ++i)
+			AddItemCount(items, rows[i].item_ID, -rows[i].item_count);
+	}
+}
 
 // ============================================================
-//  接続 / 切断
+//  ??? / ??f
 // ============================================================
 
 bool PizzaDatabase::Initialize(const char* filePath)
 {
     if (sqlite3_open(filePath, &m_db) != SQLITE_OK)
     {
-        OutputDebugStringA("PizzaDatabase: DBオープン失敗\n");
+        OutputDebugStringA("PizzaDatabase: DB?I?[?v?????s\n");
         m_db = nullptr;
         return false;
     }
 
-    // 外部キー制約を有効化
+    // ?O???L?[?????L????
     sqlite3_exec(m_db, "PRAGMA foreign_keys = ON;", nullptr, nullptr, nullptr);
 
     if (!CreateTablesIfNeeded()) return false;
@@ -35,20 +91,20 @@ void PizzaDatabase::Close()
 }
 
 // ============================================================
-//  テーブル作成
+//  ?e?[?u????
 // ============================================================
 
 bool PizzaDatabase::CreateTablesIfNeeded()
 {
     const char* sql =
 
-        // --- 素材マスタ ---
+        // --- ?f??}?X?^ ---
         "CREATE TABLE IF NOT EXISTS Item_table ("
         "  Item_ID   INTEGER PRIMARY KEY,"
         "  Item_name TEXT    NOT NULL"
         ");"
 
-        // --- ピザ（弾）マスタ ---
+        // --- ?s?U?i?e?j?}?X?^ ---
         "CREATE TABLE IF NOT EXISTS Bllet_table ("
         "  Bllet_ID     INTEGER PRIMARY KEY,"
         "  pizza_name   TEXT    NOT NULL,"
@@ -57,7 +113,7 @@ bool PizzaDatabase::CreateTablesIfNeeded()
         "  active_flag  INTEGER NOT NULL DEFAULT 0"  // 0=false 1=true
         ");"
 
-        // --- レシピ（ピザ×素材×必要数）---
+        // --- ???V?s?i?s?U?~?f??~?K?v???j---
         "CREATE TABLE IF NOT EXISTS Recipe_table ("
         "  recipe_ID  INTEGER PRIMARY KEY AUTOINCREMENT,"
         "  Bllet_ID   INTEGER NOT NULL REFERENCES Bllet_table(Bllet_ID),"
@@ -65,17 +121,17 @@ bool PizzaDatabase::CreateTablesIfNeeded()
         "  item_count INTEGER NOT NULL DEFAULT 1"
         ");"
 
-        // --- 満腹ゲージ ---
+        // --- ?????Q?[?W ---
         "CREATE TABLE IF NOT EXISTS fat_gauge ("
         "  fat_ID    INTEGER PRIMARY KEY AUTOINCREMENT,"
-        "  recipe_ID INTEGER NOT NULL REFERENCES Recipe_table(recipe_ID),"
+        "  recipe_ID INTEGER NOT NULL UNIQUE REFERENCES Recipe_table(recipe_ID),"
         "  fat_meter REAL    NOT NULL DEFAULT 0.0"
         ");";
 
     char* errMsg = nullptr;
     if (sqlite3_exec(m_db, sql, nullptr, nullptr, &errMsg) != SQLITE_OK)
     {
-        OutputDebugStringA("PizzaDatabase: テーブル作成失敗: ");
+        OutputDebugStringA("PizzaDatabase: ?e?[?u???????s: ");
         OutputDebugStringA(errMsg);
         OutputDebugStringA("\n");
         sqlite3_free(errMsg);
@@ -85,8 +141,8 @@ bool PizzaDatabase::CreateTablesIfNeeded()
 }
 
 // ============================================================
-//  初期マスタデータ挿入
-//  INSERT OR IGNORE で二重挿入を防ぐ
+//  ?????}?X?^?f?[?^?}??
+//  INSERT OR IGNORE ???d?}????h??
 // ============================================================
 
 bool PizzaDatabase::InsertMasterData()
@@ -94,57 +150,57 @@ bool PizzaDatabase::InsertMasterData()
     const char* sql =
 
         // ---- Item_table ----
-        // ItemTypes.h の Item_number 列挙に合わせた ID
+        // ItemTypes.h ?? Item_number ???????? ID
         "INSERT OR IGNORE INTO Item_table(Item_ID, Item_name) VALUES"
-        "  (0, 'トマト'),"
-        "  (1, 'バジル'),"
-        "  (2, 'チーズ'),"
-        "  (3, 'ゴルゴンゾーラ'),"
-        "  (4, 'ピザ生地');"
+        "  (0, '?g?}?g'),"
+        "  (1, '?o?W??'),"
+        "  (2, '?`?[?Y'),"
+        "  (3, '?S???S???]?[??'),"
+        "  (4, '?s?U???n');"
 
         // ---- Bllet_table ----
-        // PizzaType 列挙の値に合わせた ID
-        // active_time は PlayerManagiment.cpp の TryMakePizza() と揃える（秒単位）
+        // PizzaType ???l??????? ID
+        // active_time ?? PlayerManagiment.cpp ?? TryMakePizza() ???????i?b?P??j
         "INSERT OR IGNORE INTO Bllet_table"
         "  (Bllet_ID, pizza_name,       pizza_damage, active_time, active_flag) VALUES"
-        "  (1, 'マルゲリータ',          3,            30.0,        0),"
-        "  (2, 'クアトロフォルマッジ',  5,            40.0,        0),"
-        "  (3, 'マリナーラ',            2,            10.0,        0),"
-        "  (4, 'ジェノベーゼ',          3,            30.0,        0),"
-        "  (5, 'セージ',                1,             0.0,        0);"
+        "  (1, '?}???Q???[?^',          3,            30.0,        0),"
+        "  (2, '?N?A?g???t?H???}?b?W',  5,            40.0,        0),"
+        "  (3, '?}???i?[??',            2,            10.0,        0),"
+        "  (4, '?W?F?m?x?[?[',          3,            30.0,        0),"
+        "  (5, '?Z?[?W',                1,             0.0,        0);"
 
         // ---- Recipe_table ----
-        // マルゲリータ: トマト×2, チーズ×3, バジル×3, 生地×1
+        // ?}???Q???[?^: ?g?}?g?~2, ?`?[?Y?~3, ?o?W???~3, ???n?~1
         "INSERT OR IGNORE INTO Recipe_table(recipe_ID, Bllet_ID, Item_ID, item_count) VALUES"
-        "  (1,  1, 0, 2),"   // マルゲリータ - トマト 2
-        "  (2,  1, 2, 3),"   // マルゲリータ - チーズ 3
-        "  (3,  1, 1, 3),"   // マルゲリータ - バジル 3
-        "  (4,  1, 4, 1),"   // マルゲリータ - 生地   1
+        "  (1,  1, 0, 2),"   // ?}???Q???[?^ - ?g?}?g 2
+        "  (2,  1, 2, 3),"   // ?}???Q???[?^ - ?`?[?Y 3
+        "  (3,  1, 1, 3),"   // ?}???Q???[?^ - ?o?W?? 3
+        "  (4,  1, 4, 1),"   // ?}???Q???[?^ - ???n   1
 
-        // クアトロフォルマッジ: チーズ×3, ゴルゴン×3, 生地×1
+        // ?N?A?g???t?H???}?b?W: ?`?[?Y?~3, ?S???S???~3, ???n?~1
         "  (5,  2, 2, 3),"
         "  (6,  2, 3, 3),"
         "  (7,  2, 4, 1),"
 
-        // マリナーラ: トマト×3, 生地×1
+        // ?}???i?[??: ?g?}?g?~3, ???n?~1
         "  (8,  3, 0, 3),"
         "  (9,  3, 4, 1),"
 
-        // ジェノベーゼ: トマト×2, バジル×2, チーズ×2, 生地×1
+        // ?W?F?m?x?[?[: ?g?}?g?~2, ?o?W???~2, ?`?[?Y?~2, ???n?~1
         "  (10, 4, 0, 2),"
         "  (11, 4, 1, 2),"
         "  (12, 4, 2, 2),"
         "  (13, 4, 4, 1);"
 
-        // fat_gauge の初期データは「プレイヤーが初めてピザを作ったとき」に挿入するため
-        // ここでは INSERT しない
+        // fat_gauge ??????f?[?^??u?v???C???[???????s?U???????????v??}????????
+        // ??????? INSERT ?????
 
         ;
 
     char* errMsg = nullptr;
     if (sqlite3_exec(m_db, sql, nullptr, nullptr, &errMsg) != SQLITE_OK)
     {
-        OutputDebugStringA("PizzaDatabase: マスタ挿入失敗: ");
+        OutputDebugStringA("PizzaDatabase: ?}?X?^?}?????s: ");
         OutputDebugStringA(errMsg);
         OutputDebugStringA("\n");
         sqlite3_free(errMsg);
@@ -154,7 +210,7 @@ bool PizzaDatabase::InsertMasterData()
 }
 
 // ============================================================
-//  Bllet_table 操作
+//  Bllet_table ????
 // ============================================================
 
 int PizzaDatabase::LoadAllPizzaStatus(PizzaStatus out[], int maxCount) const
@@ -173,7 +229,7 @@ int PizzaDatabase::LoadAllPizzaStatus(PizzaStatus out[], int maxCount) const
     while (sqlite3_step(stmt) == SQLITE_ROW && count < maxCount)
     {
         out[count].bllet_ID = sqlite3_column_int(stmt, 0);
-        // pizza_name を安全にコピー
+        // pizza_name ?????S??R?s?[
         const char* name = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
         strncpy_s(out[count].pizza_name, sizeof(out[count].pizza_name),
             name ? name : "", _TRUNCATE);
@@ -206,7 +262,7 @@ bool PizzaDatabase::UpdatePizzaActiveFlag(int bllet_ID, bool active)
 }
 
 // ============================================================
-//  Item_table 操作
+//  Item_table ????
 // ============================================================
 
 bool PizzaDatabase::GetItemName(Item_number id, char* outName, int bufLen) const
@@ -234,7 +290,7 @@ bool PizzaDatabase::GetItemName(Item_number id, char* outName, int bufLen) const
 }
 
 // ============================================================
-//  Recipe_table 操作
+//  Recipe_table ????
 // ============================================================
 
 int PizzaDatabase::LoadRecipeForPizza(int bllet_ID, RecipeRow out[], int maxRows) const
@@ -265,35 +321,31 @@ int PizzaDatabase::LoadRecipeForPizza(int bllet_ID, RecipeRow out[], int maxRows
 }
 
 // ============================================================
-//  fat_gauge 操作
+//  fat_gauge ????
 // ============================================================
 
 bool PizzaDatabase::SaveFatMeter(int recipe_ID, float fatMeter)
 {
     if (!m_db) return false;
 
-    // 同じ recipe_ID が既にあれば UPDATE、なければ INSERT
+    // ???? recipe_ID ?????????? UPDATE?A?????? INSERT
     const char* sql =
         "INSERT INTO fat_gauge(recipe_ID, fat_meter) VALUES(?, ?)"
         "ON CONFLICT(recipe_ID) DO UPDATE SET fat_meter = excluded.fat_meter;";
 
-    // fat_gauge の PK は AUTOINCREMENT なので recipe_ID に UNIQUE 制約が必要
-    // → 初回のみ ALTER で追加（CreateTablesIfNeeded で対応済みなら不要）
-    // ここでは UPSERT として INSERT OR REPLACE を使う簡易版
+    // fat_gauge ?? PK ?? AUTOINCREMENT ???? recipe_ID ?? UNIQUE ????K?v
+    // ?? ?????? ALTER ?????iCreateTablesIfNeeded ?????????s?v?j
+    // ??????? UPSERT ????? INSERT OR REPLACE ???g??????
     const char* sqlUpsert =
-        "INSERT OR REPLACE INTO fat_gauge(fat_ID, recipe_ID, fat_meter) "
-        "VALUES("
-        "  (SELECT fat_ID FROM fat_gauge WHERE recipe_ID = ?),"  // 既存ID or NULL
-        "  ?, ?"
-        ");";
+        "INSERT INTO fat_gauge(recipe_ID, fat_meter) VALUES(?, ?) "
+        "ON CONFLICT(recipe_ID) DO UPDATE SET fat_meter = excluded.fat_meter;";
 
     sqlite3_stmt* stmt = nullptr;
     if (sqlite3_prepare_v2(m_db, sqlUpsert, -1, &stmt, nullptr) != SQLITE_OK)
         return false;
 
     sqlite3_bind_int(stmt, 1, recipe_ID);
-    sqlite3_bind_int(stmt, 2, recipe_ID);
-    sqlite3_bind_double(stmt, 3, static_cast<double>(fatMeter));
+    sqlite3_bind_double(stmt, 2, static_cast<double>(fatMeter));
 
     bool ok = (sqlite3_step(stmt) == SQLITE_DONE);
     sqlite3_finalize(stmt);
@@ -325,8 +377,77 @@ bool PizzaDatabase::LoadFatMeter(int recipe_ID, float& outFat) const
 }
 
 // ============================================================
-//  ゲームとの連携ヘルパー
+//  ?Q?[?????A?g?w???p?[
 // ============================================================
+
+PizzaType PizzaDatabase::BlletIDToPizzaType(int bllet_ID)
+{
+    switch (bllet_ID)
+    {
+    case 1: return PizzaType::Margherita;
+    case 2: return PizzaType::QuattroFormaggi;
+    case 3: return PizzaType::Marinara;
+    case 4: return PizzaType::Genovese;
+    case 5: return PizzaType::Sage;
+    default: return PizzaType::None;
+    }
+}
+
+PizzaType PizzaDatabase::TryMakePizza(Item_count& items, PizzaTimer& timers)
+{
+    if (!m_db) return PizzaType::None;
+
+    static const int kPriority[] = { 1, 2, 3, 4 };
+
+    for (int blletID : kPriority)
+    {
+        RecipeRow rows[8];
+        const int rowCount = LoadRecipeForPizza(blletID, rows, 8);
+        if (rowCount <= 0 || !CanMakeRecipe(items, rows, rowCount))
+            continue;
+
+        ConsumeRecipe(items, rows, rowCount);
+
+        const PizzaType type = BlletIDToPizzaType(blletID);
+        const float activeSeconds = GetPizzaActiveTime(type);
+        SetPizzaTimer(timers, type, activeSeconds * 60.0f);
+        return type;
+    }
+
+    return PizzaType::None;
+}
+
+int PizzaDatabase::GetPizzaDamage(PizzaType type) const
+{
+    if (!m_db || type == PizzaType::None || type == PizzaType::Sage)
+        return 1;
+
+    PizzaStatus status[8];
+    const int count = LoadAllPizzaStatus(status, 8);
+    const int id = PizzaTypeToID(type);
+    for (int i = 0; i < count; ++i)
+    {
+        if (status[i].bllet_ID == id)
+            return status[i].pizza_damage;
+    }
+    return 1;
+}
+
+float PizzaDatabase::GetPizzaActiveTime(PizzaType type) const
+{
+    if (!m_db || type == PizzaType::None)
+        return 0.0f;
+
+    PizzaStatus status[8];
+    const int count = LoadAllPizzaStatus(status, 8);
+    const int id = PizzaTypeToID(type);
+    for (int i = 0; i < count; ++i)
+    {
+        if (status[i].bllet_ID == id)
+            return status[i].active_time;
+    }
+    return 0.0f;
+}
 
 float PizzaDatabase::OnPizzaMade(PizzaType type, float currentFat)
 {
@@ -334,7 +455,7 @@ float PizzaDatabase::OnPizzaMade(PizzaType type, float currentFat)
 
     int blletID = PizzaTypeToID(type);
 
-    // そのピザのレシピ先頭行の recipe_ID を取得（代表値として使う）
+    // ????s?U????V?s???s?? recipe_ID ??????i??\?l?????g???j
     const char* sql =
         "SELECT recipe_ID FROM Recipe_table WHERE Bllet_ID = ? LIMIT 1;";
 
@@ -351,7 +472,7 @@ float PizzaDatabase::OnPizzaMade(PizzaType type, float currentFat)
 
     if (recipeID < 0) return currentFat;
 
-    // active_time を満腹増加量として使う（ゲームバランスは調整可能）
+    // active_time ?????????????g???i?Q?[???o?????X???????\?j
     PizzaStatus status[8];
     float gain = 0.0f;
     int n = LoadAllPizzaStatus(status, 8);
@@ -359,29 +480,29 @@ float PizzaDatabase::OnPizzaMade(PizzaType type, float currentFat)
     {
         if (status[i].bllet_ID == blletID)
         {
-            gain = status[i].active_time * 0.1f; // active_time の 10% を満腹値に
+            gain = status[i].active_time * 0.1f; // active_time ?? 10% ????l??
             break;
         }
     }
 
     float newFat = currentFat + gain;
-    if (newFat > 100.0f) newFat = 100.0f; // MAX_FULLNESS と合わせる
+    if (newFat > 100.0f) newFat = 100.0f; // MAX_FULLNESS ???????
 
-    // 保存
+    // ???
     SaveFatMeter(recipeID, newFat);
 
     return newFat;
 }
 
 // ============================================================
-//  デバッグ：レシピ整合性チェック
+//  ?f?o?b?O?F???V?s???????`?F?b?N
 // ============================================================
 
 void PizzaDatabase::DebugValidateRecipes() const
 {
     if (!m_db) return;
 
-    // DB上の全レシピを取得して OutputDebugStringA に出力するだけ
+    // DB???S???V?s????????? OutputDebugStringA ??o???????
     const char* sql =
         "SELECT r.recipe_ID, b.pizza_name, i.Item_name, r.item_count "
         "FROM Recipe_table r "
@@ -392,7 +513,7 @@ void PizzaDatabase::DebugValidateRecipes() const
     sqlite3_stmt* stmt = nullptr;
     if (sqlite3_prepare_v2(m_db, sql, -1, &stmt, nullptr) != SQLITE_OK) return;
 
-    OutputDebugStringA("=== PizzaDatabase レシピ一覧 ===\n");
+    OutputDebugStringA("=== PizzaDatabase ???V?s?? ===\n");
     char buf[256];
     while (sqlite3_step(stmt) == SQLITE_ROW)
     {
@@ -400,7 +521,7 @@ void PizzaDatabase::DebugValidateRecipes() const
         const char* pizza = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
         const char* item = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
         int   cnt = sqlite3_column_int(stmt, 3);
-        sprintf_s(buf, "  [recipe_%02d] %s <- %s x%d\n",
+        printf_s(buf, "  [recipe_%02d] %s <- %s x%d\n",
             rid,
             pizza ? pizza : "?",
             item ? item : "?",

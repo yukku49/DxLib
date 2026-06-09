@@ -1,10 +1,10 @@
 #include "BllentManagiment.h"
-#include"PlayerManagiment.h"
-#include"BackScreenManagiment.h"
-#include<iostream>
-#include"DxLib.h"
-#include<Windows.h>
-#include"EnemyManagiment.h"
+#include "DatabaseManagiment.h"
+#include "DxLib.h"
+#include <Windows.h>
+
+static constexpr int BULLET_HIT_SIZE = 16;
+static constexpr float BULLET_SPEED = 300.0f; // px/s（旧 5px/frame @60fps 相当）
 
 void Bllent_Managiment::Load()
 {
@@ -30,23 +30,28 @@ void Bllent_Managiment::Load()
 		m_bullets[i].y = 0.0f;
 		m_bullets[i].vx = 0.0f;
 		m_bullets[i].vy = 0.0f;
-		m_bullets[i].using_handle =-1;
-		m_bullets[i].timer = 0;
+		m_bullets[i].using_handle = -1;
+		m_bullets[i].damage = 1;
 		m_bullets[i].isActive = false;
 	}
 	now_bllet_Handle = bllet_Handle[SEAGE];
-	
+	m_lastTime = GetNowCount();
 }
-void Bllent_Managiment::Update (BackScreen& stage, Player_Managiment& player, Enemy_Managiment& enemy)
+void Bllent_Managiment::Update(BackScreen& stage, Player_Managiment& player, Enemy_Managiment& enemy)
 {
+	unsigned int now = GetNowCount();
+	float dt = (now - m_lastTime) / 1000.0f;
+	if (dt > 0.1f) dt = 0.1f;
+	m_lastTime = now;
+
 	for (int i = 0; i < Max_Bullets; i++)
 	{
-		if (!m_bullets[i].isActive)					
+		if (!m_bullets[i].isActive)
 			continue;
 
 		// Apply velocity (JP: 速度を反映)
-		m_bullets[i].x += m_bullets[i].vx;
-		m_bullets[i].y += m_bullets[i].vy;
+		m_bullets[i].x += m_bullets[i].vx * dt;
+		m_bullets[i].y += m_bullets[i].vy * dt;
 
 		// Remove if out of screen (JP: 画面外なら無効化)
 		if (m_bullets[i].x < -32 || m_bullets[i].x > 1312 ||
@@ -56,10 +61,13 @@ void Bllent_Managiment::Update (BackScreen& stage, Player_Managiment& player, En
 			continue;
 		}
 
-		// Map size note X:40 Y:23 (JP: マップサイズのメモ X:40 Y:23)
-		// Check collision with map walls (JP: マップの壁との衝突判定)
-		if (stage.CheckCollision(m_bullets[i].x, m_bullets[i].y) ||
-			stage.CheckCollision(m_bullets[i].x + 16, m_bullets[i].y + 16))
+		// Check collision with map walls — 四隅 (JP: マップの壁との衝突判定)
+		const float bx = m_bullets[i].x;
+		const float by = m_bullets[i].y;
+		if (stage.CheckCollision(bx, by) ||
+			stage.CheckCollision(bx + BULLET_HIT_SIZE - 1, by) ||
+			stage.CheckCollision(bx, by + BULLET_HIT_SIZE - 1) ||
+			stage.CheckCollision(bx + BULLET_HIT_SIZE - 1, by + BULLET_HIT_SIZE - 1))
 		{
 			m_bullets[i].isActive = false;
 			continue;
@@ -70,12 +78,11 @@ void Bllent_Managiment::Update (BackScreen& stage, Player_Managiment& player, En
 		{
 			float ex = enemy.Get_enemyX();
 			float ey = enemy.Get_enemyY();
-			int esz = enemy.Get_EnemyDisplaySize(); // 敵の描画サイズ（当たり判定に利用）
-			const int BULLET_SIZE = 16; // 弾の当たり大きさ（必要に応じ調整）
+			int esz = enemy.Get_EnemyDisplaySize();
 
-			bool hit = !(m_bullets[i].x + BULLET_SIZE < ex ||
+			bool hit = !(m_bullets[i].x + BULLET_HIT_SIZE < ex ||
 						 m_bullets[i].x > ex + esz ||
-						 m_bullets[i].y + BULLET_SIZE < ey ||
+						 m_bullets[i].y + BULLET_HIT_SIZE < ey ||
 						 m_bullets[i].y > ey + esz);
 
 			if (hit)
@@ -90,95 +97,68 @@ void Bllent_Managiment::Update (BackScreen& stage, Player_Managiment& player, En
 
 }
 
-// Select bullet type from held ingredients, fallback to sage (JP: 所持材料で弾の種類を選び、なければセージ)
-void Bllent_Managiment::Shot(float x, float y, Player_Managiment& player)
+static int HandleForPizzaType(PizzaType type)
 {
+	switch (type)
+	{
+	case PizzaType::Margherita:      return MARGHERITA;
+	case PizzaType::QuattroFormaggi: return QUATTROFORMAGGI;
+	case PizzaType::Marinara:        return MARINARA;
+	case PizzaType::Genovese:        return GENOVESE;
+	default:                         return SEAGE;
+	}
+}
 
-
-	auto item = player.Get_Player_Itembring();
-	int tomato = item.Tmato_Counter;
-	int Cheese = item.Cheese_Counter;
-	int basil = item.Basil_Counter;
-	int dough = item.Pizzadough_Counter;
-
-	
+void Bllent_Managiment::Shot(Player_Managiment& player)
+{
 	const auto& timer = player.GetPizzaTimer();
-	
-	// タイマーが残っている種類の中で最優先のものを選ぶ
+	PizzaType pizzaType = PizzaType::Sage;
+
 	if (timer.Marigherita > 0.0f)
-	{
-		now_bllet_Handle = bllet_Handle[MARGHERITA];
-	}
+		pizzaType = PizzaType::Margherita;
 	else if (timer.QuattroFormaggi > 0.0f)
-	{
-		now_bllet_Handle = bllet_Handle[QUATTROFORMAGGI];
-	}
+		pizzaType = PizzaType::QuattroFormaggi;
 	else if (timer.Marinara > 0.0f)
-	{
-		now_bllet_Handle = bllet_Handle[MARINARA];
-	}
+		pizzaType = PizzaType::Marinara;
 	else if (timer.Genovese > 0.0f)
-	{
-		now_bllet_Handle = bllet_Handle[GENOVESE];
-	}
+		pizzaType = PizzaType::Genovese;
 	else
-	{
-		// タイマーが何もなければ材料でピザ作成を試みる
-		PizzaType pizza = player.TryMakePizza();
-		switch (pizza)
-		{
-		case PizzaType::Margherita:      now_bllet_Handle = bllet_Handle[MARGHERITA];      break;
-		case PizzaType::QuattroFormaggi: now_bllet_Handle = bllet_Handle[QUATTROFORMAGGI]; break;
-		case PizzaType::Marinara:        now_bllet_Handle = bllet_Handle[MARINARA];        break;
-		case PizzaType::Genovese:        now_bllet_Handle = bllet_Handle[GENOVESE];        break;
-		default:                         now_bllet_Handle = bllet_Handle[SEAGE];           break;
-		}
-	}
+		pizzaType = player.TryMakePizza();
+
+	const int handleIndex = HandleForPizzaType(pizzaType);
+	now_bllet_Handle = bllet_Handle[handleIndex];
+	const int damage = (m_db && m_db->IsInitialized())
+		? m_db->GetPizzaDamage(pizzaType)
+		: 1;
 
 
 	// Find inactive bullet slot (JP: 未使用の弾スロットを探す)
-	for (int i=0;i<Max_Bullets; i++)
+	const int displaySize = player.Get_PlayerDisplaySize();
+	const float spawnX = player.GetXf() + (displaySize - BULLET_HIT_SIZE) / 2.0f;
+	const float spawnY = player.GetYf() + (displaySize - BULLET_HIT_SIZE) / 2.0f;
+
+	for (int i = 0; i < Max_Bullets; i++)
 	{
-		// Use first available slot (JP: 最初の空きスロットを使う)
 		if (!m_bullets[i].isActive)
 		{
 			m_bullets[i].isActive = true;
-			m_bullets[i].x = player.GetX()*32.0;
-			m_bullets[i].y = player.GetY()*32.0;
+			m_bullets[i].x = spawnX;
+			m_bullets[i].y = spawnY;
 			m_bullets[i].using_handle = now_bllet_Handle;
-			// Set velocity by player direction (JP: プレイヤーの向きで速度を設定)
-			m_bullets[i].vx = 0;
-			m_bullets[i].vy = 0;
-			// Up (JP: 上)
-			if (player.GetDir() == PlayerEye_Up)
+			m_bullets[i].damage = damage;
+			m_bullets[i].vx = 0.0f;
+			m_bullets[i].vy = 0.0f;
+
+			switch (player.GetDir())
 			{
-				m_bullets[i].vy = -5.0f;
-				m_bullets[i].vx = 0;
-				break;
+			case PlayerEye_Up:    m_bullets[i].vy = -BULLET_SPEED; break;
+			case PlayerEye_Down:  m_bullets[i].vy =  BULLET_SPEED; break;
+			case PlayerEye_Left:  m_bullets[i].vx = -BULLET_SPEED; break;
+			case PlayerEye_Right: m_bullets[i].vx =  BULLET_SPEED; break;
 			}
-			// Down (JP: 下)
-			else if (player.GetDir() ==PlayerEye_Down)
-			{
-				m_bullets[i].vx = 0;
-				m_bullets[i].vy = 5.0f;
-				break;
-			}
-			// Left (JP: 左)
-			else if (player.GetDir() == PlayerEye_Left)
-			{
-				m_bullets[i].vx = -5.0f;
-				m_bullets[i].vy = 0;
-				break;
-			}
-			// Right (JP: 右)
-			else if (player.GetDir() == PlayerEye_Right)
-			{
-				m_bullets[i].vx = 5.0f;
-				m_bullets[i].vy = 0;
-				break;
-			}
+			return;
 		}
-		//printf("Shot: slot=%d x=%f y=%f handle=%d\n", i, m_bullets[i].x, m_bullets[i].y, m_bullets[i].using_handle);
 	}
+	OutputDebugStringA("Bullet pool exhausted: no free slot\n");
 }
 

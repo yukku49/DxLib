@@ -3,16 +3,6 @@
 // Avoid including DrawManagiment.h here (JP: ここではDrawManagiment.hをインクルードしない)
 #include <array>
 
-enum class PizzaType
-{
-	None,
-	Margherita,
-	QuattroFormaggi,
-	Marinara,
-	Genovese,
-	Sage
-};
-
 enum Player_EyeContact
 {
 	PlayerEye_Up = 0,
@@ -22,26 +12,10 @@ enum Player_EyeContact
 	PlayerEye_Max
 };
 
-struct Item_count
-{
-	int Pizzadough_Counter;
-	int Tmato_Counter;
-	int Cheese_Counter;
-	int Gorgonzola_Counter;
-	int Basil_Counter;
-};
-
-struct PizzaTimer
-{
-	float Marigherita = 0.0f;
-	float QuattroFormaggi = 0.0f;
-	float Genovese = 0.0f;
-	float Marinara = 0.0f;
-};
-
 class Item_Managiment;
 class Bllent_Managiment;
 class BackScreen; // Forward declaration (JP: 前方宣言)
+class PizzaDatabase;
 
 class Player_Managiment
 {
@@ -86,10 +60,13 @@ private:
 	// ピザ発射のクールダウン管理
 	PizzaTimer m_pizzaTimers;
 
+	PizzaDatabase* m_db = nullptr;
+
 public:
 	static constexpr float MAX_FULLNES = 100.0f;
 
 	void Initialisation();
+	void SetDatabase(PizzaDatabase* db) { m_db = db; }
 	void Update(const BackScreen& stage, Bllent_Managiment& bllent);
 
 	// 互換性維持：既存コード向けにタイル単位 getter（戻り値はタイル index）

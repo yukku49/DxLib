@@ -13,11 +13,10 @@ enum bllet_number
 };
 struct BulletData
 {
-	
 	float x, y;// Position (JP: 座標)
-	float vx, vy;// Velocity (JP: 速度)
+	float vx, vy;// Velocity px/s (JP: 速度)
 	int using_handle;// Sprite handle in use (JP: 使用中のスプライトハンドル)
-	int timer;// Lifetime timer (JP: 生存時間タイマー)
+	int damage;// Damage from DB (JP: DB由来のダメージ)
 	bool isActive;// Active flag (JP: 有効フラグ)
 };
 
@@ -31,20 +30,28 @@ class Bllent_Managiment
 	int now_bllet_Handle;
 	// Bullet data array (JP: 弾データ配列)
 	BulletData m_bullets[Max_Bullets];
+	unsigned int m_lastTime = 0;
+	class PizzaDatabase* m_db = nullptr;
 public:
 	// Getter for max bullets (JP: 最大弾数の取得)
 	int GetMaxBullets()const { return Max_Bullets; };
 	// Getter for bullet data by index (JP: インデックスから弾データを取得)
-	const BulletData& Get_Bullethandle(int index)const { return m_bullets[index]; };
+	const BulletData& Get_Bullethandle(int index)const
+	{
+		if (index < 0) index = 0;
+		if (index >= Max_Bullets) index = Max_Bullets - 1;
+		return m_bullets[index];
+	}
 	// Getter for current bullet image handle (JP: 現在の弾画像ハンドルを取得)
-	const int Get_Bullet_Image()const { return now_bllet_Handle; };
+	int Get_Bullet_Image()const { return now_bllet_Handle; };
 	
 	// Load bullet images (JP: 弾画像を読み込む)
 	void Load();
+	void SetDatabase(class PizzaDatabase* db) { m_db = db; }
 	// Update bullet movement and collisions (JP: 弾の移動と衝突を更新)
 	void Update(BackScreen& stage, Player_Managiment& player, Enemy_Managiment& enemy);
 	// Fire a bullet (JP: 弾を発射)
-	void Shot(float x, float y, Player_Managiment& player);
+	void Shot(Player_Managiment& player);
 	 
 };
 

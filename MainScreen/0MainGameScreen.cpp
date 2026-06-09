@@ -7,6 +7,7 @@
 #include"EnemyManagiment.h"
 #include"ItemManagiment.h"
 #include"StartScreen.h"
+#include"DatabaseManagiment.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     LPSTR lpCmdLine, int nCmdShow) {
@@ -31,9 +32,21 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     DrawManager draw;
     BackScreen stage;
     StartScreen start;
+    PizzaDatabase pizzaDb;
 
     // Initialize game objects (JP: ゲームオブジェクトの初期化)
-	
+    if (!pizzaDb.Initialize("pizza_data.db"))
+    {
+        OutputDebugStringA("PizzaDatabase initialization failed\n");
+    }
+    else
+    {
+        pizzaDb.DebugValidateRecipes();
+    }
+
+    player.SetDatabase(&pizzaDb);
+    bllet.SetDatabase(&pizzaDb);
+
     player.Initialisation();
     item.ItemManagiment();
     // Enemy_Initialisation expects pixel coordinates now -> convert from tile coords
@@ -123,7 +136,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         ScreenFlip();
     }
 
-    // Finalize DxLib (JP: )
+    pizzaDb.Close();
 
     DxLib_End();
 

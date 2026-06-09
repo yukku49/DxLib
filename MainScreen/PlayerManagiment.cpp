@@ -2,6 +2,7 @@
 #include "ItemManagiment.h"
 #include "BackScreenManagiment.h"
 #include "BllentManagiment.h"
+#include "DatabaseManagiment.h"
 
 #include "DxLib.h"
 #include <cmath>
@@ -21,52 +22,17 @@ void Player_Managiment::Player_BringItem(Item_number picked)
 	}
 }
 
-// Try to make pizza based on held ingredients, return type and consume ingredients if successful (JP: 所持材料でピザを作成できるか試し、成功したら材料を消費してタイプを返す)	
 PizzaType Player_Managiment::TryMakePizza()
 {
-	auto& it = Player_Itembring;
+	if (m_db && m_db->IsInitialized())
+	{
+		const PizzaType type = m_db->TryMakePizza(Player_Itembring, m_pizzaTimers);
+		if (type != PizzaType::None)
+			m_fullness = m_db->OnPizzaMade(type, m_fullness);
+		return type;
+	}
 
-	// マルゲリータ（最優先）
-	if (it.Tmato_Counter >= 2  && it.Cheese_Counter >= 3 &&
-		it.Basil_Counter >= 3 && it.Pizzadough_Counter>=1)
-	{
-		it.Tmato_Counter-=2;
-		it.Cheese_Counter-=3;
-		it.Basil_Counter-=2;
-		it.Pizzadough_Counter-=1;
-		m_pizzaTimers.Marigherita = 30.0f * 60.f;
-		return PizzaType::Margherita;
-	}
-	// クアトロフォルマッジ
-	if (it.Cheese_Counter >= 3 &&it.Pizzadough_Counter >= 1&&it.Gorgonzola_Counter >= 3)
-	{
-		it.Cheese_Counter-=3;
-		it.Gorgonzola_Counter-=3;
-		it.Pizzadough_Counter-=1;
-		m_pizzaTimers.QuattroFormaggi = 40.0f * 60.f;
-		return PizzaType::QuattroFormaggi;
-	}
-	// マリナーラ
-	if (it.Tmato_Counter >= 3 && 
-		it.Pizzadough_Counter >= 1)
-	{
-		it.Tmato_Counter-=3;
-		it.Basil_Counter-=2;
-		it.Pizzadough_Counter-=1;
-		m_pizzaTimers.Marinara = 10.0f * 60.f;
-		return PizzaType::Marinara;
-	}
-	//ジェノベーゼ
-	if(it.Pizzadough_Counter >= 1&&it.Tmato_Counter >= 2&&
-		it.Basil_Counter >= 2&&it.Cheese_Counter >= 2)
-	{
-		it.Tmato_Counter -=2;
-		it.Basil_Counter -=2;
-		it.Cheese_Counter -=2;
-		it.Pizzadough_Counter -=1;
-		m_pizzaTimers.Genovese = 30.0f * 60.f;
-		return PizzaType::Genovese;
-	}
+	OutputDebugStringA("PizzaDatabase not initialized: TryMakePizza failed\n");
 	return PizzaType::None;
 }
 
@@ -176,8 +142,7 @@ void Player_Managiment::Update(const BackScreen& stage, Bllent_Managiment& bllen
 	// 発射（立ち上がりで1発）
 	if (nowSpace == 1 && m_oldSpace == 0)
 	{
-		// 既存 Shot() はタイル単位を期待しているのでタイルに変換して渡す
-		bllent.Shot((GetX()),(GetY()), *this);
+		bllent.Shot(*this);
 	}
 
 	// 前フレーム保存

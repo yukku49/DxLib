@@ -56,9 +56,12 @@ void DrawManager::Bullets_Draw(const Bllent_Managiment& bullets) const
 	for (int i = 0; i < bullets.GetMaxBullets(); ++i)
 	{
 		const auto& b = bullets.Get_Bullethandle(i);
-		if (b.isActive&&b.using_handle>=0)
+		if (b.isActive && b.using_handle >= 0)
 		{
-			DrawExtendGraph(static_cast<int>(b.x), static_cast<int>(b.y)+TILE_SIZE,static_cast<int>(b.x)+32,static_cast<int>(b.y)+32+TILE_SIZE, b.using_handle, true);
+			// 16px 当たり判定の中心に 32px スプライトを合わせる
+			const int drawX = static_cast<int>(b.x) - 8;
+			const int drawY = static_cast<int>(b.y) + TILE_SIZE - 8;
+			DrawExtendGraph(drawX, drawY, drawX + 32, drawY + 32, b.using_handle, true);
 		}
 	}
 }
