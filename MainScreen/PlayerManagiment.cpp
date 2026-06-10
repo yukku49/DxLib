@@ -70,15 +70,18 @@ void Player_Managiment::Initialisation()
 
 void Player_Managiment::Update(const BackScreen& stage, Bllent_Managiment& bllent)
 {
-	if (m_pizzaTimers.Marigherita > 0.0f) m_pizzaTimers.Marigherita--;
-	if (m_pizzaTimers.QuattroFormaggi > 0.0f) m_pizzaTimers.QuattroFormaggi--;
-	if (m_pizzaTimers.Genovese > 0.0f) m_pizzaTimers.Genovese--;
-	if (m_pizzaTimers.Marinara > 0.0f) m_pizzaTimers.Marinara--;
-	// delta time (秒)
+	//delta time(秒)
 	unsigned int now = GetNowCount();
 	float dt = (now - m_lastTime) / 1000.0f;
-	if (dt > 0.1f) dt = 0.1f;
+	if (dt > 0.1f)dt = 0.1f;
 	m_lastTime = now;
+
+	if (m_pizzaTimers.Marigherita > 0.0f) m_pizzaTimers.Marigherita-=dt;
+	if (m_pizzaTimers.QuattroFormaggi > 0.0f) m_pizzaTimers.QuattroFormaggi-=dt;
+	if (m_pizzaTimers.Genovese > 0.0f) m_pizzaTimers.Genovese-=dt;
+	if (m_pizzaTimers.Marinara > 0.0f) m_pizzaTimers.Marinara-=dt;
+
+	
 
 	// 入力取得（ホールドで滑らか移動）
 	int nowUp = CheckHitKey(KEY_INPUT_W);
