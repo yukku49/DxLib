@@ -102,7 +102,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         if (spawnTimer >= 360)
         {
             spawnTimer = 0;
-            item.Spawn(stage, static_cast<Item_number>(GetRand(ITEM_MAX - 1)));
+            //現在のアクティブ数を数える
+            int activeCount = 0;
+            for (int i = 0; i < item.Get_Item_number(); i++)
+            {
+                if (item.Get_Items(i)->isActive)
+                    activeCount++;
+            }
+            int spawncount = 5 - activeCount;
+            for (int s = 0; s < spawncount; s++)
+            {
+                item.Spawn(stage, static_cast<Item_number>(GetRand(ITEM_MAX - 1)));
+            }
         }
         // 描画
         draw.Map_Draw(stage);
