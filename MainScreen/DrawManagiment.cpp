@@ -153,7 +153,7 @@ void DrawManager::Item_Draw(const Item_Managiment& item, const BackScreen& stage
 		const ItemData* it = item.Get_Items(i);
 		if (!it->isActive) continue;
 		int x1 = static_cast<int>(it->x * TILE_SIZE);
-		int y1 = static_cast<int>(it->y * TILE_SIZE);
+		int y1 = static_cast<int>(it->y * TILE_SIZE)+TILE_SIZE;
 		int x2 = x1 + TILE_SIZE;
 		int y2 = y1 + TILE_SIZE;
 		DrawExtendGraph(x1, y1, x2, y2, item.Get_ItemHandle(it->type), TRUE);

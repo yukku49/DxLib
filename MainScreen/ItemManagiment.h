@@ -19,7 +19,7 @@ private:
 	// Item image handle array (JP: アイテム画像ハンドル配列)
 	int Item_Handle[ITEM_MAX];
 	// Maximum simultaneous spawned items (JP: 同時に存在できる最大数)
-	static const int MAX_SPAWN = 9;
+	static const int MAX_SPAWN = 20;
 	// Active item instances (JP: 有効なアイテム実体)
 	ItemData m_items[MAX_SPAWN];
 public:

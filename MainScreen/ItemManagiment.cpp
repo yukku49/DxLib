@@ -74,7 +74,7 @@ void Item_Managiment::Spawn(const BackScreen& stage, Item_number type)
 			m_items[i].y = gy;
 			m_items[i].type =type;
 			m_items[i].isActive = true;
-			m_items[i].aliveTimer = 600;
+			m_items[i].aliveTimer = 300;
 			break;
 		}
 	}

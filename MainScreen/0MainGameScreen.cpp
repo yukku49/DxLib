@@ -99,7 +99,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         }
         static int spawnTimer = 0;
         spawnTimer++;
-        if (spawnTimer >= 180)
+        if (spawnTimer >= 360)
         {
             spawnTimer = 0;
             item.Spawn(stage, static_cast<Item_number>(GetRand(ITEM_MAX - 1)));
