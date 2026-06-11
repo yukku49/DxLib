@@ -21,6 +21,7 @@ struct Enemy_date
 };
 
 class BackScreen; // Forward declaration for collision check
+class PlayerManagiment;
 
 class Enemy_Managiment
 {
@@ -40,7 +41,8 @@ public:
 	void Enemy_Update();
 
 	// 新規：当たり判定ありの更新（BackScreen を渡す）
-	void Enemy_Update(const BackScreen& stage);
+	void Enemy_Update(const BackScreen& stage,float playerX,float playerY);
+
 
 	// DrawManager 用 getter
 

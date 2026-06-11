@@ -1,6 +1,7 @@
 #include "DxLib.h"
 #include "EnemyManagiment.h"
 #include "BackScreenManagiment.h" // For CheckCollision
+#include<cmath>
 
 // 画面サイズやスプライトサイズが必要なら共通化してください
 static const int SCREEN_W = 1280;
@@ -27,9 +28,9 @@ int Enemy_Managiment::Get_EnemyHandle() const
 {
 	// 簡易：vx/vy によって向きを推定してハンドルを返す
 	if (!a.isActive) return -1;
-	if (a.vx < 0.0f) return a.Enemy_Eye_handlbe[Enemy_Left];
-	if (a.vx > 0.0f) return a.Enemy_Eye_handlbe[Enemy_Right];
-	if (a.vy < 0.0f) return a.Enemy_Eye_handlbe[Enemy_Up];
+	if (a.enemy_X < 0.0f) return a.Enemy_Eye_handlbe[Enemy_Left];
+	if (a.enemy_X > 0.0f) return a.Enemy_Eye_handlbe[Enemy_Right];
+	if (a.enemy_Y < 0.0f) return a.Enemy_Eye_handlbe[Enemy_Up];
 	return a.Enemy_Eye_handlbe[Enemy_Down];
 }
 
@@ -54,46 +55,41 @@ void Enemy_Managiment::Enemy_Update()
 }
 
 // 新規：BackScreen を用いた当たり判定あり更新（四隅サンプル）
-void Enemy_Managiment::Enemy_Update(const BackScreen& stage)
+void Enemy_Managiment::Enemy_Update(const BackScreen& stage, float playerX, float playerY)
 {
 	if (!a.isActive) return;
 
-	// 予測移動（vx/vy はピクセル単位でフレーム毎）
-	float newX = a.enemy_X + a.vx;
-	float newY = a.enemy_Y + a.vy;
+	float dx = playerX - a.enemy_X;
+	float dy = playerY - a.enemy_Y;
+	float len = std::sqrt(dx * dx + dy * dy);
+	if (len < 1.0f) return;
 
-	int w = m_displaySize;
-	int h = m_displaySize;
+	const float speed = 1.0f;
+	float wishVx = (dx / len) * speed;
+	float wishVy = (dy / len) * speed;
 
-	auto collidesAt = [&](float wx, float wy) -> bool {
-		return stage.CheckCollision(wx, wy); // world(px) -> tile に変換して判定
-	};
+	const int w = m_displaySize;
 
-	// 四隅チェック（ワールド座標）
-	bool collision = false;
-	if (collidesAt(newX, newY)) collision = true;
-	if (collidesAt(newX + w - 1, newY)) collision = true;
-	if (collidesAt(newX, newY + h - 1)) collision = true;
-	if (collidesAt(newX + w - 1, newY + h - 1)) collision = true;
+	// X軸だけ試す
+	float newX = a.enemy_X + wishVx;
+	bool hitX =
+		stage.CheckCollision(newX, a.enemy_Y) ||
+		stage.CheckCollision(newX + w - 1, a.enemy_Y) ||
+		stage.CheckCollision(newX, a.enemy_Y + w - 1) ||
+		stage.CheckCollision(newX + w - 1, a.enemy_Y + w - 1);
 
-	if (!collision)
-	{
-		// 衝突がなければ移動適用
-		a.enemy_X = newX;
-		a.enemy_Y = newY;
-	}
-	else
-	{
-		// 衝突がある場合は速度を反転（簡易処理）
-		a.vx *= -1.0f;
-		a.vy *= -1.0f;
-	}
+	// Y軸だけ試す
+	float newY = a.enemy_Y + wishVy;
+	bool hitY =
+		stage.CheckCollision(a.enemy_X, newY) ||
+		stage.CheckCollision(a.enemy_X + w - 1, newY) ||
+		stage.CheckCollision(a.enemy_X, newY + w - 1) ||
+		stage.CheckCollision(a.enemy_X + w - 1, newY + w - 1);
 
-	// 画面端反転も適用（安全策）
-	if (a.enemy_X < 0.0f) { a.enemy_X = 0.0f; a.vx *= -1.0f; }
-	if (a.enemy_X > SCREEN_W - w) { a.enemy_X = SCREEN_W - w; a.vx *= -1.0f; }
-	if (a.enemy_Y < 0.0f) { a.enemy_Y = 0.0f; a.vy *= -1.0f; }
-	if (a.enemy_Y > SCREEN_H - h) { a.enemy_Y = SCREEN_H - h; a.vy *= -1.0f; }
-}
+	// ぶつからない軸だけ移動を適用
+	if (!hitX) a.enemy_X = newX;
+	if (!hitY) a.enemy_Y = newY;
+};
+
 
 

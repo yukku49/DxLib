@@ -89,7 +89,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         player.Update(stage, bllet);
         bllet.Update(stage, player, enemy);
         // 当たり判定を行う更新を呼ぶ（BackScreen を渡す）
-        enemy.Enemy_Update(stage);
+        enemy.Enemy_Update(stage,player.GetXf(),player.GetYf());
 
         item.Updata();
         Item_number picked = item.CheckPickUp(player);
