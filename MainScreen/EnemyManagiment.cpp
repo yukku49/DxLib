@@ -62,10 +62,7 @@ void Enemy_Managiment::Enemy_Update(const BackScreen& stage, float playerX, floa
 {
     if (!a.isActive) return;
 
-<<<<<<< HEAD
-=======
-    // ★ オフセットなしでタイル座標に変換
->>>>>>> bf210bda756864ed957e0258e0c5621390aa6722
+
     int eTx = static_cast<int>(a.enemy_X) / 32;
     int eTy = static_cast<int>(a.enemy_Y) / 32;
     int pTx = static_cast<int>(playerX) / 32;
@@ -76,27 +73,13 @@ void Enemy_Managiment::Enemy_Update(const BackScreen& stage, float playerX, floa
     {
         m_pathTimer = 0;
         CalcPath(stage, eTx, eTy, pTx, pTy);
-<<<<<<< HEAD
+
         m_pathIndex = 0; // ← インデックスリセット忘れずに
-=======
-        m_pathIndex = 0;
->>>>>>> bf210bda756864ed957e0258e0c5621390aa6722
+
     }
 
     if (m_path.empty() || m_pathIndex >= (int)m_path.size()) return;
 
-<<<<<<< HEAD
-    // 次のタイル
-    auto [nextTx, nextTy] = m_path[m_pathIndex];
-    float nextPx = nextTx * 32.0f;
-    float nextPy = nextTy * 32.0f;
-
-    float dx = nextPx - a.enemy_X;
-    float dy = nextPy - a.enemy_Y;
-    float dist = std::sqrt(dx * dx + dy * dy);
-
-    // 到達したら次のタイルへ
-=======
     auto [nextTx, nextTy] = m_path[m_pathIndex];
 
     // ★ オフセットなしでピクセルに変換
@@ -107,7 +90,6 @@ void Enemy_Managiment::Enemy_Update(const BackScreen& stage, float playerX, floa
     float dy = nextPy - a.enemy_Y;
     float dist = std::sqrt(dx * dx + dy * dy);
 
->>>>>>> bf210bda756864ed957e0258e0c5621390aa6722
     if (dist < 2.0f)
     {
         a.enemy_X = nextPx;
@@ -122,22 +104,22 @@ void Enemy_Managiment::Enemy_Update(const BackScreen& stage, float playerX, floa
 
     const int w = m_displaySize;
 
-<<<<<<< HEAD
+
     // ★ X軸衝突判定
     float newX = a.enemy_X + moveX;
-<<<<<<< HEAD
+
    
-=======
->>>>>>> parent of bf210bd (コメントなし)
+
+
     bool hitX =
         stage.CheckCollision(newX, a.enemy_Y) ||
         stage.CheckCollision(newX + w - 1, a.enemy_Y) ||
         stage.CheckCollision(newX, a.enemy_Y + w - 1) ||
-<<<<<<< HEAD
+
         stage.CheckCollision(newX + w - 1, a.enemy_Y+ w - 1);
-=======
+
         stage.CheckCollision(newX + w - 1, a.enemy_Y + w - 1);
->>>>>>> parent of bf210bd (コメントなし)
+
 
     // ★ Y軸衝突判定
     float newY = a.enemy_Y + moveY;
@@ -161,12 +143,10 @@ void Enemy_Managiment::Enemy_Update(const BackScreen& stage, float playerX, floa
         stage.CheckCollision(a.enemy_X + w - 1, newY+32.0f) ||
         stage.CheckCollision(a.enemy_X, newY+32.0f + w - 1) ||
         stage.CheckCollision(a.enemy_X + w - 1, newY+32.0f + w - 1);
->>>>>>> bf210bda756864ed957e0258e0c5621390aa6722
 
     if (!hitX) a.enemy_X = newX;
     if (!hitY) a.enemy_Y = newY;
 
-<<<<<<< HEAD
     // ★ 衝突が続くなら再計算を強制
     if (hitX && hitY)
     {
