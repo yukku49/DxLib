@@ -1,18 +1,10 @@
 #include "DxLib.h"
 #include "EnemyManagiment.h"
-<<<<<<< HEAD
 #include "BackScreenManagiment.h"
 #include <cmath>
 #include <queue>
 #include <array>
 #include <algorithm>
-=======
-#include "BackScreenManagiment.h" // For CheckCollision
-#include<cmath>
-#include<queue>
-#include<array>
-#include<algorithm>
->>>>>>> ffbacaaea3bb321e0fa3d1a232042b05f6921aae
 
 static const int SCREEN_W = 1280;
 static const int SCREEN_H = 736;
@@ -64,44 +56,26 @@ void Enemy_Managiment::Enemy_Update()
 void Enemy_Managiment::Enemy_Update(const BackScreen& stage, float playerX, float playerY)
 {
     if (!a.isActive) return;
-
-<<<<<<< HEAD
     // 内部座標（HUDオフセット込み）をそのままタイル変換
     // CheckCollision が内部で -HUD_OFFSET するので、ここでは生座標を渡す
     int eTx = static_cast<int>(a.enemy_X) / 32;
     int eTy = static_cast<int>(a.enemy_Y - 32) / 32; // タイル座標変換（HUD分を引く）
     int pTx = static_cast<int>(playerX) / 32;
     int pTy = static_cast<int>(playerY - 32) / 32;
-=======
-<<<<<<< HEAD
-=======
-    // ★ オフセットなしでタイル座標に変換
->>>>>>> bf210bda756864ed957e0258e0c5621390aa6722
-    int eTx = static_cast<int>(a.enemy_X) / 32;
-    int eTy = static_cast<int>(a.enemy_Y) / 32;
-    int pTx = static_cast<int>(playerX) / 32;
-    int pTy = static_cast<int>(playerY) / 32;
->>>>>>> ffbacaaea3bb321e0fa3d1a232042b05f6921aae
-
     m_pathTimer++;
     if (m_pathTimer >= PATH_INTERVAL || m_path.empty())
     {
         m_pathTimer = 0;
         CalcPath(stage, eTx, eTy, pTx, pTy);
-<<<<<<< HEAD
-        m_pathIndex = 0;
-=======
-<<<<<<< HEAD
+
         m_pathIndex = 0; // ← インデックスリセット忘れずに
-=======
-        m_pathIndex = 0;
->>>>>>> bf210bda756864ed957e0258e0c5621390aa6722
->>>>>>> ffbacaaea3bb321e0fa3d1a232042b05f6921aae
+
+
     }
 
     if (m_path.empty() || m_pathIndex >= (int)m_path.size()) return;
 
-<<<<<<< HEAD
+
     auto [nextTx, nextTy] = m_path[m_pathIndex];
 
     // タイル座標 → HUDオフセット込みピクセル座標
@@ -119,30 +93,8 @@ void Enemy_Managiment::Enemy_Update(const BackScreen& stage, float playerX, floa
         m_pathIndex++;
         return;
     }
-=======
-<<<<<<< HEAD
-    // 次のタイル
-    auto [nextTx, nextTy] = m_path[m_pathIndex];
-    float nextPx = nextTx * 32.0f;
-    float nextPy = nextTy * 32.0f;
-
-    float dx = nextPx - a.enemy_X;
-    float dy = nextPy - a.enemy_Y;
-    float dist = std::sqrt(dx * dx + dy * dy);
 
     // 到達したら次のタイルへ
-=======
-    auto [nextTx, nextTy] = m_path[m_pathIndex];
-
-    // ★ オフセットなしでピクセルに変換
-    float nextPx = nextTx * 32.0f;
-    float nextPy = nextTy * 32.0f;
-
-    float dx = nextPx - a.enemy_X;
-    float dy = nextPy - a.enemy_Y;
-    float dist = std::sqrt(dx * dx + dy * dy);
-
->>>>>>> bf210bda756864ed957e0258e0c5621390aa6722
     if (dist < 2.0f)
     {
         a.enemy_X = nextPx;
@@ -157,31 +109,8 @@ void Enemy_Managiment::Enemy_Update(const BackScreen& stage, float playerX, floa
 
     const int w = m_displaySize;
 
-<<<<<<< HEAD
-    // ★ X軸衝突判定
-    float newX = a.enemy_X + moveX;
-<<<<<<< HEAD
-   
-=======
->>>>>>> parent of bf210bd (コメントなし)
-    bool hitX =
-        stage.CheckCollision(newX, a.enemy_Y) ||
-        stage.CheckCollision(newX + w - 1, a.enemy_Y) ||
-        stage.CheckCollision(newX, a.enemy_Y + w - 1) ||
-<<<<<<< HEAD
-        stage.CheckCollision(newX + w - 1, a.enemy_Y+ w - 1);
-=======
-        stage.CheckCollision(newX + w - 1, a.enemy_Y + w - 1);
->>>>>>> parent of bf210bd (コメントなし)
 
-    // ★ Y軸衝突判定
-    float newY = a.enemy_Y + moveY;
-    bool hitY =
-        stage.CheckCollision(a.enemy_X, newY) ||
-        stage.CheckCollision(a.enemy_X + w - 1, newY) ||
-        stage.CheckCollision(a.enemy_X, newY + w - 1) ||
-        stage.CheckCollision(a.enemy_X + w - 1, newY + w - 1);
-=======
+    // ★ X軸衝突判定
     float newX = a.enemy_X + moveX;
     float hitBaseY = a.enemy_Y + 32.0f;
     bool hitX =
@@ -192,120 +121,22 @@ void Enemy_Managiment::Enemy_Update(const BackScreen& stage, float playerX, floa
 
     float newY = a.enemy_Y + moveY;
     bool hitY =
-        stage.CheckCollision(a.enemy_X, newY+32.0f) ||
-        stage.CheckCollision(a.enemy_X + w - 1, newY+32.0f) ||
-        stage.CheckCollision(a.enemy_X, newY+32.0f + w - 1) ||
-        stage.CheckCollision(a.enemy_X + w - 1, newY+32.0f + w - 1);
->>>>>>> bf210bda756864ed957e0258e0c5621390aa6722
+        stage.CheckCollision(a.enemy_X, newY + 32.0f) ||
+        stage.CheckCollision(a.enemy_X + w - 1, newY + 32.0f) ||
+        stage.CheckCollision(a.enemy_X, newY + 32.0f + w - 1) ||
+        stage.CheckCollision(a.enemy_X + w - 1, newY + 32.0f + w - 1);
+
 
     if (!hitX) a.enemy_X = newX;
     if (!hitY) a.enemy_Y = newY;
 
-<<<<<<< HEAD
+
     // ★ 衝突が続くなら再計算を強制
     if (hitX && hitY)
     {
         m_pathTimer = PATH_INTERVAL;
     }
-=======
-    if (hitX && hitY) m_pathTimer = PATH_INTERVAL;
->>>>>>> bf210bda756864ed957e0258e0c5621390aa6722
-};
 
-void Enemy_Managiment::CalcPath(const BackScreen& stage,
-    int startTx, int startTy, int goalTx, int goalTy)
-{
-    m_path.clear();
-    m_pathIndex = 0;
-
-    const int W = stage.MAP_Get_SizeX();
-    const int H = stage.MAP_Get_SizeY();
-
-    // 範囲外チェック
-    if (goalTx < 0 || goalTx >= W || goalTy < 0 || goalTy >= H) return;
-    if (stage.GetMapvalue(goalTx, goalTy) == 0) return;
-
-    // 親座標を記録する2次元配列
-    std::vector<std::vector<std::pair<int, int>>> parent(
-        H, std::vector<std::pair<int, int>>(W, { -1, -1 }));
-
-    std::queue<std::pair<int, int>> q;
-    q.push({ startTx, startTy });
-    parent[startTy][startTx] = { startTx, startTy };
-
-    const std::array<std::pair<int, int>, 4> dirs = { {{0,-1},{0,1},{-1,0},{1,0}} };
-
-    bool found = false;
-    while (!q.empty() && !found)
-    {
-        auto [cx, cy] = q.front(); q.pop();
-
-        for (auto [dx, dy] : dirs)
-        {
-            int nx = cx + dx;
-            int ny = cy + dy;
-
-            if (nx < 0 || nx >= W || ny < 0 || ny >= H) continue;
-            if (stage.GetMapvalue(nx, ny) == 0) continue;
-            if (parent[ny][nx].first != -1) continue;
-
-            parent[ny][nx] = { cx, cy };
-            q.push({ nx, ny });
-
-            if (nx == goalTx && ny == goalTy)
-            {
-                found = true;
-                break;
-            }
-        }
-    }
-
-    if (!found) return;
-
-    // ゴールから逆順にたどる
-    std::pair<int, int> cur = { goalTx, goalTy };
-    while (cur != std::make_pair(startTx, startTy))
-    {
-        m_path.push_back(cur);
-        cur = parent[cur.second][cur.first];
-    }
-
-    std::reverse(m_path.begin(), m_path.end());
-}
->>>>>>> ffbacaaea3bb321e0fa3d1a232042b05f6921aae
-
-    float moveX = (dx / dist) * ENEMY_SPEED;
-    float moveY = (dy / dist) * ENEMY_SPEED;
-
-    // 向き用に速度を保存
-    a.vx = moveX;
-    a.vy = moveY;
-
-    // ヒットボックスをスプライト中央に合わせるオフセット
-    const int offset = (m_displaySize - HIT_SIZE) / 2;
-
-    // X 軸衝突判定（ヒットボックス四隅）
-    float newX = a.enemy_X + moveX;
-    float hitBX = newX + offset;
-    bool hitX =
-        stage.CheckCollision(hitBX, a.enemy_Y + offset) ||
-        stage.CheckCollision(hitBX + HIT_SIZE - 1, a.enemy_Y + offset) ||
-        stage.CheckCollision(hitBX, a.enemy_Y + offset + HIT_SIZE - 1) ||
-        stage.CheckCollision(hitBX + HIT_SIZE - 1, a.enemy_Y + offset + HIT_SIZE - 1);
-
-    // Y 軸衝突判定
-    float newY = a.enemy_Y + moveY;
-    float hitBY = newY + offset;
-    bool hitY =
-        stage.CheckCollision(a.enemy_X + offset, hitBY) ||
-        stage.CheckCollision(a.enemy_X + offset + HIT_SIZE - 1, hitBY) ||
-        stage.CheckCollision(a.enemy_X + offset, hitBY + HIT_SIZE - 1) ||
-        stage.CheckCollision(a.enemy_X + offset + HIT_SIZE - 1, hitBY + HIT_SIZE - 1);
-
-    if (!hitX) a.enemy_X = newX;
-    if (!hitY) a.enemy_Y = newY;
-
-    if (hitX && hitY) m_pathTimer = PATH_INTERVAL;
 }
 
 void Enemy_Managiment::CalcPath(const BackScreen& stage,

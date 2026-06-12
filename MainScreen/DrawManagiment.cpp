@@ -17,16 +17,11 @@ void DrawManager::Player_Draw(const BackScreen& stage, const Player_Managiment& 
     const int CHARA_WIDTH = player.Get_PlayerDisplaySize();
     int drawH = static_cast<int>(CHARA_WIDTH * (static_cast<float>(h) / w));
 
-<<<<<<< HEAD
+
     int x1 = static_cast<int>(player.GetXf()) + (TILE_SIZE - CHARA_WIDTH) / 2;
     int y1 = static_cast<int>(player.GetYf()) + (TILE_SIZE - drawH);
     int x2 = x1 + CHARA_WIDTH;
     int y2 = y1 + drawH;
-=======
-	// 描画座標：ピクセル座標を直接使用
-	int x1 = static_cast<int>(player.GetXf()) + (TILE_SIZE - CHARA_WIDTH) / 2;
-	int y1 = static_cast<int>(player.GetYf()) + (TILE_SIZE - drawH);
->>>>>>> ffbacaaea3bb321e0fa3d1a232042b05f6921aae
 
     DrawExtendGraph(x1, y1, x2, y2, player.Get_PlayerHandle(), TRUE);
 }
@@ -35,32 +30,27 @@ void DrawManager::Map_Draw(const BackScreen& object) const
 {
     DrawExtendGraph(0, TILE_SIZE, 1280, TILE_SIZE + 736, object.Get_Maphandle(), false);
 
-<<<<<<< HEAD
-    for (int y = 0; y < object.MAP_Get_SizeY(); y++)
-    {
-        for (int x = 0; x < object.MAP_Get_SizeX(); x++)
+  
+        for (int y = 0; y < object.MAP_Get_SizeY(); y++)
         {
-            if (object.GetMapvalue(x, y) == 0)
+            for (int x = 0; x < object.MAP_Get_SizeX(); x++)
             {
-                // 【修正】背景画像と同じ y オフセット(TILE_SIZE=32)を加算してHUDバー分ずらす
-                DrawExtendGraph(
-                    x * TILE_SIZE, y * TILE_SIZE + TILE_SIZE,
-                    x * TILE_SIZE + TILE_SIZE, y * TILE_SIZE + TILE_SIZE * 2,
-=======
-	for (int y = 0; y < object.MAP_Get_SizeY(); y++)
-	{
-		for (int x = 0; x < object.MAP_Get_SizeX(); x++)
-		{
-			if (object.GetMapvalue(x, y) == 0)
-			{
-				DrawExtendGraph(x * TILE_SIZE, y * TILE_SIZE,
-                    x * TILE_SIZE + TILE_SIZE, y * TILE_SIZE + TILE_SIZE,
->>>>>>> ffbacaaea3bb321e0fa3d1a232042b05f6921aae
+                if (object.GetMapvalue(x, y) == 0)
+                {
+                   
+                DrawExtendGraph(x * TILE_SIZE, y * TILE_SIZE+TILE_SIZE,
+                    x * TILE_SIZE + TILE_SIZE, y * TILE_SIZE + TILE_SIZE+TILE_SIZE,
+                                     
                     object.Get_ObjectHanadle(), true);
+                                
+                            
+                        
+
+                }
             }
         }
-    }
 }
+        
 
 void DrawManager::Bullets_Draw(const Bllent_Managiment& bullets) const
 {
