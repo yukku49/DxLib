@@ -60,8 +60,9 @@ void Enemy_Managiment::Enemy_Update()
 // 新規：BackScreen を用いた当たり判定あり更新（四隅サンプル）
 void Enemy_Managiment::Enemy_Update(const BackScreen& stage, float playerX, float playerY)
 {
-	if (!a.isActive) return;
+    if (!a.isActive) return;
 
+    // ★ オフセットなしでタイル座標に変換
     int eTx = static_cast<int>(a.enemy_X) / 32;
     int eTy = static_cast<int>(a.enemy_Y) / 32;
     int pTx = static_cast<int>(playerX) / 32;
@@ -72,13 +73,14 @@ void Enemy_Managiment::Enemy_Update(const BackScreen& stage, float playerX, floa
     {
         m_pathTimer = 0;
         CalcPath(stage, eTx, eTy, pTx, pTy);
-        m_pathIndex = 0; // ← インデックスリセット忘れずに
+        m_pathIndex = 0;
     }
 
     if (m_path.empty() || m_pathIndex >= (int)m_path.size()) return;
 
-    // 次のタイル
     auto [nextTx, nextTy] = m_path[m_pathIndex];
+
+    // ★ オフセットなしでピクセルに変換
     float nextPx = nextTx * 32.0f;
     float nextPy = nextTy * 32.0f;
 
@@ -86,7 +88,6 @@ void Enemy_Managiment::Enemy_Update(const BackScreen& stage, float playerX, floa
     float dy = nextPy - a.enemy_Y;
     float dist = std::sqrt(dx * dx + dy * dy);
 
-    // 到達したら次のタイルへ
     if (dist < 2.0f)
     {
         a.enemy_X = nextPx;
@@ -101,30 +102,25 @@ void Enemy_Managiment::Enemy_Update(const BackScreen& stage, float playerX, floa
 
     const int w = m_displaySize;
 
-    // ★ X軸衝突判定
     float newX = a.enemy_X + moveX;
+    float hitBaseY = a.enemy_Y + 32.0f;
     bool hitX =
-        stage.CheckCollision(newX, a.enemy_Y) ||
-        stage.CheckCollision(newX + w - 1, a.enemy_Y) ||
-        stage.CheckCollision(newX, a.enemy_Y + w - 1) ||
-        stage.CheckCollision(newX + w - 1, a.enemy_Y + w - 1);
+        stage.CheckCollision(newX, hitBaseY) ||
+        stage.CheckCollision(newX + w - 1, hitBaseY) ||
+        stage.CheckCollision(newX, hitBaseY + w - 1) ||
+        stage.CheckCollision(newX + w - 1, hitBaseY + w - 1);
 
-    // ★ Y軸衝突判定
     float newY = a.enemy_Y + moveY;
     bool hitY =
-        stage.CheckCollision(a.enemy_X, newY) ||
-        stage.CheckCollision(a.enemy_X + w - 1, newY) ||
-        stage.CheckCollision(a.enemy_X, newY + w - 1) ||
-        stage.CheckCollision(a.enemy_X + w - 1, newY + w - 1);
+        stage.CheckCollision(a.enemy_X, newY+32.0f) ||
+        stage.CheckCollision(a.enemy_X + w - 1, newY+32.0f) ||
+        stage.CheckCollision(a.enemy_X, newY+32.0f + w - 1) ||
+        stage.CheckCollision(a.enemy_X + w - 1, newY+32.0f + w - 1);
 
     if (!hitX) a.enemy_X = newX;
     if (!hitY) a.enemy_Y = newY;
 
-    // ★ 衝突が続くなら再計算を強制
-    if (hitX && hitY)
-    {
-        m_pathTimer = PATH_INTERVAL;
-    }
+    if (hitX && hitY) m_pathTimer = PATH_INTERVAL;
 };
 
 void Enemy_Managiment::CalcPath(const BackScreen& stage,
