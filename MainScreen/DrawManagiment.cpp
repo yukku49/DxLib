@@ -60,7 +60,7 @@ void DrawManager::Bullets_Draw(const Bllent_Managiment& bullets) const
         if (b.isActive && b.using_handle >= 0)
         {
             const int drawX = static_cast<int>(b.x) - 8;
-            const int drawY = static_cast<int>(b.y) + TILE_SIZE - 8;
+            const int drawY = static_cast<int>(b.y) + - 8;
             DrawExtendGraph(drawX, drawY, drawX + 32, drawY + 32, b.using_handle, true);
         }
     }

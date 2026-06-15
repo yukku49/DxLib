@@ -42,7 +42,8 @@ private:
 		int startTx, int startTy,
 		int goalTx, int goalTy);
 
-	
+	//タイマー
+	unsigned int m_lastTime = 0;
 
 public:
 	// Spawn and initialize enemy (startX/startY are pixel coordinates)
