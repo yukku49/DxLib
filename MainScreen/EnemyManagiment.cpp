@@ -15,6 +15,7 @@ static const int HIT_SIZE = 24;
 
 void Enemy_Managiment::Enemy_Initialisation(float startX, float startY)
 {
+   
     // startX/startY はHUDオフセット込みのピクセル座標
     a.enemy_X = startX;
     a.enemy_Y = startY;
@@ -56,6 +57,7 @@ void Enemy_Managiment::Enemy_Update()
 void Enemy_Managiment::Enemy_Update(const BackScreen& stage, float playerX, float playerY)
 {
     if (!a.isActive) return;
+   
     // 内部座標（HUDオフセット込み）をそのままタイル変換
     // CheckCollision が内部で -HUD_OFFSET するので、ここでは生座標を渡す
     int eTx = static_cast<int>(a.enemy_X) / 32;
@@ -86,14 +88,6 @@ void Enemy_Managiment::Enemy_Update(const BackScreen& stage, float playerX, floa
     float dy = nextPy - a.enemy_Y;
     float dist = std::sqrt(dx * dx + dy * dy);
 
-    if (dist < 2.0f)
-    {
-        a.enemy_X = nextPx;
-        a.enemy_Y = nextPy;
-        m_pathIndex++;
-        return;
-    }
-
     // 到達したら次のタイルへ
     if (dist < 2.0f)
     {
@@ -103,7 +97,7 @@ void Enemy_Managiment::Enemy_Update(const BackScreen& stage, float playerX, floa
         return;
     }
 
-    const float speed = 1.5f;
+    const float speed = 90.0f;
     float moveX = (dx / dist) * speed;
     float moveY = (dy / dist) * speed;
 
@@ -121,10 +115,10 @@ void Enemy_Managiment::Enemy_Update(const BackScreen& stage, float playerX, floa
 
     float newY = a.enemy_Y + moveY;
     bool hitY =
-        stage.CheckCollision(a.enemy_X, newY + 32.0f) ||
-        stage.CheckCollision(a.enemy_X + w - 1, newY + 32.0f) ||
-        stage.CheckCollision(a.enemy_X, newY + 32.0f + w - 1) ||
-        stage.CheckCollision(a.enemy_X + w - 1, newY + 32.0f + w - 1);
+        stage.CheckCollision(a.enemy_X, newY ) ||
+        stage.CheckCollision(a.enemy_X + w - 1, newY ) ||
+        stage.CheckCollision(a.enemy_X, newY  + w - 1) ||
+        stage.CheckCollision(a.enemy_X + w - 1, newY  + w - 1);
 
 
     if (!hitX) a.enemy_X = newX;

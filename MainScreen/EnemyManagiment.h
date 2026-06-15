@@ -41,6 +41,9 @@ private:
 	void CalcPath(const BackScreen& stage,
 		int startTx, int startTy,
 		int goalTx, int goalTy);
+
+	
+
 public:
 	// Spawn and initialize enemy (startX/startY are pixel coordinates)
 	void Enemy_Initialisation(float startX, float startY);

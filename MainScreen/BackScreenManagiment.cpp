@@ -79,7 +79,7 @@ int statgeaPatern_1[23][40] =
     bool BackScreen::CheckCollision(double worldX, double worldY) const
     {
         int Worldx = static_cast<int>(worldX) / 32;
-        int Worldy = static_cast<int>(worldY) / 32;
+        int Worldy = static_cast<int>(worldY-32) / 32;
         int chipType = this->GetMapvalue(Worldx, Worldy);
 
         // 0 = 障害物（衝突）、1 = 通路（非衝突）
