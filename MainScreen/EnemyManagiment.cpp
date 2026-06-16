@@ -10,9 +10,16 @@ static const int SCREEN_W = 1280;
 static const int SCREEN_H = 736;
 static const float ENEMY_SPEED = 1.5f;
 
-// 衝突判定用のヒットボックスサイズ（描画サイズより小さめ）
+// Hit-box size for collision checks; smaller than m_displaySize so the enemy
+// can pass through gaps that look visually clear
+// (JP: 衝突チェック用ヒットボックスサイズ。見た目より小さくして隙間を通れるようにする)
 static const int HIT_SIZE = 24;
 
+// Sets starting position, zero velocity, and loads all four directional sprites
+// startX/startY must already include the 32px HUD offset so coordinates are
+// consistent with how CheckCollision() works (it subtracts 32 internally)
+// (JP: 開始位置・速度0を設定し、4方向スプライトを読み込む)
+// (JP: startX/startYにはCheckCollision()と合わせるため32pxのHUDオフセットを含める)
 void Enemy_Managiment::Enemy_Initialisation(float startX, float startY)
 {
     m_lastTime = GetNowCount();
@@ -29,6 +36,14 @@ void Enemy_Managiment::Enemy_Initialisation(float startX, float startY)
     a.Enemy_Eye_handlbe[Enemy_Down] = LoadGraph("../Pizza_Image/Enemy_Down.png");
 }
 
+// Selects the sprite handle that matches the enemy's current movement direction
+// Compares absolute values of vx and vy: the dominant axis decides horizontal vs vertical
+// Within horizontal: negative vx = left, positive = right
+// Within vertical:   negative vy = up,   positive = down
+// Returns -1 if the enemy is not active (DrawManager skips drawing in that case)
+// (JP: 現在の移動方向に合ったスプライトハンドルを選ぶ)
+// (JP: |vx|と|vy|を比べて水平か垂直かを決定し、符号で左右・上下を決める)
+// (JP: 非アクティブ時は-1を返す。DrawManagerはこれを見て描画をスキップする)
 int Enemy_Managiment::Get_EnemyHandle() const
 {
     if (!a.isActive) return -1;
@@ -43,7 +58,10 @@ int Enemy_Managiment::Get_EnemyHandle() const
         return (a.vy <= 0.0f) ? a.Enemy_Eye_handlbe[Enemy_Up] : a.Enemy_Eye_handlbe[Enemy_Down];
 }
 
-// 既存互換（当たり判定なし）
+// Legacy update: moves by vx/vy with simple screen-boundary bouncing and no tile collision
+// Kept so older call sites still compile; prefer Enemy_Update(stage, px, py) instead
+// (JP: 旧更新。vx/vyで移動し画面端で跳ね返るだけでタイル衝突なし)
+// (JP: 旧呼び出し元がコンパイルできるよう残している。新規コードはEnemy_Update(stage,px,py)を使う)
 void Enemy_Managiment::Enemy_Update()
 {
     if (!a.isActive) return;
@@ -53,40 +71,60 @@ void Enemy_Managiment::Enemy_Update()
     if (a.enemy_Y < 0.0f || a.enemy_Y > SCREEN_H - 32.0f) a.vy *= -1.0f;
 }
 
-// BFS 経路追従＋当たり判定あり更新
+// Full BFS-based update called once per frame from the main loop
+// Steps:
+//   1. Calculate delta time (dt) for frame-rate-independent speed
+//   2. Convert pixel positions to tile coordinates for BFS
+//   3. Recalculate the BFS path every PATH_INTERVAL frames
+//   4. Move toward the next tile in the path at 'speed' px/s
+//   5. Check tile collision separately on X and Y axes so the enemy
+//      can slide along walls instead of stopping completely
+//   6. Force path recalculation when both axes are blocked
+// (JP: メインループから毎フレーム呼ばれるBFS経路追従付き完全更新)
 void Enemy_Managiment::Enemy_Update(const BackScreen& stage, float playerX, float playerY)
 {
     if (!a.isActive) return;
 
-    // ★ デルタタイム計算を追加
+    // --- 1. Delta time ---
+    // Clamp to 100ms to prevent large position jumps after frame hitches
+    // (JP: フレーム落ち後の大きな位置ジャンプを防ぐため100msにクランプ)
     unsigned int now = GetNowCount();
     float dt = (now - m_lastTime) / 1000.0f;
     if (dt > 0.1f) dt = 0.1f;
     m_lastTime = now;
 
-    // 内部座標（HUDオフセット込み）をそのままタイル変換
-    // CheckCollision が内部で -HUD_OFFSET するので、ここでは生座標を渡す
+    // --- 2. Convert pixel positions to tile coordinates ---
+    // Subtract 32 from Y before dividing because the HUD bar occupies the top 32px;
+    // CheckCollision does the same subtraction, so tile indices stay consistent
+    // (JP: Yから32を引いてから割る。HUDバーが上部32pxを占めるため。CheckCollisionも同じ処理をする)
     int eTx = static_cast<int>(a.enemy_X) / 32;
     int eTy = static_cast<int>(a.enemy_Y - 32) / 32; // タイル座標変換（HUD分を引く）
     int pTx = static_cast<int>(playerX) / 32;
     int pTy = static_cast<int>(playerY - 32) / 32;
+
+    // --- 3. Recalculate BFS path periodically ---
+   // PATH_INTERVAL frames between recalculations to limit CPU usage
+   // Also recalculate immediately when m_path is empty (first frame or after a blocked path)
+   // (JP: CPU負荷を抑えるためPATH_INTERVALフレームごとに再計算する)
+   // (JP: m_pathが空の時(初回またはパスがブロックされた後)も即座に再計算する)
     m_pathTimer++;
     if (m_pathTimer >= PATH_INTERVAL || m_path.empty())
     {
         m_pathTimer = 0;
         CalcPath(stage, eTx, eTy, pTx, pTy);
 
-        m_pathIndex = 0; // ← インデックスリセット忘れずに
+        m_pathIndex = 0; // Always reset index when the path changes (JP: パス変更時は必ずインデックスをリセット)
 
 
     }
 
     if (m_path.empty() || m_pathIndex >= (int)m_path.size()) return;
 
-
+    // --- 4. Move toward next tile in path ---
     auto [nextTx, nextTy] = m_path[m_pathIndex];
 
-    // タイル座標 → HUDオフセット込みピクセル座標
+    // Convert next tile back to pixel space (add 32 to Y to restore HUD offset)
+   // (JP: 次のタイルをピクセル空間に戻す。HUDオフセットを戻すためYに32を足す)
     float nextPx = nextTx * 32.0f;
     float nextPy = nextTy * 32.0f + 32.0f;
 
@@ -94,7 +132,8 @@ void Enemy_Managiment::Enemy_Update(const BackScreen& stage, float playerX, floa
     float dy = nextPy - a.enemy_Y;
     float dist = std::sqrt(dx * dx + dy * dy);
 
-    // 到達したら次のタイルへ
+    // Snap to the tile center when close enough to avoid jitter
+    // (JP: 十分近づいたらタイル中心にスナップしてジッターを防ぐ)
     if (dist < 2.0f)
     {
         a.enemy_X = nextPx;
@@ -103,10 +142,14 @@ void Enemy_Managiment::Enemy_Update(const BackScreen& stage, float playerX, floa
         return;
     }
 
-    const float speed = 90.0f;
+    const float speed = 90.0f;// px/s
     float moveX = (dx / dist) * speed*dt;
     float moveY = (dy / dist) * speed*dt;
 
+    // --- 5. Separate-axis collision so enemy slides along walls ---
+    // Check X movement first, then Y movement independently.
+    // If only X is blocked the enemy can still move in Y (slides along the wall).
+    // (JP: 軸分離衝突チェック。壁にぶつかっても反対軸は移動できるようにする（壁スライド）)
     const int w = m_displaySize;
 
 
@@ -131,7 +174,10 @@ void Enemy_Managiment::Enemy_Update(const BackScreen& stage, float playerX, floa
     if (!hitY) a.enemy_Y = newY;
 
 
-    // ★ 衝突が続くなら再計算を強制
+    // --- 6. Force path recalculation when fully stuck ---
+    // If both axes are blocked the current path is no longer valid;
+    // setting m_pathTimer to PATH_INTERVAL triggers an immediate recalc next frame
+    // (JP: 両軸ともブロックされた場合は現在のパスが無効なので次フレームで即再計算する)
     if (hitX && hitY)
     {
         m_pathTimer = PATH_INTERVAL;
@@ -139,6 +185,13 @@ void Enemy_Managiment::Enemy_Update(const BackScreen& stage, float playerX, floa
 
 }
 
+// Breadth-First Search to find the shortest path from start tile to goal tile
+// Only tiles with value 1 (passable) are traversed
+// The result is stored in m_path as an ordered list from start+1 to goal
+// If goal is unreachable (blocked or out of bounds), m_path is left empty
+// (JP: 開始タイルからゴールタイルへの最短BFS経路を求める)
+// (JP: 値1(通行可)のタイルだけを通る。結果はstart+1〜goalの順でm_pathに格納)
+// (JP: ゴールに到達不可能な場合(ブロックまたは範囲外)はm_pathを空のままにする)
 void Enemy_Managiment::CalcPath(const BackScreen& stage,
     int startTx, int startTy, int goalTx, int goalTy)
 {
@@ -148,17 +201,28 @@ void Enemy_Managiment::CalcPath(const BackScreen& stage,
     const int W = stage.MAP_Get_SizeX();
     const int H = stage.MAP_Get_SizeY();
 
+    // Boundary and passability guards
+   // (JP: 境界チェックと通行可能チェック)
     if (goalTx < 0 || goalTx >= W || goalTy < 0 || goalTy >= H) return;
     if (startTx < 0 || startTx >= W || startTy < 0 || startTy >= H) return;
-    if (stage.GetMapvalue(goalTx, goalTy) == 0) return;
+    if (stage.GetMapvalue(goalTx, goalTy) == 0) return;// goal is a wall (JP: ゴールが壁)
 
+    // parent[y][x] stores the tile that discovered (x, y) during BFS
+   // Used to reconstruct the path by backtracking from goal to start
+   // Initialized to {-1,-1} meaning "not yet visited"
+   // (JP: parent[y][x]はBFS中に(x,y)を発見したタイルを格納する)
+   // (JP: ゴールからスタートへのバックトラックでパスを再構築するために使う)
+   // (JP: {-1,-1}は「未訪問」を意味する)
     std::vector<std::vector<std::pair<int, int>>> parent(
         H, std::vector<std::pair<int, int>>(W, { -1,-1 }));
 
     std::queue<std::pair<int, int>> q;
-    q.push({ startTx, startTy });
+    q.push({ startTx, startTy });// mark start as visited (JP: スタートを訪問済みにする)
     parent[startTy][startTx] = { startTx, startTy };
 
+  
+    /// Four cardinal directions: up, down, left, right
+    // (JP: 上下左右の4方向)
     const std::array<std::pair<int, int>, 4> dirs = { {{0,-1},{0,1},{-1,0},{1,0}} };
 
     bool found = false;
@@ -168,19 +232,23 @@ void Enemy_Managiment::CalcPath(const BackScreen& stage,
         for (auto [ddx, ddy] : dirs)
         {
             int nx = cx + ddx, ny = cy + ddy;
-            if (nx < 0 || nx >= W || ny < 0 || ny >= H) continue;
-            if (stage.GetMapvalue(nx, ny) == 0)          continue;
-            if (parent[ny][nx].first != -1)              continue;
+            if (nx < 0 || nx >= W || ny < 0 || ny >= H) continue;// out of bounds
+            if (stage.GetMapvalue(nx, ny) == 0)          continue;// wall tile
+            if (parent[ny][nx].first != -1)              continue;// already visited
 
             parent[ny][nx] = { cx, cy };
-            q.push({ nx, ny });
+            q.push({ nx, ny });// mark start as visited (JP: スタートを訪問済みにする)
 
             if (nx == goalTx && ny == goalTy) { found = true; break; }
         }
     }
 
-    if (!found) return;
+    if (!found) return;// no path exists (JP: 経路なし)
 
+    // Backtrack from goal to start using the parent map, then reverse
+    // so m_path goes from first step after start → goal
+    // (JP: parentマップを使ってゴールからスタートへバックトラックし、逆順にする)
+    // (JP: m_pathはスタートの次のステップ→ゴールの順になる)
     std::pair<int, int> cur = { goalTx, goalTy };
     while (cur != std::make_pair(startTx, startTy))
     {
