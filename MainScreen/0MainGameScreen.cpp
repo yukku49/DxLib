@@ -9,22 +9,37 @@
 #include"StartScreen.h"
 #include"DatabaseManagiment.h"
 
+// Entry point for Windows GUI applications; DxLib requires WinMain instead of main()
+// (JP: WindowsGUIアプリのエントリポイント。DxLibはmain()ではなくWinMain()を必要とする)
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-    LPSTR lpCmdLine, int nCmdShow) {
-    // Enable windowed mode (JP: )
+    LPSTR lpCmdLine, int nCmdShow) 
+{
+    // Run in a window instead of exclusive full-screen
+// (JP: 排他フルスクリーンではなくウィンドウモードで実行する)
     ChangeWindowMode(true);
-    // Set window size (JP: ???????????)
+
+    // Set the back-buffer resolution; 32 is the color bit-depth
+      // (JP: バックバッファの解像度を設定する。32はカラービット深度)
     SetGraphMode(1280, 768, 32);
-    // Initialize DxLib (JP: DxLib????)
+
+    // Initialize DxLib; a negative return value means initialization failed
+   // (JP: DxLibを初期化する。負の戻り値は初期化失敗を意味する)
+
     if (DxLib_Init() < 0)
     {
         return -1;
     }
     
-    // Tile size used for conversions
+    // One tile is 32x32 pixels; used when converting between tile and pixel coordinates
+     // (JP: 1タイルは32x32ピクセル。タイル座標とピクセル座標の変換に使う)
     static constexpr int TILE_SIZE = 32;
 
-    // Create manager instances (JP: マネジャーインスタンスの作成)
+    // -----------------------------------------------------------------------
+// Create all manager objects
+// Each manager owns a specific domain: player, items, enemy, bullets, etc.
+// (JP: 各マネージャオブジェクトを生成する)
+// (JP: 各マネージャはプレイヤー・アイテム・敵・弾など特定のドメインを担当する)
+// -----------------------------------------------------------------------
     Player_Managiment player;
     Item_Managiment item;
     Enemy_Managiment enemy;
@@ -34,7 +49,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     StartScreen start;
     PizzaDatabase pizzaDb;
 
-    // Initialize game objects (JP: ゲームオブジェクトの初期化)
+    // -----------------------------------------------------------------------
+    // Initialize the pizza recipe database from an SQLite file
+    // DebugValidateRecipes() prints a warning for any recipe with missing data
+    // (JP: SQLiteファイルからピザレシピDBを初期化する)
+    // (JP: DebugValidateRecipes()はデータが欠けているレシピがあれば警告を出力する)
+    // -----------------------------------------------------------------------
     if (!pizzaDb.Initialize("pizza_data.db"))
     {
         OutputDebugStringA("PizzaDatabase initialization failed\n");
@@ -44,39 +64,79 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         pizzaDb.DebugValidateRecipes();
     }
 
+    // Give both player and bullet manager a pointer to the shared database
+// so they can look up recipes and damage values at runtime
+// (JP: プレイヤーと弾マネージャに共有DBへのポインタを渡す)
+// (JP: これにより実行時にレシピやダメージ値を参照できるようになる)
     player.SetDatabase(&pizzaDb);
     bllet.SetDatabase(&pizzaDb);
 
+    // -----------------------------------------------------------------------
+    // Initialize each manager in dependency order
+    // (JP: 依存関係の順に各マネージャを初期化する)
+    // -----------------------------------------------------------------------
     player.Initialisation();
     item.ItemManagiment();
-    // Enemy_Initialisation expects pixel coordinates now -> convert from tile coords
+
+    // Enemy start position: tile (38, 21) converted to pixels, Y shifted down by one tile
+// to place the enemy below the HUD bar (same convention as player)
+// (JP: 敵の開始位置。タイル(38,21)をピクセルに変換し、HUD下に置くためYを1タイル分下げる)
     enemy.Enemy_Initialisation(38 * TILE_SIZE, 21 * TILE_SIZE+TILE_SIZE);
     bllet.Load();
     stage.Initialize();
     start.startInitialize();
     item.Load();
-    Item_count playerItems;//デバック用
+
+    // Debug variable: tracks what the player is carrying (used with debug keys 1-4)
+// (JP: デバッグ変数。プレイヤーの所持アイテムを追跡する。デバッグキー1〜4で使用)
+    Item_count playerItems;
+
+    // Pre-spawn one of each item type so the map is not empty at game start
+    // (JP: ゲーム開始時にマップが空にならないよう、各アイテム種別を1つずつ事前スポーンする)
     for (int i = 0; i < (int)ITEM_MAX; i++)
     {
         item.Spawn(stage, static_cast<Item_number>(i));
     }
-    // Start main loop (JP: メインループ)
+
+    // -----------------------------------------------------------------------
+   // Main game loop: runs until the OS asks us to quit (ProcessMessage != 0)
+   // (JP: メインゲームループ。OSが終了を要求するまで(ProcessMessage != 0)実行し続ける)
+   // -----------------------------------------------------------------------
     while (1)
     {
 
+        // Handle Windows messages (close button, alt-F4, etc.)
+        // Returns non-zero when the application should exit
+        // (JP: Windowsメッセージを処理する。アプリ終了時は非ゼロを返す)
         if (ProcessMessage() != 0) break;
+
+        // Clear the back buffer before drawing the new frame
+        // (JP: 新しいフレームを描画する前にバックバッファをクリアする)
         ClearDrawScreen();
         
+        // -----------------------------------------------------------------------
+        // START SCREEN: while the start flag is true, only draw the menu
+        // and skip all gameplay logic below
+        // (JP: スタート画面。スタートフラグがtrueの間はメニューのみ描画し、
+        //      以降のゲームプレイロジックをすべてスキップする)
+        // -----------------------------------------------------------------------
         if (start.Get_Start_Flog() == true)
         {
 
-            // デバッグ出力：Start_Draw が呼ばれているか確認
+            // Move selection cursor with input (JP: 入力でカーソルを動かす)
             start.MoveCursor();
+
+            // Confirm selection (JP: 選択を確定する)
             start.SelectGames();
+
+            // Handle option screens (JP: オプション画面を処理する)
             start.OptionIn();
+
             draw.Start_Draw(start); // ★ これが実行されているか確認
             ScreenFlip();
-            continue;
+
+            // Skip gameplay update this frame (JP: このフレームのゲームプレイ更新をスキップ)
+              continue;
 
         }
         

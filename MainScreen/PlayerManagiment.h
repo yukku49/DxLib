@@ -164,9 +164,7 @@ public:
 	// (JP: ピザ効果タイマーへのconst参照を返す。BllentManagimentが次弾の種別決定に参照する)
 	const PizzaTimer& GetPizzaTimer()const { return m_pizzaTimers; };
 
-	// Debug helper: directly sets ingredient counters without picking up items
-	// (JP: デバッグ用。アイテムを拾わずに食材カウンタを直接セットする)
-	void Debug_SetItems(int dough, int tomato, int cheese, int gorgonzola, int basil);
+	
 
 
 };
