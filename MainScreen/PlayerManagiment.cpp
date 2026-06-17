@@ -41,9 +41,19 @@ PizzaType Player_Managiment::TryMakePizza()
 		const PizzaType type = m_db->TryMakePizza(Player_Itembring, m_pizzaTimers);
 		if (type != PizzaType::None)
 		{
-			// OnPizzaMade returns the new fullness value after adding the pizza's bonus
-			// (JP: OnPizzaMade はピザのボーナスを加算した新しい満腹値を返す)
+			//Increase fullness and clamp to maximum
+			//(JP:満腹ゲージを増やし、最大値でクランプする）
 			m_fullness = m_db->OnPizzaMade(type, m_fullness);
+			if (m_fullness > MAX_FULLNES)
+			{
+				m_fullness = MAX_FULLNES;
+			}
+			//Increment score each time a pizza is completed
+			m_score++;
+
+			//Check win condition: fullness bar is completely filled
+			//(JP:勝利条件チェック:満腹ゲージが満タンになった)
+			m_isWin = true;
 		}
 		return type;
 	}

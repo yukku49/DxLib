@@ -139,50 +139,76 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
               continue;
 
         }
-        
-        // ここで他の描画（Map_Draw, Player_Draw など）を呼んでいれば、
-        // Start_Draw が上書きされます。必要なら順番を変える。
-        
-        
 
-        // 更新
+        // -----------------------------------------------------------------------
+        // GAMEPLAY UPDATE
+        // Order matters: player moves first, then bullets resolve against the
+        // updated player position, then the enemy reacts to the player's new tile
+        // (JP: ゲームプレイ更新。順序が重要。プレイヤーが先に移動し、
+        //  次に弾が更新されたプレイヤー位置で解決し、敵が新しいタイルに反応する)
+        // -----------------------------------------------------------------------
         player.Update(stage, bllet);
         bllet.Update(stage, player, enemy);
+
         // 当たり判定を行う更新を呼ぶ（BackScreen を渡す）
         enemy.Enemy_Update(stage,player.GetXf(),player.GetYf());
 
+        // Tick item despawn timers
+        // (JP: アイテムのデスポーンタイマーを進める)
         item.Updata();
+
+        // Check whether the player is standing on an item tile and pick it up
+        // ITEM_MAX is returned when no item is within range
+        // (JP: プレイヤーがアイテムタイルの上にいるか確認し、あれば拾う)
+        // (JP: 範囲内にアイテムがない場合はITEM_MAXを返す)
         Item_number picked = item.CheckPickUp(player);
         if (picked != ITEM_MAX)
         {
             player.Player_BringItem(picked);
         }
+
+        // -----------------------------------------------------------------------
+        // Periodic item respawn: every 360 frames, top the active item count up to 5
+        // (JP: 定期アイテム再スポーン。360フレームごとにアクティブ数を5まで補充する)
+        // -----------------------------------------------------------------------
         static int spawnTimer = 0;
         spawnTimer++;
         if (spawnTimer >= 360)
         {
             spawnTimer = 0;
-            //現在のアクティブ数を数える
+
+            // Count how many items are currently visible on the map
+            // (JP: 現在マップ上に存在するアイテムの数を数える)
             int activeCount = 0;
             for (int i = 0; i < item.Get_Item_number(); i++)
             {
                 if (item.Get_Items(i)->isActive)
                     activeCount++;
             }
+
+            // Spawn enough random items to bring the total back to 5
+            // (JP: 合計が5になるよう、不足分のランダムアイテムをスポーンする)
             int spawncount = 5 - activeCount;
             for (int s = 0; s < spawncount; s++)
             {
                 item.Spawn(stage, static_cast<Item_number>(GetRand(ITEM_MAX - 1)));
             }
         }
-        // 描画
-        draw.Map_Draw(stage);
+        // -----------------------------------------------------------------------
+        // DRAW (back-to-front order to avoid overdraw artifacts)
+        // (JP: 描画。上書きアーティファクトを避けるため奥から手前の順に描く)
+        // -----------------------------------------------------------------------
+        draw.Map_Draw(stage);// Background tiles and obstacles (JP: 背景タイルと障害物)
         draw.Player_Draw(stage, player);
         draw.Enemy_Draw(enemy, stage);
         draw.Bullets_Draw(bllet);
         draw.Item_Draw(item, stage);
+        draw.HUD_Draw(player, enemy);
     
-        // BFSが通っているタイルを緑で表示
+        // Debug overlay: highlight every tile the BFS path passes through in green
+        // Remove this block in the release build
+        // (JP: デバッグオーバーレイ。BFS経路が通るタイルを緑でハイライトする)
+        // (JP: リリースビルドではこのブロックを削除すること)
         for (int i = 0; i < (int)enemy.GetPathSize(); i++)
         {
             auto [tx, ty] = enemy.GetPath(i);
@@ -190,10 +216,35 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
                 tx * 32 + 32, ty * 32 + 64,
                 GetColor(0, 255, 0), false);
         }
+        //------------------------------------------------------------------------
+        //Check after drawing so the last game frame is visible before the overlay
+        //(JP:勝利/敗北チェック。最後のゲームフレームが見えるように描画後に判定する）
+        //------------------------------------------------------------------------
+        if (player.IsWin() || enemy.IsWin())
+        {
+            //draw result overlay on top of the frozen game frame
+            //(JP:フリーズしたゲームフレームの上にリザルトオーバーレイを描画する)
+            draw.Result_Draw(player.IsWin());
+            ScreenFlip();
+
+            //Wait for ENTER key to return to tile(restart loop or break)
+            //(JP:ENTERキーでタイトルに戻るまで待機する
+            while (ProcessMessage() == 0)
+            {
+                if (CheckHitKey(KEY_INPUT_RETURN))break;
+            }
+            break;//Exit the main game loop(JP:メインゲームループを抜ける
+        }
         
 
-        //pizzaデバック用
-        
+        // -----------------------------------------------------------------------
+        // DEBUG KEYS 1-4: preset ingredient combos to test pizza crafting quickly
+        // Key 1: Margherita ingredients   (dough=1, tomato=2, cheese=3, basil=3)
+        // Key 2: QuattroFormaggi          (dough=1, cheese=3, gorgonzola=3)
+        // Key 3: Genovese                 (dough=1, tomato=2, cheese=3, basil=2)
+        // Key 4: Marinara                 (dough=1, tomato=3)
+        // (JP: デバッグキー1〜4。ピザ製作をすばやくテストするための食材プリセット)
+        // -----------------------------------------------------------------------
         if (CheckHitKey(KEY_INPUT_1))
         {
             player.Debug_SetItems(1, 2, 3, 0,3);
@@ -214,12 +265,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		}
         
        
-        // screen flip
+        // Swap front and back buffers to display the completed frame
+        // (JP: フロントバッファとバックバッファを交換して完成フレームを表示する)
         ScreenFlip();
     }
 
+    // Swap front and back buffers to display the completed frame
+    // (JP: フロントバッファとバックバッファを交換して完成フレームを表示する)
     pizzaDb.Close();
 
+    // Release all DxLib resources (textures, sounds, window, etc.)
+    // (JP: すべてのDxLibリソース（テクスチャ・サウンド・ウィンドウ等）を解放する)
     DxLib_End();
 
     // End application (JP: ??????????)

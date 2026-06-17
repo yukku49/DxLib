@@ -85,7 +85,14 @@ private:
 	// Pointer to the shared pizza recipe/damage database (not owned)
     // (JP: 共有ピザレシピ・ダメージDBへのポインタ（所有しない）)
 	PizzaDatabase* m_db = nullptr;
+	
+	//Score counter:increments each time a pizza is sucessfully crafted
+	//(JP:スコアカウンタ。ピザが完了する度に増加)
+	int m_score = 0;
 
+	//True when m_fullness reaches MAX_FULLNES(player wins)
+	//(JP:m_fullnessがMAX_FULLNESに達した時trueになる(プレイヤーの勝利))
+	bool m_isWin = false;
 public:
 	// Maximum value of the fullness gauge
 	// (JP: 満腹ゲージの最大値)
@@ -164,7 +171,13 @@ public:
 	// (JP: ピザ効果タイマーへのconst参照を返す。BllentManagimentが次弾の種別決定に参照する)
 	const PizzaTimer& GetPizzaTimer()const { return m_pizzaTimers; };
 
-	
+	//Returns the current score(JP:現在のスコアを返す)
+	int GetScore()const { return m_score; }
+
+	//Returns true when the player has won(fullness reached maximum)
+	//(JP:プレイヤーが勝利（満腹MAXに達した）場合trueを返す)
+	bool IsWin()const { return m_isWin; }
+
 
 
 };

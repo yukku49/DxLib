@@ -20,7 +20,7 @@ struct Enemy_date
 	float enemy_Y = 0.0f; // Current pixel Y position (JP: 現在のピクセルY座標)）
 	float vx = 0.0f;      // X velocity (px per second) (JP: X方向速度(px/秒))
 	float vy = 0.0f;      // Y velocity (px per second) (JP: Y方向速度(px/秒))
-	int fullness_gauge = 0;// Fullness level 0~100; reaches 100 = enemy wins (JP: 満腹ゲージ0〜100。100で敵の勝利)
+	float fullness_gauge = 0.0f;// Fullness level 0~100; reaches 100 = enemy wins (JP: 満腹ゲージ0〜100。100で敵の勝利)
 	bool isActive = false;// False when defeated (JP: 倒された場合はfalse)
 	int Enemy_Eye_handlbe[enemy_Eye::Enemy_Max];// One handle per direction (JP: 向きごとの画像ハンドル)
 };
@@ -51,6 +51,10 @@ private:
 
 	// Recalculate path every 60 frames (~1 second at 60fps) (JP: 60フレームごとに経路を再計算)
 	static const int PATH_INTERVAL = 60;
+
+	//Maximum fullness value; reaching this means the enemy wins
+	//(JP:満腹ゲージの最大値。これに達すると敵の勝利
+	static constexpr float MAX_FULLNESS = 100.0f;
 
 	// Calculates the shortest BFS path from startT* to goalT* through passable tiles
 	// Stores the result in m_path (excludes the start tile, includes the goal tile)
@@ -117,4 +121,12 @@ public:
 	// Debug: returns the tile coordinate at index i in the current path
     // (JP: デバッグ用。現在の経路のインデックスiのタイル座標を返す)
 	std::pair<int, int> GetPath(int i) const { return m_path[i]; }
+
+	//Returns the enemy's crrent fullness gauge value
+	//(JP:敵の現在の満腹ゲージを返す）
+	float GetFullness()const { return a.fullness_gauge;}
+
+	//Returns true whe the enemy's fulless has reached MAX_FULLNESS
+	//(JP:敵の満腹ゲージがMAX_FULLENSSに達した時trueを返す)
+	bool IsWin()const { return a.fullness_gauge >= MAX_FULLNESS; }
 };
