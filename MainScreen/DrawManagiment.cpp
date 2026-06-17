@@ -174,7 +174,7 @@ void DrawManager::HUD_Draw(const Player_Managiment& player, const Enemy_Managime
     // (JP: アイテム所持数（中央）。プレイヤーが現在持っている各食材の数を表示する)
     auto items = player.Get_Player_Itembring();
     DrawFormatString(380, BAR_Y, GetColor(200, 200, 200),
-        "生地:%d トマト:%d チーズ:%d ゴルゴン:%d バジル:%d",
+        "Dough:%d Tomato:%d Cheese:%d Gorg:%d Basil:%d",
         items.Pizzadough_Counter,
         items.Tmato_Counter,
         items.Cheese_Counter,

@@ -3,6 +3,7 @@
 // Forward declarations to avoid pulling in heavy headers here;
 // the full definitions are only needed in DrawManagiment.cpp
 // (JP: ここで重いヘッダをインクルードしないよう前方宣言する。完全な定義はcppファイルだけに必要)class BackScreen;
+class BackScreen;
 class Player_Managiment;
 class Bllent_Managiment;
 class Enemy_Managiment;
