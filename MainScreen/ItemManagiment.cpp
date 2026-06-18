@@ -93,7 +93,7 @@ void Item_Managiment::Spawn(const BackScreen& stage, Item_number type)
             m_items[i].y = gy;
             m_items[i].type = type;
             m_items[i].isActive = true;
-            m_items[i].aliveTimer = 300;// frames until despawn (JP: デスポーンまでのフレーム数)
+            m_items[i].aliveTimer = 1000.0f;// frames until despawn (JP: デスポーンまでのフレーム数)
             break;
         }
     }

@@ -216,6 +216,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
                 tx * 32 + 32, ty * 32 + 64,
                 GetColor(0, 255, 0), false);
         }
+
         //------------------------------------------------------------------------
         //Check after drawing so the last game frame is visible before the overlay
         //(JP:勝利/敗北チェック。最後のゲームフレームが見えるように描画後に判定する）

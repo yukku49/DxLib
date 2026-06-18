@@ -165,10 +165,10 @@ bool PizzaDatabase::InsertMasterData()
         // active_time は PlayerManagiment.cpp の TryMakePizza() で使用（秒×60で換算）
         "INSERT OR IGNORE INTO Bllet_table"
         "  (Bllet_ID, pizza_name,         pizza_damage, active_time, active_flag) VALUES"
-        "  (1, 'マルゲリータ',            3,            30.0,        0),"
-        "  (2, 'クアトロフォルマッジ',    5,            40.0,        0),"
-        "  (3, 'マリナーラ',              2,            10.0,        0),"
-        "  (4, 'ジェノベーゼ',            3,            30.0,        0),"
+        "  (1, 'マルゲリータ',            3,            1.0,        0),"
+        "  (2, 'クアトロフォルマッジ',    5,            1.0,        0),"
+        "  (3, 'マリナーラ',              2,            1.0,        0),"
+        "  (4, 'ジェノベーゼ',            3,            1.0,        0),"
         "  (5, 'セージ',                  1,             0.0,        0);"
 
         // ---- Recipe_table ----

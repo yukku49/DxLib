@@ -51,8 +51,11 @@ PizzaType Player_Managiment::TryMakePizza()
 			//Increment score each time a pizza is completed
 			m_score++;
 
-			//Check win condition: fullness bar is completely filled
-			//(JP:勝利条件チェック:満腹ゲージが満タンになった)
+			//Only set win flag when the fullness bar is completely filled
+			//A single pizza is NOT enough to win; the player must fill the bar
+			//(JP:満腹ゲージが完全にまぷくになった時だけ勝利フラグを立てる)
+			//(JP:ピザ一枚では勝てない。ゲージを満腹にする必要がある)
+			if(m_fullness>=MAX_FULLNES)
 			m_isWin = true;
 		}
 		return type;
