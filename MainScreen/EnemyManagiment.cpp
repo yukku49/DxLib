@@ -57,6 +57,61 @@ int Enemy_Managiment::Get_EnemyHandle() const
     else
         return (a.vy <= 0.0f) ? a.Enemy_Eye_handlbe[Enemy_Up] : a.Enemy_Eye_handlbe[Enemy_Down];
 }
+// 同じ行または列で間に壁がないか確認する
+// (JP: 同じタイル行または列で、間のタイルに壁がなければtrueを返す)
+static bool HasLineOfSight(const BackScreen& stage,
+    int eTx, int eTy, int pTx, int pTy)
+{
+    if (eTy == pTy) // 同じ行（横方向）
+    {
+        int minX = (eTx < pTx) ? eTx : pTx;
+        int maxX = (eTx > pTx) ? eTx : pTx;
+        for (int x = minX + 1; x < maxX; x++)
+        {
+            if (stage.GetMapvalue(x, eTy) == 0) return false;
+        }
+        return true;
+    }
+    if (eTx == pTx) // 同じ列（縦方向）
+    {
+        int minY = (eTy < pTy) ? eTy : pTy;
+        int maxY = (eTy > pTy) ? eTy : pTy;
+        for (int y = minY + 1; y < maxY; y++)
+        {
+            if (stage.GetMapvalue(eTx, y) == 0) return false;
+        }
+        return true;
+    }
+    return false; // 直線上にいない
+}
+
+ bool Enemy_Managiment::TryShoot(const BackScreen& stage, float playerX, float playerY, float dt, float& outVx, float& outVy)
+ {
+     outVx = outVy = 0.0f;
+     if (!a.isActive) return false;
+
+     // タイマーカウントダウン（JP: 発射間隔のカウントダウン）
+     m_shootTimer -= dt;
+     if (m_shootTimer > 0.0f) return false;
+
+     // タイル座標に変換（JP: ピクセル→タイル変換）
+     int eTx = static_cast<int>(a.enemy_X) / 32;
+     int eTy = static_cast<int>(a.enemy_Y - 32) / 32;
+     int pTx = static_cast<int>(playerX) / 32;
+     int pTy = static_cast<int>(playerY - 32) / 32;
+
+     // 視線チェック（JP: 直線上かつ壁なしか確認）
+     if (!HasLineOfSight(stage, eTx, eTy, pTx, pTy)) return false;
+
+     // 方向決定（JP: プレイヤーへの方向を決める）
+     if (eTy == pTy)
+         outVx = (pTx > eTx) ? 300.0f : -300.0f; // 横方向
+     else
+         outVy = (pTy > eTy) ? 300.0f : -300.0f; // 縦方向
+
+     m_shootTimer = SHOOT_INTERVAL; // タイマーリセット
+     return true;
+ }
 
 // Legacy update: moves by vx/vy with simple screen-boundary bouncing and no tile collision
 // Kept so older call sites still compile; prefer Enemy_Update(stage, px, py) instead

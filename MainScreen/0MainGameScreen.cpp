@@ -152,7 +152,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
         // 当たり判定を行う更新を呼ぶ（BackScreen を渡す）
         enemy.Enemy_Update(stage,player.GetXf(),player.GetYf());
+        static unsigned int lastEnemyShotTime = GetNowCount();
+        unsigned int nowTime = GetNowCount();
+        float eDt = (nowTime - lastEnemyShotTime) / 1000.0f;
+        if (eDt > 0.1f) eDt = 0.1f;
+        lastEnemyShotTime = nowTime;
 
+        float evx = 0.0f, evy = 0.0f;
+        if (enemy.TryShoot(stage, player.GetXf(), player.GetYf(), eDt, evx, evy))
+        {
+            bllet.EnemyShot(enemy.Get_enemyX(), enemy.Get_enemyY(), evx, evy);
+        }
         // Tick item despawn timers
         // (JP: アイテムのデスポーンタイマーを進める)
         item.Updata();

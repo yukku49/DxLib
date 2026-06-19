@@ -52,6 +52,8 @@ public:
 	void Update(BackScreen& stage, Player_Managiment& player, Enemy_Managiment& enemy);
 	// Fire a bullet (JP: 弾を発射)
 	void Shot(Player_Managiment& player);
+	// 敵用の弾を発射する（JP: 指定座標と速度で弾をスポーンする）
+	void EnemyShot(float spawnX, float spawnY, float vx, float vy);
 	 
 };
 

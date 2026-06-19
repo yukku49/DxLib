@@ -162,3 +162,22 @@ void Bllent_Managiment::Shot(Player_Managiment& player)
 	OutputDebugStringA("Bullet pool exhausted: no free slot\n");
 }
 
+void Bllent_Managiment::EnemyShot(float spawnX, float spawnY, float vx, float vy)
+{
+	for (int i = 0; i < Max_Bullets; i++)
+	{
+		if (!m_bullets[i].isActive)
+		{
+			m_bullets[i].isActive = true;
+			m_bullets[i].x = spawnX;
+			m_bullets[i].y = spawnY;
+			m_bullets[i].vx = vx;
+			m_bullets[i].vy = vy;
+			m_bullets[i].using_handle = bllet_Handle[SEAGE]; // 敵弾はSEAGE画像
+			m_bullets[i].damage = 1;
+			return;
+		}
+	}
+}
+
+

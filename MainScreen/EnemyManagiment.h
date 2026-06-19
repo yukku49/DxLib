@@ -68,6 +68,10 @@ private:
 	// (JP: デルタタイム用タイムスタンプ)
 	unsigned int m_lastTime = 0;
 
+	// 射撃タイマーと間隔（JP: 射撃タイマーと発射間隔）
+	float m_shootTimer = 0.0f;
+	static constexpr float SHOOT_INTERVAL = 2.0f; // 秒。小さくすると頻繁に撃つ
+
 public:
 	// Initializes enemy position, velocity, and loads directional sprites
    // startX/startY are pixel coordinates including the 32px HUD offset
@@ -129,4 +133,8 @@ public:
 	//Returns true whe the enemy's fulless has reached MAX_FULLNESS
 	//(JP:敵の満腹ゲージがMAX_FULLENSSに達した時trueを返す)
 	bool IsWin()const { return a.fullness_gauge >= MAX_FULLNESS; }
+
+	// 視線チェック付き射撃判定（JP: 直線上かつ壁なしの時のみ撃つ）
+	bool TryShoot(const BackScreen& stage, float playerX, float playerY,
+		float dt, float& outVx, float& outVy);
 };
