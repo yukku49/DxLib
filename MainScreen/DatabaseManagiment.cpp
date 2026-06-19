@@ -404,8 +404,19 @@ PizzaType PizzaDatabase::TryMakePizza(Item_count& items, PizzaTimer& timers)
         ConsumeRecipe(items, rows, rowCount);
 
         const PizzaType type = BlletIDToPizzaType(blletID);
-        const float activeSeconds = GetPizzaActiveTime(type);
-        SetPizzaTimer(timers, type, activeSeconds * 60.0f);
+
+        //ピザごとに効果時間を設定（秒）
+        float effectTime = 0.0f;
+        switch (type)
+        {
+        case PizzaType::Margherita:      effectTime = 9.0f; break; // マルゲリータ
+        case PizzaType::QuattroFormaggi: effectTime = 9.0f; break; // クアトロフォルマッジ
+        case PizzaType::Marinara:        effectTime = 5.0f; break; // マリナーラ
+        case PizzaType::Genovese:        effectTime = 8.0f; break; // ジェノベーゼ
+        default:effectTime = 0.1f; break;
+        }
+        
+        SetPizzaTimer(timers, type, effectTime);
         return type;
     }
 
