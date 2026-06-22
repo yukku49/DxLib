@@ -47,7 +47,7 @@ void Bllent_Managiment::Update(BackScreen& stage, Player_Managiment& player, Ene
 
 	for (int i = 0; i < Max_Bullets; i++)
 	{
-		if (!m_bullets[i].isActive&&enemy.Get_EnemyActive())
+		if (!m_bullets[i].isActive)
 			continue;
 
 		// Apply velocity (JP: 速度を反映)
@@ -75,7 +75,7 @@ void Bllent_Managiment::Update(BackScreen& stage, Player_Managiment& player, Ene
 		}
 
 		// --- 敵との当たり判定（AABB 簡易判定） ---
-		if (enemy.Get_EnemyActive())
+		if (!m_bullets[i].isEnemyBullet&&enemy.Get_EnemyActive())
 		{
 			float ex = enemy.Get_enemyX();
 			float ey = enemy.Get_enemyY();

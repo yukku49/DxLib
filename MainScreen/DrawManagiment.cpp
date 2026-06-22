@@ -115,7 +115,8 @@ void DrawManager::Enemy_Draw(const Enemy_Managiment& enemy, const BackScreen& st
     int y1 = static_cast<int>(enemy.Get_enemyY()) + (TILE_SIZE - drawH);
     int x2 = x1 + CHARA_WIDTH;
     int y2 = y1 + drawH;
-
+    if (enemy.GetInvincibleTimer() > 0.0f && (enemy.GetBlinkTimer() / 4) % 2 == 1)
+        return;
     DrawExtendGraph(x1, y1, x2, y2, handle, TRUE);
 }
 

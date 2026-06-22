@@ -23,6 +23,7 @@ struct Enemy_date
 	float fullness_gauge = 0.0f;// Fullness level 0~100; reaches 100 = enemy wins (JP: 満腹ゲージ0〜100。100で敵の勝利)
 	bool isActive = false;// False when defeated (JP: 倒された場合はfalse)
 	int Enemy_Eye_handlbe[enemy_Eye::Enemy_Max];// One handle per direction (JP: 向きごとの画像ハンドル)
+	
 };
 
 class BackScreen; // Forward declaration for collision check
@@ -72,6 +73,15 @@ private:
 	float m_shootTimer = 0.0f;
 	static constexpr float SHOOT_INTERVAL = 2.0f; // 秒。小さくすると頻繁に撃つ
 
+	//無敵時間タイマー
+	float m_invincibleTimer = 0.0f;
+	
+	//一秒間無敵
+	static constexpr float INVINCIBLE_DURATION = 1.0f;
+
+	//点滅用フレームカウンタ
+	int m_blinkTimer = 0;
+
 public:
 	// Initializes enemy position, velocity, and loads directional sprites
    // startX/startY are pixel coordinates including the 32px HUD offset
@@ -113,7 +123,7 @@ public:
 	// Returns the correct sprite handle based on current movement direction
 	// Returns -1 if the enemy is not active
 	// (JP: 現在の移動方向に基づいて正しいスプライトハンドルを返す。非アクティブ時は-1)
-	void OnHit() { a.isActive = false; }
+	void OnHit();
 
 	// Returns true while the enemy is alive and active
 	// (JP: 敵が生きてアクティブな間はtrueを返す)
@@ -137,4 +147,7 @@ public:
 	// 視線チェック付き射撃判定（JP: 直線上かつ壁なしの時のみ撃つ）
 	bool TryShoot(const BackScreen& stage, float playerX, float playerY,
 		float dt, float& outVx, float& outVy);
+
+	float GetInvincibleTimer()const { return m_invincibleTimer; }
+	int GetBlinkTimer()const { return m_blinkTimer; }
 };
