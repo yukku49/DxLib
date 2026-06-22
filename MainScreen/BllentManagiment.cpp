@@ -33,6 +33,7 @@ void Bllent_Managiment::Load()
 		m_bullets[i].using_handle = -1;
 		m_bullets[i].damage = 1;
 		m_bullets[i].isActive = false;
+		m_bullets[i].isEnemyBullet = false;
 	}
 	now_bllet_Handle = bllet_Handle[SEAGE];
 	m_lastTime = GetNowCount();
@@ -46,7 +47,7 @@ void Bllent_Managiment::Update(BackScreen& stage, Player_Managiment& player, Ene
 
 	for (int i = 0; i < Max_Bullets; i++)
 	{
-		if (!m_bullets[i].isActive)
+		if (!m_bullets[i].isActive&&enemy.Get_EnemyActive())
 			continue;
 
 		// Apply velocity (JP: 速度を反映)
@@ -78,12 +79,16 @@ void Bllent_Managiment::Update(BackScreen& stage, Player_Managiment& player, Ene
 		{
 			float ex = enemy.Get_enemyX();
 			float ey = enemy.Get_enemyY();
-			int esz = enemy.Get_EnemyDisplaySize();
+			int esz = enemy.Get_EnemyDisplaySize(); // 28px
 
-			bool hit = !(m_bullets[i].x + BULLET_HIT_SIZE < ex ||
-						 m_bullets[i].x > ex + esz ||
-						 m_bullets[i].y + BULLET_HIT_SIZE < ey ||
-						 m_bullets[i].y > ey + esz);
+			// 描画オフセットを当たり判定にも反映する
+			float hitOffsetX = (32 - esz) / 2.0f;
+			float hitOffsetY = (32 - esz);  // DrawEnemy と同じ計算
+
+			bool hit = !(m_bullets[i].x + BULLET_HIT_SIZE < ex + hitOffsetX ||
+				m_bullets[i].x > ex + hitOffsetX + esz ||
+				m_bullets[i].y + BULLET_HIT_SIZE < ey + hitOffsetY ||
+				m_bullets[i].y > ey + hitOffsetY + esz);
 
 			if (hit)
 			{
@@ -148,6 +153,7 @@ void Bllent_Managiment::Shot(Player_Managiment& player)
 			m_bullets[i].damage = damage;
 			m_bullets[i].vx = 0.0f;
 			m_bullets[i].vy = 0.0f;
+			m_bullets[i].isEnemyBullet = false;
 
 			switch (player.GetDir())
 			{
@@ -175,6 +181,7 @@ void Bllent_Managiment::EnemyShot(float spawnX, float spawnY, float vx, float vy
 			m_bullets[i].vy = vy;
 			m_bullets[i].using_handle = bllet_Handle[SEAGE]; // 敵弾はSEAGE画像
 			m_bullets[i].damage = 1;
+			m_bullets[i].isEnemyBullet = true;
 			return;
 		}
 	}

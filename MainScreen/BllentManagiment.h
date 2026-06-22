@@ -18,6 +18,7 @@ struct BulletData
 	int using_handle;// Sprite handle in use (JP: 使用中のスプライトハンドル)
 	int damage;// Damage from DB (JP: DB由来のダメージ)
 	bool isActive;// Active flag (JP: 有効フラグ)
+	bool isEnemyBullet;
 };
 
 class Bllent_Managiment
