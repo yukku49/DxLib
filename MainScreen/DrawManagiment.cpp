@@ -35,6 +35,10 @@ void DrawManager::Player_Draw(const BackScreen& stage, const Player_Managiment& 
     int x2 = x1 + CHARA_WIDTH;
     int y2 = y1 + drawH;
 
+    char buf[64];
+    sprintf_s(buf, "Player drawH=%d w=%d h=%d\n", drawH, w, h);
+    OutputDebugStringA(buf);
+
     DrawExtendGraph(x1, y1, x2, y2, player.Get_PlayerHandle(), TRUE);
 }
 
@@ -99,24 +103,27 @@ void DrawManager::Bullets_Draw(const Bllent_Managiment& bullets) const
 void DrawManager::Enemy_Draw(const Enemy_Managiment& enemy, const BackScreen& stage) const
 {
     const auto& e = enemy.Get_enemyPoint();
-    // Skip drawing defeated enemy (JP: 倒された敵の描画をスキップ)
     if (!e.isActive) return;
 
     int handle = enemy.Get_EnemyHandle();
     if (handle < 0) return;
 
-    int w = 1, h = 1;
-    GetGraphSize(handle, &w, &h);
+    const int CHARA_WIDTH = enemy.Get_EnemyDisplaySize(); // 28px
 
-    const int CHARA_WIDTH = enemy.Get_EnemyDisplaySize();
-    int drawH = static_cast<int>(CHARA_WIDTH * (static_cast<float>(h) / w));
+    // ★ 左向き画像を基準に drawH を固定計算（全方向で同じサイズになる）
+    int refHandle = e.Enemy_Eye_handlbe[Enemy_Left];
+    int w = 1, h = 1;
+    GetGraphSize(refHandle, &w, &h);
+    int drawH = 71;
 
     int x1 = static_cast<int>(enemy.Get_enemyX()) + (TILE_SIZE - CHARA_WIDTH) / 2;
     int y1 = static_cast<int>(enemy.Get_enemyY()) + (TILE_SIZE - drawH);
     int x2 = x1 + CHARA_WIDTH;
     int y2 = y1 + drawH;
+
     if (enemy.GetInvincibleTimer() > 0.0f && (enemy.GetBlinkTimer() / 4) % 2 == 1)
         return;
+
     DrawExtendGraph(x1, y1, x2, y2, handle, TRUE);
 }
 

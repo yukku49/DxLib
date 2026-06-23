@@ -409,7 +409,7 @@ PizzaType PizzaDatabase::TryMakePizza(Item_count& items, PizzaTimer& timers)
         float effectTime = 0.0f;
         switch (type)
         {
-        case PizzaType::Margherita:      effectTime = 0.5f; break; // マルゲリータ
+        case PizzaType::Margherita:      effectTime = 0.9f; break; // マルゲリータ
         case PizzaType::QuattroFormaggi: effectTime = 0.9f; break; // クアトロフォルマッジ
         case PizzaType::Marinara:        effectTime = 0.9f; break; // マリナーラ
         case PizzaType::Genovese:        effectTime = 0.9f; break; // ジェノベーゼ

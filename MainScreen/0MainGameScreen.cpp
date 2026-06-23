@@ -151,7 +151,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         bllet.Update(stage, player, enemy);
 
         // 当たり判定を行う更新を呼ぶ（BackScreen を渡す）
- //       enemy.Enemy_Update(stage,player.GetXf(),player.GetYf());
+        enemy.Enemy_Update(stage,player.GetXf(),player.GetYf());
         static unsigned int lastEnemyShotTime = GetNowCount();
         unsigned int nowTime = GetNowCount();
         float eDt = (nowTime - lastEnemyShotTime) / 1000.0f;
@@ -210,7 +210,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         // -----------------------------------------------------------------------
         draw.Map_Draw(stage);// Background tiles and obstacles (JP: 背景タイルと障害物)
         draw.Player_Draw(stage, player);
- //       draw.Enemy_Draw(enemy, stage);
+        draw.Enemy_Draw(enemy, stage);
         draw.Bullets_Draw(bllet);
         draw.Item_Draw(item, stage);
         draw.HUD_Draw(player, enemy);

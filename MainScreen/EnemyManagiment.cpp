@@ -53,9 +53,9 @@ int Enemy_Managiment::Get_EnemyHandle() const
     float absVy = std::fabs(a.vy);
 
     if (absVx >= absVy)
-        return (a.vx <= 0.0f) ? a.Enemy_Eye_handlbe[Enemy_Left] : a.Enemy_Eye_handlbe[Enemy_Right];
+        return (a.vx < 0.0f) ? a.Enemy_Eye_handlbe[Enemy_Left] : a.Enemy_Eye_handlbe[Enemy_Right];
     else
-        return (a.vy <= 0.0f) ? a.Enemy_Eye_handlbe[Enemy_Up] : a.Enemy_Eye_handlbe[Enemy_Down];
+        return (a.vy < 0.0f) ? a.Enemy_Eye_handlbe[Enemy_Up] : a.Enemy_Eye_handlbe[Enemy_Down];
 }
 void Enemy_Managiment::OnHit()
 {
@@ -241,6 +241,9 @@ void Enemy_Managiment::Enemy_Update(const BackScreen& stage, float playerX, floa
     if (!hitX) a.enemy_X = newX;
     if (!hitY) a.enemy_Y = newY;
 
+    //向き判定用の実際に移動方向を記録する
+    a.vx = hitX ? 0.0f : moveX;
+    a.vy = hitY ? 0.0f : moveY;
 
     // --- 6. Force path recalculation when fully stuck ---
     // If both axes are blocked the current path is no longer valid;
