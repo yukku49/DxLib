@@ -98,6 +98,25 @@ void Bllent_Managiment::Update(BackScreen& stage, Player_Managiment& player, Ene
 				continue;
 			}
 		}
+		// --- プレイヤーとの当たり判定（敵弾のみ）---
+		if (m_bullets[i].isEnemyBullet)
+		{
+			float px = player.GetXf();
+			float py = player.GetYf();
+			int psz = player.Get_PlayerDisplaySize(); // 28px
+
+			bool hit = !(m_bullets[i].x + BULLET_HIT_SIZE < px ||
+				m_bullets[i].x > px + psz ||
+				m_bullets[i].y + BULLET_HIT_SIZE < py ||
+				m_bullets[i].y > py + psz);
+
+			if (hit)
+			{
+				m_bullets[i].isActive = false;
+				// ここで player.OnHit() を呼ぶ予定
+				continue;
+			}
+		}
 	}
 
 }

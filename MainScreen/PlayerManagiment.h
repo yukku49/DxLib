@@ -93,6 +93,15 @@ private:
 	//True when m_fullness reaches MAX_FULLNES(player wins)
 	//(JP:m_fullnessがMAX_FULLNESに達した時trueになる(プレイヤーの勝利))
 	bool m_isWin = false;
+
+	//一秒無敵
+	static constexpr float P_INVINCIBLE_DURATION = 1.0f;
+
+	//無敵時間タイマー
+	float mp_invincibleTimer = 0.0f;
+
+	int mp_blinkTimer = 0;
+
 public:
 	// Maximum value of the fullness gauge
 	// (JP: 満腹ゲージの最大値)
@@ -162,6 +171,9 @@ public:
     // (JP: 現在の所持食材でピザを作れるかDBに問い合わせる。成功すれば食材消費・満腹増加・ピザ種別を返す)
     void Debug_SetItems(int dough, int tomato, int cheese, int gorgonzola, int basil);
 
+	//敵のためへの当たり判定
+	void PlayerOnHit();
+
 	// Returns the current fullness gauge value
 	// (JP: 現在の満腹ゲージ値を返す)
 	float GetFullness()const { return m_fullness; };
@@ -178,6 +190,7 @@ public:
 	//(JP:プレイヤーが勝利（満腹MAXに達した）場合trueを返す)
 	bool IsWin()const { return m_isWin; }
 
-
+	float GetPInvincibleTimer()const { return mp_invincibleTimer; }
+	int GetMPblickTimer()const { return mp_blinkTimer; }
 
 };

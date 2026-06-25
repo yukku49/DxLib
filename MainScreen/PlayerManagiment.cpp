@@ -78,6 +78,12 @@ void Player_Managiment::Debug_SetItems(int dough, int tomato, int cheese, int go
 
 }
 
+void Player_Managiment::PlayerOnHit()
+{
+	if (mp_invincibleTimer > 0.0f)return;//無敵中は無視
+	mp_invincibleTimer = P_INVINCIBLE_DURATION;
+}
+
 // Loads directional sprites and sets the player's starting pixel position
 // The starting tile position is multiplied by TILE_SIZE to get pixel coordinates
 // An extra TILE_SIZE is added to Y so the player appears below the HUD bar
@@ -126,6 +132,11 @@ void Player_Managiment::Update(const BackScreen& stage, Bllent_Managiment& bllen
 	if (dt > 0.1f)dt = 0.1f;
 	m_lastTime = now;
 
+	if (mp_invincibleTimer > 0.0f)
+	{
+		mp_invincibleTimer -= dt;
+		mp_blinkTimer++;
+	}
 	// --- 2. Count down pizza effect timers ---
 	// Each timer starts at a positive value when a pizza is crafted and ticks toward 0
 	// BllentManagiment reads these to choose the bullet's pizza type

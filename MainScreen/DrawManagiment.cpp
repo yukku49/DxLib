@@ -39,6 +39,10 @@ void DrawManager::Player_Draw(const BackScreen& stage, const Player_Managiment& 
     sprintf_s(buf, "Player drawH=%d w=%d h=%d\n", drawH, w, h);
     OutputDebugStringA(buf);
 
+    if (player.GetPInvincibleTimer() > 0.0f && (player.GetMPblickTimer() / 4)%2 == 1)
+    {
+        return;
+    }
     DrawExtendGraph(x1, y1, x2, y2, player.Get_PlayerHandle(), TRUE);
 }
 
@@ -108,12 +112,12 @@ void DrawManager::Enemy_Draw(const Enemy_Managiment& enemy, const BackScreen& st
     int handle = enemy.Get_EnemyHandle();
     if (handle < 0) return;
 
-    const int CHARA_WIDTH = enemy.Get_EnemyDisplaySize(); // 28px
+    const int CHARA_WIDTH = 38;
+  
 
-    // ★ 左向き画像を基準に drawH を固定計算（全方向で同じサイズになる）
-    int refHandle = e.Enemy_Eye_handlbe[Enemy_Left];
+    // ★ 現在の向きの画像サイズから drawH を計算（Player_Draw と同じロジック）
     int w = 1, h = 1;
-    GetGraphSize(refHandle, &w, &h);
+    GetGraphSize(handle, &w, &h);
     int drawH = 71;
 
     int x1 = static_cast<int>(enemy.Get_enemyX()) + (TILE_SIZE - CHARA_WIDTH) / 2;
