@@ -169,17 +169,7 @@ void DrawManager::HUD_Draw(const Player_Managiment& player, const Enemy_Managime
 
     DrawFormatString(P_BAR_X + BAR_W + 6, BAR_Y, GetColor(255, 255, 255), "P1");
 
-    // --- Enemy fullness gauge (right side, red fill) ---
-     // TODO: replace the hardcoded 0.3f ratio with enemy.GetFullness() / MAX
-     // (JP: 敵満腹ゲージ（右側、赤塗り）TODO: 0.3fをenemy.GetFullness()/MAXに差し替える)
-    const int E_BAR_X = 1280 - BAR_W - 10;
-    DrawBox(E_BAR_X, BAR_Y, E_BAR_X + BAR_W, BAR_Y + BAR_H, GetColor(80, 80, 80), TRUE);
-
-    float enemyRatio = 0.3f; // TODO: get actual enemy fullness (JP: 敵の実際の満腹値を取得する)
-    int eFillW = static_cast<int>(BAR_W * enemyRatio);
-    DrawBox(E_BAR_X, BAR_Y, E_BAR_X + eFillW, BAR_Y + BAR_H, GetColor(220, 60, 60), TRUE);
-
-    DrawFormatString(E_BAR_X - 30, BAR_Y, GetColor(255, 255, 255), "CPU");
+   
 
     /// --- Item inventory counts (center) ---
     // Displays how many of each ingredient the player is currently holding
@@ -192,6 +182,8 @@ void DrawManager::HUD_Draw(const Player_Managiment& player, const Enemy_Managime
         items.Cheese_Counter,
         items.Gorgonzola_Counter,
         items.Basil_Counter);
+
+    
 }
 
 // Draws every active item at its tile grid position
