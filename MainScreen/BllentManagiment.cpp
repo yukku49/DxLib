@@ -8,11 +8,11 @@ static constexpr float BULLET_SPEED = 300.0f; // px/s（旧 5px/frame @60fps 相
 
 void Bllent_Managiment::Load()
 {
-	bllet_Handle[GENOVESE] = LoadGraph("../Pizza_Image/Genovese.png");
-	bllet_Handle[MARGHERITA] = LoadGraph("../Pizza_Image/margherita.png");
-	bllet_Handle[MARINARA] = LoadGraph("../Pizza_Image/marinara.png");
-	bllet_Handle[QUATTROFORMAGGI] = LoadGraph("../Pizza_Image/quattro_formaggi.png");
-	bllet_Handle[SEAGE] = LoadGraph("../Pizza_Image/sage.png");
+	bllet_Handle[GENOVESE] = LoadGraph("Pizza_Image/Genovese.png");
+	bllet_Handle[MARGHERITA] = LoadGraph("Pizza_Image/margherita.png");
+	bllet_Handle[MARINARA] = LoadGraph("Pizza_Image/marinara.png");
+	bllet_Handle[QUATTROFORMAGGI] = LoadGraph("Pizza_Image/quattro_formaggi.png");
+	bllet_Handle[SEAGE] = LoadGraph("Pizza_Image/sage.png");
 	//画像ロードチェック
 	for (int i = 0; i < BLLET_MAX; i++)
 	{

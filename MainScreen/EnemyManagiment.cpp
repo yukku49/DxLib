@@ -30,10 +30,10 @@ void Enemy_Managiment::Enemy_Initialisation(float startX, float startY)
     a.vy = 0.0f;
     a.isActive = true;
 
-    a.Enemy_Eye_handlbe[Enemy_Up] = LoadGraph("../Pizza_Image/Enemy_Up.png");
-    a.Enemy_Eye_handlbe[Enemy_Left] = LoadGraph("../Pizza_Image/Enemy_Left.png");
-    a.Enemy_Eye_handlbe[Enemy_Right] = LoadGraph("../Pizza_Image/Enemy_Right.png");
-    a.Enemy_Eye_handlbe[Enemy_Down] = LoadGraph("../Pizza_Image/Enemy_Down.png");
+    a.Enemy_Eye_handlbe[Enemy_Up] = LoadGraph("Pizza_Image/Enemy_Up.png");
+    a.Enemy_Eye_handlbe[Enemy_Left] = LoadGraph("Pizza_Image/Enemy_Left.png");
+    a.Enemy_Eye_handlbe[Enemy_Right] = LoadGraph("Pizza_Image/Enemy_Right.png");
+    a.Enemy_Eye_handlbe[Enemy_Down] = LoadGraph("Pizza_Image/Enemy_Down.png");
 }
 
 // Selects the sprite handle that matches the enemy's current movement direction

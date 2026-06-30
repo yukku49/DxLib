@@ -98,10 +98,10 @@ void Player_Managiment::Initialisation()
 	Player_MovePointY = Player_StanderdpointY * TILE_SIZE+TILE_SIZE;
 
 	// 画像ロード
-	PlayerImage_Handle[0] = LoadGraph("../Pizza_Image/player_up.png");
-	PlayerImage_Handle[1] = LoadGraph("../Pizza_Image/player_down.png");
-	PlayerImage_Handle[2] = LoadGraph("../Pizza_Image/player_left.png");
-	PlayerImage_Handle[3] = LoadGraph("../Pizza_Image/player_right.png");
+	PlayerImage_Handle[0] = LoadGraph("Pizza_Image/player_up.png");
+	PlayerImage_Handle[1] = LoadGraph("Pizza_Image/player_down.png");
+	PlayerImage_Handle[2] = LoadGraph("Pizza_Image/player_left.png");
+	PlayerImage_Handle[3] = LoadGraph("Pizza_Image/player_right.png");
 
 	// Default facing direction is right
 	// (JP: デフォルトの向きは右)

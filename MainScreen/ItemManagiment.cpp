@@ -16,11 +16,11 @@ void Item_Managiment::ItemManagiment()
 // (JP: アイテム種別ごとに1枚画像を読み込む。返されるintハンドルはItem_Draw用に保存する)
 void Item_Managiment::Load()
 {
-    Item_Handle[TOMATO] = LoadGraph("../Pizza_Image/TOMATO.png");
-    Item_Handle[BASIL] = LoadGraph("../Pizza_Image/Basil.png");
-    Item_Handle[CHEESE] = LoadGraph("../Pizza_Image/cheese.png");
-    Item_Handle[GORGONZOLA] = LoadGraph("../Pizza_Image/gorgonzola.png");
-    Item_Handle[PIZZADOUGH] = LoadGraph("../Pizza_Image/pizza_Dough.png");
+    Item_Handle[TOMATO] = LoadGraph("Pizza_Image/TOMATO.png");
+    Item_Handle[BASIL] = LoadGraph("Pizza_Image/Basil.png");
+    Item_Handle[CHEESE] = LoadGraph("Pizza_Image/cheese.png");
+    Item_Handle[GORGONZOLA] = LoadGraph("Pizza_Image/gorgonzola.png");
+    Item_Handle[PIZZADOUGH] = LoadGraph("Pizza_Image/pizza_Dough.png");
 }
 
 // Places one item of the given type at a random passable tile
