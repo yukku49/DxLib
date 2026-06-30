@@ -64,3 +64,6 @@ x86/
 Log.txt
 *.tlog
 *.lastbuildstate
+
+# 提出用のゲームZIPファイルを除外
+Portfolio-game.zip
