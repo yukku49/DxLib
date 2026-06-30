@@ -82,6 +82,13 @@ private:
 	//点滅用フレームカウンタ
 	int m_blinkTimer = 0;
 
+	//被弾後の残りのスタン時間。０より大きい時は敵は動かない
+	//OnHitでセットする
+	float m_stunTimer = 0.0f;
+
+	//被弾時のスタン時間
+	static constexpr float STUN_DURATION = 2.0f;
+
 public:
 	// Initializes enemy position, velocity, and loads directional sprites
    // startX/startY are pixel coordinates including the 32px HUD offset
@@ -148,6 +155,10 @@ public:
 	bool TryShoot(const BackScreen& stage, float playerX, float playerY,
 		float dt, float& outVx, float& outVy);
 
+	//点滅時間
 	float GetInvincibleTimer()const { return m_invincibleTimer; }
 	int GetBlinkTimer()const { return m_blinkTimer; }
+
+	//敵がスタン中かフラグを返す
+	bool IsStunned() const { return m_stunTimer > 0.0f; }
 };

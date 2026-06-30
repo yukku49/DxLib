@@ -61,6 +61,8 @@ void Enemy_Managiment::OnHit()
 {
     if (m_invincibleTimer > 0.0f)return;//無敵中は無視
     m_invincibleTimer = INVINCIBLE_DURATION;
+    m_stunTimer = STUN_DURATION;
+
 }
 // 同じ行または列で間に壁がないか確認する
 // (JP: 同じタイル行または列で、間のタイルに壁がなければtrueを返す)
@@ -160,6 +162,14 @@ void Enemy_Managiment::Enemy_Update(const BackScreen& stage, float playerX, floa
     {
         m_invincibleTimer -= dt;
         m_blinkTimer++;
+    }
+
+    if (m_stunTimer > 0.0f)
+    {
+        m_stunTimer -= dt;
+        m_path.clear();
+        m_pathTimer = PATH_INTERVAL;
+        return;
     }
     // --- 2. Convert pixel positions to tile coordinates ---
     // Subtract 32 from Y before dividing because the HUD bar occupies the top 32px;
