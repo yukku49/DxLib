@@ -120,19 +120,7 @@ static bool HasLineOfSight(const BackScreen& stage,
      return true;
  }
 
-// Legacy update: moves by vx/vy with simple screen-boundary bouncing and no tile collision
-// Kept so older call sites still compile; prefer Enemy_Update(stage, px, py) instead
-// (JP: 旧更新。vx/vyで移動し画面端で跳ね返るだけでタイル衝突なし)
-// (JP: 旧呼び出し元がコンパイルできるよう残している。新規コードはEnemy_Update(stage,px,py)を使う)
-void Enemy_Managiment::Enemy_Update()
-{
-    
-    if (!a.isActive) return;
-    a.enemy_X += a.vx;
-    a.enemy_Y += a.vy;
-    if (a.enemy_X < 0.0f || a.enemy_X > SCREEN_W - 32.0f) a.vx *= -1.0f;
-    if (a.enemy_Y < 0.0f || a.enemy_Y > SCREEN_H - 32.0f) a.vy *= -1.0f;
-}
+
 
 // Full BFS-based update called once per frame from the main loop
 // Steps:
