@@ -61,7 +61,6 @@ int statgeaPatern_1[23][40] =
         // Load obstacle images (pizza box, brick wall)
         // (JP: 障害物画像を読み込む。ピザボックスとレンガ)
         o_object[0] = LoadGraph("Pizza_Image/pizza box.png");
-        o_object[1] = LoadGraph("Pizza_Image/renga.png");
 
         // Fill the entire map with stage 1 pattern starting from tile (0,0)
         // (JP: タイル(0,0)からステージ1パターンでマップ全体を埋める)

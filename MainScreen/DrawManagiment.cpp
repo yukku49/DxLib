@@ -114,8 +114,7 @@ void DrawManager::Enemy_Draw(const Enemy_Managiment& enemy, const BackScreen& st
   
 
     // ★ 現在の向きの画像サイズから drawH を計算（Player_Draw と同じロジック）
-    int w = 1, h = 1;
-    GetGraphSize(handle, &w, &h);
+  
     int drawH = 71;
 
     int x1 = static_cast<int>(enemy.Get_enemyX()) + (TILE_SIZE - CHARA_WIDTH) / 2;

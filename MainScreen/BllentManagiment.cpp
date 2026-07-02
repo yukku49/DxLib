@@ -114,7 +114,6 @@ void Bllent_Managiment::Update(BackScreen& stage, Player_Managiment& player, Ene
 			{
 				m_bullets[i].isActive = false;
 				player.PlayerOnHit();
-				player.GetFullness();
 				continue;
 			}
 		}

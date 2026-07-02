@@ -140,8 +140,8 @@ public:
 
 	// Returns the sprite handle to draw this frame
 	// (JP: このフレームで描画するスプライトハンドルを返す)）
-	int Get_PlayerHanadle() const { return Player_Handle; }
-	int Get_PlayerHandle() const { return Player_Handle; } // alias for typo compatibility
+	int Get_PlayerHandle() const { return Player_Handle; }
+	
 
 	// Returns a copy of the current ingredient inventory
    // (JP: 現在の食材所持数のコピーを返す)

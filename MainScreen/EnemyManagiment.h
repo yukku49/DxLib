@@ -27,7 +27,7 @@ struct Enemy_date
 };
 
 class BackScreen; // Forward declaration for collision check
-class PlayerManagiment;
+
 
 // Manages enemy movement(BFS pathfinding), collision, and state
 // (JP: 敵の移動(BFS経路探索)・衝突・状態を管理するクラス)

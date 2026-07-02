@@ -184,8 +184,7 @@ void Player_Managiment::Update(const BackScreen& stage, Bllent_Managiment& bllen
 	float newY = Player_MovePointY + vy * dt;
 
 	// プレイヤー矩形（top-left = newX, newY）。表示サイズを当たり判定サイズとして使用
-	//int w = m_displaySize;
-	//int h = m_displaySize;
+	
 
 	auto collidesAt = [&](float wx, float wy) -> bool {
 		return stage.CheckCollision(wx, wy);
